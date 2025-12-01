@@ -1,4 +1,4 @@
-name = "Shogi"
-uuid = "62caae30-624a-43df-987f-3990148dcc27"
+name = "BitShogi"
+uuid = "a6e937b9-9d5b-4c7d-91b7-27c81cc004f7"
 authors = ["sam-ghala <ghalayini.sj@gmail.com>"]
 version = "0.1.0"
