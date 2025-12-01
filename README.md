@@ -1,5 +1,5 @@
 # Shogi Engine 
-### Shogi - The game of the generals
+### Shogi - "The game of the generals"
 
 # Roadmap
 - [] Write 5x5 bitboard game engine in Julia
