@@ -1,0 +1,25 @@
+# --- Julia ---
+*.jl.cov
+*.jl.*.cov
+*.ji
+Manifest.toml
+engine/docs/site/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+ai/*.pt
+ai/*.pth
+
+# --- Lean ---
+proofs/.lake/
+proofs/lake-packages/
+proofs/build/
+
+# --- General ---
+.DS_Store
+.vscode/
+.idea/

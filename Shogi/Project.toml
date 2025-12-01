@@ -1,0 +1,4 @@
+name = "Shogi"
+uuid = "62caae30-624a-43df-987f-3990148dcc27"
+authors = ["sam-ghala <ghalayini.sj@gmail.com>"]
+version = "0.1.0"
