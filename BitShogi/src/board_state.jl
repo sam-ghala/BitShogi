@@ -507,4 +507,4 @@ function test_board_state()
     println("\nBoardState tests complete!")
 end
 
-test_board_state()
+# test_board_state()

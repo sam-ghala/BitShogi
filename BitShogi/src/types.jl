@@ -36,7 +36,7 @@ end
     ROOK = 7
     KING = 8
     
-    # Promoted pieces (9-14)
+    # Promoted pieces 
     PROMOTED_PAWN = 9
     PROMOTED_LANCE = 10
     PROMOTED_KNIGHT = 11
@@ -58,13 +58,47 @@ const NO_PIECE = UInt8(0)
 end
 
 # Get the promoted version of a piece
-@inline promote(pt::PieceType) = PieceType(UInt8(pt) + 8)
+# @inline promote(pt::PieceType) = PieceType(UInt8(pt) + 8)
+@inline function promote(pt::PieceType)::PieceType
+    if pt == PAWN
+        return PROMOTED_PAWN
+    elseif pt == LANCE
+        return PROMOTED_LANCE
+    elseif pt == KNIGHT
+        return PROMOTED_KNIGHT
+    elseif pt == SILVER
+        return PROMOTED_SILVER
+    elseif pt == BISHOP
+        return PROMOTED_BISHOP
+    elseif pt == ROOK
+        return PROMOTED_ROOK
+    else
+        error("Cannot promote piece type: $pt")
+    end
+end
 
 # Demote captured pieces
 # Promoted pieces demote to base; base pieces stay base
-@inline function demote(pt::PieceType)
-    p = UInt8(pt)
-    return p > 8 ? PieceType(p - 8) : pt
+# @inline function demote(pt::PieceType)
+#     p = UInt8(pt)
+#     return p > 8 ? PieceType(p - 8) : pt
+# end
+@inline function demote(pt::PieceType)::PieceType
+    if pt == PROMOTED_PAWN
+        return PAWN
+    elseif pt == PROMOTED_LANCE
+        return LANCE
+    elseif pt == PROMOTED_KNIGHT
+        return KNIGHT
+    elseif pt == PROMOTED_SILVER
+        return SILVER
+    elseif pt == PROMOTED_BISHOP
+        return BISHOP
+    elseif pt == PROMOTED_ROOK
+        return ROOK
+    else
+        return pt  # Already unpromoted or can't demote (GOLD, KING)
+    end
 end
 
 # Check if its a sliding piece (Rook, Bishop, Lance, and their promoted versions)
@@ -172,51 +206,39 @@ end
 const NO_PIECE_VALUE = Piece(0)
 
 @enum GameStatus::UInt8 begin
-    ONGOING = 0
-    BLACK_WINS = 1
-    WHITE_WINS = 2
-    DRAW_REPETITION = 3
-    DRAW_IMPASSE = 4
-    DRAW_STALEMATE = 5
+    ONGOING
+    BLACK_WINS_CHECKMATE
+    WHITE_WINS_CHECKMATE
+    BLACK_WINS_RESIGNATION
+    WHITE_WINS_RESIGNATION
+    DRAW_REPETITION
+    DRAW_STALEMATE
+    DRAW_IMPASSE
 end
 
 # SFEN mappings
-const SFEN_TO_PIECE = Dict{Char, Tuple{PieceType, Color}}(
-    'P' => (PAWN, BLACK),
-    'L' => (LANCE, BLACK),
-    'N' => (KNIGHT, BLACK),
-    'S' => (SILVER, BLACK),
-    'G' => (GOLD, BLACK),
-    'B' => (BISHOP, BLACK),
-    'R' => (ROOK, BLACK),
-    'K' => (KING, BLACK),
-    'p' => (PAWN, WHITE),
-    'l' => (LANCE, WHITE),
-    'n' => (KNIGHT, WHITE),
-    's' => (SILVER, WHITE),
-    'g' => (GOLD, WHITE),
-    'b' => (BISHOP, WHITE),
-    'r' => (ROOK, WHITE),
-    'k' => (KING, WHITE),
+const SFEN_TO_PIECE = Dict(
+    'P' => (PAWN, BLACK), 'L' => (LANCE, BLACK), 'N' => (KNIGHT, BLACK),
+    'S' => (SILVER, BLACK), 'G' => (GOLD, BLACK), 'B' => (BISHOP, BLACK),
+    'R' => (ROOK, BLACK), 'K' => (KING, BLACK),
+    'p' => (PAWN, WHITE), 'l' => (LANCE, WHITE), 'n' => (KNIGHT, WHITE),
+    's' => (SILVER, WHITE), 'g' => (GOLD, WHITE), 'b' => (BISHOP, WHITE),
+    'r' => (ROOK, WHITE), 'k' => (KING, WHITE)
 )
 
-const PIECE_TO_SFEN = Dict{Tuple{PieceType, Color}, Char}(
-    (PAWN, BLACK)   => 'P',
-    (LANCE, BLACK)  => 'L',
-    (KNIGHT, BLACK) => 'N',
-    (SILVER, BLACK) => 'S',
-    (GOLD, BLACK)   => 'G',
-    (BISHOP, BLACK) => 'B',
-    (ROOK, BLACK)   => 'R',
-    (KING, BLACK)   => 'K',
-    (PAWN, WHITE)   => 'p',
-    (LANCE, WHITE)  => 'l',
-    (KNIGHT, WHITE) => 'n',
-    (SILVER, WHITE) => 's',
-    (GOLD, WHITE)   => 'g',
-    (BISHOP, WHITE) => 'b',
-    (ROOK, WHITE)   => 'r',
-    (KING, WHITE)   => 'k',
+const PIECE_TO_SFEN = Dict(
+    (PAWN, BLACK) => "P", (LANCE, BLACK) => "L", (KNIGHT, BLACK) => "N",
+    (SILVER, BLACK) => "S", (GOLD, BLACK) => "G", (BISHOP, BLACK) => "B",
+    (ROOK, BLACK) => "R", (KING, BLACK) => "K",
+    (PAWN, WHITE) => "p", (LANCE, WHITE) => "l", (KNIGHT, WHITE) => "n",
+    (SILVER, WHITE) => "s", (GOLD, WHITE) => "g", (BISHOP, WHITE) => "b",
+    (ROOK, WHITE) => "r", (KING, WHITE) => "k",
+    (PROMOTED_PAWN, BLACK) => "+P", (PROMOTED_LANCE, BLACK) => "+L",
+    (PROMOTED_KNIGHT, BLACK) => "+N", (PROMOTED_SILVER, BLACK) => "+S",
+    (PROMOTED_BISHOP, BLACK) => "+B", (PROMOTED_ROOK, BLACK) => "+R",
+    (PROMOTED_PAWN, WHITE) => "+p", (PROMOTED_LANCE, WHITE) => "+l",
+    (PROMOTED_KNIGHT, WHITE) => "+n", (PROMOTED_SILVER, WHITE) => "+s",
+    (PROMOTED_BISHOP, WHITE) => "+b", (PROMOTED_ROOK, WHITE) => "+r"
 )
 
 const PROMOTED_SFEN_PREFIX = '+' # +P, +R, +l

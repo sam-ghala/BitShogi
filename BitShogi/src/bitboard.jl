@@ -55,7 +55,7 @@ struct BitboardIterator
 end
 
 function Base.iterate(iter::BitboardIterator)
-    iter.bb == 0 && return 0
+    iter.bb == 0 && return nothing
     sq, remaining = pop_lsb(iter.bb)
     return (sq, remaining)
 end
@@ -104,8 +104,8 @@ const FILE_BB = Tuple(generate_file_mask(f) for f in 1:BOARD_SIZE)
 const BLACK_PROMOTION_BB = reduce(|, RANK_BB[r] for r in BLACK_PROMOTION_RANKS)
 const WHITE_PROMOTION_BB = reduce(|, RANK_BB[r] for r in WHITE_PROMOTION_RANKS)
 # Must-promote masks (where pawns MUST promote - can't stay unpromoted)
-const BLACK_MUST_PROMOTE_PAWN_BB = RANK_BB[BLACK_MUST_PROMOTE_PAWN_RANK]
-const WHITE_MUST_PROMOTE_PAWN_BB = RANK_BB[WHITE_MUST_PROMOTE_PAWN_RANK]
+const BLACK_MUST_PROMOTE_PAWN_BB = RANK_BB[BLACK_MUST_PROMOTE_RANK]
+const WHITE_MUST_PROMOTE_PAWN_BB = RANK_BB[WHITE_MUST_PROMOTE_RANK]
 
 # prevent wrapping around the board in the number
 const NOT_FILE_1 = ~FILE_BB[1] & FULL_BB
