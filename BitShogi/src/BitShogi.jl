@@ -1,5 +1,11 @@
 module BitShogi
 
-greet() = print("Hello World!")
+include("constants.jl")
+include("types.jl")
+include("bitboard.jl")
+include("attack_tables.jl")
+include("magic.jl")
+include("board_state.jl")
+include("move_generation.jl")
 
-end # module BitShogi
+end

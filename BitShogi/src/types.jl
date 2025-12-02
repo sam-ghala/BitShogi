@@ -2,12 +2,14 @@
 # types.jl - Core type definitions for the shogi engine
 # ===========================================================================
 
-include("constants.jl")
-
 @enum Color::UInt8 begin
     BLACK = 1
     WHITE = 2
 end
+# A note on @inline, don't do a function call, smiple functions like masking and bit manipulation, just add code instead of making a function call
+# checking 1 million positions rank and file and test_bit has 3 million function call overheads, but code is simple enoguh to inline so there would be zero function calls
+# hopefully everything I've inlined is small enough to be worth it
+
 
 # Get the opposite color
 # Using XOR trick: 1 ⊻ 3 = 2, 2 ⊻ 3 = 1
@@ -152,7 +154,7 @@ const NULL_MOVE = Move(0)
 @inline move_capture(m::Move)::UInt8 = UInt8((m >> MOVE_CAPTURE_SHIFT) & 0x0F)
 
 @inline move_is_drop(m::Move)::Bool = move_from(m) == NO_SQUARE
-@inline move_is_captured(m::Move)::Bool = move_capture(m) != NO_PIECE
+@inline move_is_capture(m::Move)::Bool = move_capture(m) != NO_PIECE
 
 # piece on square
 # bits 0-3 = piece type 0-14, bit 4 = color (0=black, 1=white)

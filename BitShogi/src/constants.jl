@@ -20,7 +20,7 @@ const NUM_SQUARES::Int = BOARD_SIZE * BOARD_SIZE
 #   - UInt32 for ≤32 squares (minishogi: 25 squares ✓)
 #   - UInt64 for ≤64 squares
 #   - UInt128 for ≤128 squares (standard shogi: 81 squares)
-const BITBOARD_TYPE = UInt32
+const Bitboard = UInt32
 
 # ---------------------------------------------------------------------------
 # SECTION 2: Piece Configuration
@@ -48,8 +48,8 @@ const MAX_HAND_COUNT = 2 # can have one of your opponent's piece and your own pi
 const PROMOTION_ZONE_SIZE = 2
 const BLACK_PROMOTION_RANKS = 1:PROMOTION_ZONE_SIZE
 const WHITE_PROMOTION_RANKS = (BOARD_SIZE - PROMOTION_ZONE_SIZE + 1):BOARD_SIZE
-const BLACK_MUST_PROMOTE_PAWN_RANK = 1
-const WHITE_MUST_PROMOTE_PAWN_RANK = 5
+const BLACK_MUST_PROMOTE_RANK = 1
+const WHITE_MUST_PROMOTE_RANK = 5
 
 # ---------------------------------------------------------------------------
 # SECTION 4: Starting Position
@@ -121,6 +121,6 @@ const ORTHOGONAL_DIRS = (NORTH, EAST, SOUTH, WEST)
 const DIAGONAL_DIRS = (NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST)
 const ALL_DIRS = (NORTH, NORTH_EAST, EAST, SOUTH_EAST, SOUTH, SOUTH_WEST, WEST, NORTH_WEST)
 
-const EMPTY_BB = BITBOARD_TYPE(0)
-const FULL_BB = BITBOARD_TYPE((1 << NUM_SQUARES) - 1)
+const EMPTY_BB = Bitboard(0)
+const FULL_BB = Bitboard((1 << NUM_SQUARES) - 1)
 const NO_SQUARE = 0
