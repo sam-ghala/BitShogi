@@ -26,7 +26,7 @@ const SQUARE_BB = Tuple(Bitboard(1) << (sq - 1) for sq in 1: NUM_SQUARES)
 @inline test_bit(bb::Bitboard, sq::Int)::Bool = (bb & SQUARE_BB[sq]) != 0
 
 # toggle a bit from current state, 0->1 or 1->0
-@inline toggle_bit(bb::Bitboard, sq::Int)::Bitboard = bb ⊻ SQUARE_BB
+@inline toggle_bit(bb::Bitboard, sq::Int)::Bitboard = bb ⊻ SQUARE_BB[sq]
 
 # how many pieces
 @inline popcount(bb::Bitboard)::Int = count_ones(bb)
@@ -146,7 +146,7 @@ end
 # or bitboards
 @inline bb_or(a::Bitboard, b::Bitboard)::Bitboard = a | b
 # pieces in a but not in b 
-@inline bb_subtract(a::Bitboard, b::Bitboard)::Bitbaord = a & ~b
+@inline bb_subtract(a::Bitboard, b::Bitboard)::Bitboard = a & ~b
 #invert
 @inline bb_not(bb::Bitboard)::Bitboard = ~bb & FULL_BB
 

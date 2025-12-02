@@ -197,7 +197,8 @@ const PIECE_TYPE_MASK = UInt8(0x0F)
 const PIECE_COLOR_BIT = UInt8(0x10)
 
 @inline function create_piece(pt::PieceType, c::Color)::Piece
-    return UInt8(pt) | (Uint8(c - 1) << 4)
+    # return UInt8(pt) | (UInt8(c - 1) << 4)
+    return UInt8(pt) | UInt8((UInt8(c) - UInt8(1)) << 4)
 end
 
 @inline piece_type(p::Piece)::PieceType = PieceType(p & PIECE_TYPE_MASK)
