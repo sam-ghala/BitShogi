@@ -1,5 +1,5 @@
 # Dockerfile for BitShogi Julia backend
-FROM julia:1.10-bookworm
+FROM julia:1.11-bookworm
 
 WORKDIR /app
 
