@@ -24,3 +24,6 @@ proofs/build/
 .vscode/
 .idea/
 Resources/
+
+# --- Frontend ---
+BitShogi/frontend/node_modules/

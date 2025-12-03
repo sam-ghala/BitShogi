@@ -1,0 +1,445 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Traditional Japanese colors */
+  --kitsune: #c77b30;        /* Fox brown - board */
+  --sumi: #1a1a1a;           /* Ink black */
+  --shiro: #f5f0e8;          /* Paper white */
+  --aka: #c41e3a;            /* Red - promoted pieces */
+  --kincha: #c99833;         /* Golden tea - highlights */
+  --nezumi: #656765;         /* Mouse gray */
+  --sakura: #ffb7c5;         /* Cherry blossom - selection */
+  --matcha: #8fbc8f;         /* Green tea - legal moves */
+  
+  /* Board colors */
+  --board-bg: linear-gradient(135deg, #d4a574 0%, #c49a6c 50%, #b8906a 100%);
+  --board-line: rgba(0, 0, 0, 0.6);
+  --board-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+body {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  background: linear-gradient(180deg, #2d2d2d 0%, #1a1a1a 100%);
+  min-height: 100vh;
+  color: var(--shiro);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* Typography */
+h1 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: var(--nezumi);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+/* Game Container */
+.game-container {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* Board */
+.board-wrapper {
+  position: relative;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, 70px);
+  grid-template-rows: repeat(5, 70px);
+  gap: 0;
+  background: var(--board-bg);
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: var(--board-shadow);
+  border: 3px solid #8b6914;
+}
+
+.square {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--board-line);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.square:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.square.selected {
+  background: rgba(255, 183, 197, 0.4);
+  box-shadow: inset 0 0 0 3px var(--sakura);
+}
+
+.square.legal-target {
+  background: rgba(143, 188, 143, 0.3);
+}
+
+.square.legal-target::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(143, 188, 143, 0.6);
+}
+
+.square.last-move {
+  background: rgba(201, 152, 51, 0.3);
+}
+
+/* Pieces */
+.piece {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  user-select: none;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform 0.1s ease;
+}
+
+.piece.black {
+  color: var(--sumi);
+}
+
+.piece.white {
+  color: var(--sumi);
+  transform: rotate(180deg);
+}
+
+.piece.promoted {
+  color: var(--aka);
+}
+
+.piece.white.promoted {
+  color: var(--aka);
+  transform: rotate(180deg);
+}
+
+.square:hover .piece {
+  transform: scale(1.1);
+}
+
+.square:hover .piece.white {
+  transform: rotate(180deg) scale(1.1);
+}
+
+/* Hand pieces */
+.hands-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.hand {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
+  min-width: 120px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hand-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--nezumi);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hand-pieces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hand-piece {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(212, 165, 116, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s ease;
+  border: 2px solid transparent;
+}
+
+.hand-piece:hover {
+  background: rgba(212, 165, 116, 0.5);
+  transform: translateY(-2px);
+}
+
+.hand-piece.selected {
+  border-color: var(--sakura);
+  background: rgba(255, 183, 197, 0.3);
+}
+
+.hand-piece .piece {
+  font-size: 1.6rem;
+}
+
+.hand-piece .count {
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: var(--kincha);
+}
+
+.hand-piece.white-hand .piece {
+  transform: rotate(180deg);
+}
+
+.empty-hand {
+  color: var(--nezumi);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+/* Game Info */
+.game-info {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.turn-indicator {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.turn-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--kincha);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.status {
+  font-size: 0.9rem;
+  color: var(--nezumi);
+}
+
+.status.check {
+  color: var(--aka);
+  font-weight: bold;
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.status.game-over {
+  color: var(--kincha);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* Controls */
+.controls {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+button {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--kitsune);
+  color: var(--shiro);
+  font-weight: 500;
+}
+
+button:hover {
+  background: #a86828;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--nezumi);
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--nezumi);
+  border-top-color: var(--kincha);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error */
+.error {
+  color: var(--aka);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* Coordinates */
+.board-with-coords {
+  display: grid;
+  grid-template-columns: 25px 1fr;
+  grid-template-rows: 1fr 25px;
+  gap: 5px;
+}
+
+.file-coords {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 10px;
+}
+
+.file-coords span {
+  width: 70px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--nezumi);
+}
+
+.rank-coords {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+.rank-coords span {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--nezumi);
+}
+
+/* Promotion Dialog */
+.promotion-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.promotion-dialog {
+  background: var(--shiro);
+  color: var(--sumi);
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.promotion-dialog h3 {
+  margin-bottom: 1rem;
+  font-family: 'Noto Serif JP', serif;
+}
+
+.promotion-choices {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.promotion-choice {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--board-bg);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.promotion-choice:hover {
+  transform: scale(1.1);
+}
+
+.promotion-choice .piece {
+  font-size: 2rem;
+}
+
+/* Help Text */
+.help-text {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: var(--nezumi);
+  max-width: 400px;
+  text-align: center;
+  line-height: 1.5;
+}

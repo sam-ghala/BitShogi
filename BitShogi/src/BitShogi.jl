@@ -14,3 +14,13 @@ include("bot.jl")
 include("api.jl")
 
 end
+
+# Commands to run it locally after mpn install and installing julia packages 
+# Terminal 1 - Backend
+# cd ~/BitShogi/BitShogi && julia --project=. server/server.jl
+
+# Terminal 2 - Frontend
+# cd ~/BitShogi/BitShogi/frontend && npm run dev
+
+# Browser
+# http://localhost:5173
