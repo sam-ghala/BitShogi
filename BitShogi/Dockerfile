@@ -5,13 +5,14 @@ WORKDIR /app
 
 # Install Julia packages
 COPY Project.toml .
+# Copy source code
+COPY src/ ./src/
 RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate()'
 
 # Pre-compile packages
 RUN julia -e 'using Pkg; Pkg.activate("."); using HTTP, JSON3, Random'
 
-# Copy source code
-COPY src/ ./src/
+
 COPY server/ ./server/
 
 # Expose port
