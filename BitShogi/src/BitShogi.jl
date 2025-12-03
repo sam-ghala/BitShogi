@@ -12,6 +12,7 @@ include("game_state.jl")
 include("perft.jl")
 include("bot.jl")
 include("api.jl")
+include("board_generator.jl")
 
 end
 

@@ -37,7 +37,7 @@ end
 
 GreedyBot() = GreedyBot(Random.default_rng())
 
-const PIECE_VALUES = Dict(
+const PIECE_VALUES_BOT = Dict(
     PAWN => 100, LANCE => 300, KNIGHT => 300, SILVER => 400,
     GOLD => 500, BISHOP => 600, ROOK => 700, KING => 10000,
     PROMOTED_PAWN => 400, PROMOTED_LANCE => 400, PROMOTED_KNIGHT => 400,
@@ -55,7 +55,7 @@ function select_move(bot::GreedyBot, game::GameState)::Union{Move, String}
     for move in moves 
         captured = move_capture(move)
         if captured != NO_PIECE
-            value = get(PIECE_VALUES, PieceType(captured), 0)
+            value = get(PIECE_VALUES_BOT, PieceType(captured), 0)
             push!(captures, (move, value))
         else
             push!(non_captures, move)
@@ -83,7 +83,7 @@ function evaluate_position(board::BoardState, color::Color)::Int
     score = 0
     # material 
     for pt in instances(PieceType)
-        value = get(PIECE_VALUES, pt, 0)
+        value = get(PIECE_VALUES_BOT, pt, 0)
         
         own = popcount(get_piece_bb(board, pt, color))
         opp = popcount(get_piece_bb(board, pt, opposite(color)))
@@ -93,7 +93,7 @@ function evaluate_position(board::BoardState, color::Color)::Int
     # high value for hand pieces 
     for idx in 1:7
         pt = hand_index_to_piece(idx)
-        value = get(PIECE_VALUES, pt, 0)
+        value = get(PIECE_VALUES_BOT, pt, 0)
         
         own_hand = board.hand[Int(color)][idx]
         opp_hand = board.hand[Int(opposite(color))][idx]

@@ -1,0 +1,1827 @@
+[
+    {
+        "day": 1,
+        "bitboard": 26984841,
+        "sfen": "r2S1/2gP1/4k/RKb1p/B2Gs b - 1"
+    },
+    {
+        "day": 2,
+        "bitboard": 7083245,
+        "sfen": "P1Sg1/sRP2/k1r2/3pK/1pG2 b - 1"
+    },
+    {
+        "day": 3,
+        "bitboard": 7019914,
+        "sfen": "1k1p1/2gG1/KsB2/1pb1S/1PP2 b - 1"
+    },
+    {
+        "day": 4,
+        "bitboard": 18939925,
+        "sfen": "k1r1R/5/5/1B3/1K2b b - 1"
+    },
+    {
+        "day": 5,
+        "bitboard": 2607252,
+        "sfen": "2s1k/2P2/1K2P/GpGp1/1s3 b - 1"
+    },
+    {
+        "day": 6,
+        "bitboard": 16782928,
+        "sfen": "4k/1G2g/K1S2/5/4s b - 1"
+    },
+    {
+        "day": 7,
+        "bitboard": 4720214,
+        "sfen": "1rG1g/1P2p/k4/4K/2R2 b - 1"
+    },
+    {
+        "day": 8,
+        "bitboard": 2107845,
+        "sfen": "k1S2/1bsB1/1p1P1/5/1K3 b - 1"
+    },
+    {
+        "day": 9,
+        "bitboard": 13143316,
+        "sfen": "2G1b/3k1/pR3/p3P/2Ks1 b - 1"
+    },
+    {
+        "day": 10,
+        "bitboard": 179347,
+        "sfen": "pk2p/2g2/pGPP1/P1K2/5 b - 1"
+    },
+    {
+        "day": 11,
+        "bitboard": 5415269,
+        "sfen": "s1G2/Pg1k1/3g1/G1S2/p1K2 b - 1"
+    },
+    {
+        "day": 12,
+        "bitboard": 31461894,
+        "sfen": "1rR2/4k/2K2/5/1GbgB b - 1"
+    },
+    {
+        "day": 13,
+        "bitboard": 6345168,
+        "sfen": "4p/1psk1/2R1p/g4/1RK2 b - 1"
+    },
+    {
+        "day": 14,
+        "bitboard": 21305929,
+        "sfen": "P2p1/1S2k/1Ks2/1S1s1/2P1p b - 1"
+    },
+    {
+        "day": 15,
+        "bitboard": 14225675,
+        "sfen": "kB1G1/3R1/2b2/1r2S/K1gs1 b - 1"
+    },
+    {
+        "day": 16,
+        "bitboard": 29167883,
+        "sfen": "kB1G1/3R1/2b2/1r1pS/KP1gs b - 1"
+    },
+    {
+        "day": 17,
+        "bitboard": 7083245,
+        "sfen": "P1Sg1/sRP2/k1r2/3pK/1pG2 b - 1"
+    },
+    {
+        "day": 18,
+        "bitboard": 7019914,
+        "sfen": "1k1p1/2gG1/KsB2/1pb1S/1PP2 b - 1"
+    },
+    {
+        "day": 19,
+        "bitboard": 25176584,
+        "sfen": "3R1/4k/1K1b1/5/3Br b - 1"
+    },
+    {
+        "day": 20,
+        "bitboard": 2607252,
+        "sfen": "2s1k/2P2/1K2P/GpGp1/1s3 b - 1"
+    },
+    {
+        "day": 21,
+        "bitboard": 16782928,
+        "sfen": "4k/1G2g/K1S2/5/4s b - 1"
+    },
+    {
+        "day": 22,
+        "bitboard": 4720214,
+        "sfen": "1rG1g/1P2p/k4/4K/2R2 b - 1"
+    },
+    {
+        "day": 23,
+        "bitboard": 2107845,
+        "sfen": "k1S2/1bsB1/1p1P1/5/1K3 b - 1"
+    },
+    {
+        "day": 24,
+        "bitboard": 9116930,
+        "sfen": "1k3/3R1/KsP2/1pp1G/3b1 b - 1"
+    },
+    {
+        "day": 25,
+        "bitboard": 179347,
+        "sfen": "pk2p/2g2/pGPP1/P1K2/5 b - 1"
+    },
+    {
+        "day": 26,
+        "bitboard": 10658258,
+        "sfen": "1G2k/1ggp1/3S1/s1P2/1G1K1 b - 1"
+    },
+    {
+        "day": 27,
+        "bitboard": 25690936,
+        "sfen": "3gk/G2RB/5/4K/3rb b - 1"
+    },
+    {
+        "day": 28,
+        "bitboard": 21597442,
+        "sfen": "1k3/3R1/Ks3/pp2R/2g1p b - 1"
+    },
+    {
+        "day": 29,
+        "bitboard": 21699842,
+        "sfen": "1k3/3S1/KsP2/1pp1S/2P1s b - 1"
+    },
+    {
+        "day": 30,
+        "bitboard": 21699842,
+        "sfen": "1k3/3G1/KsB2/1rb1S/2R1g b - 1"
+    },
+    {
+        "day": 31,
+        "bitboard": 11815397,
+        "sfen": "p1k2/Pbrg1/1s2R/3B1/KS1G1 b - 1"
+    },
+    {
+        "day": 32,
+        "bitboard": 55103,
+        "sfen": "PGPpk/S2Rg/K1s1r/p4/5 b - 1"
+    },
+    {
+        "day": 33,
+        "bitboard": 5228700,
+        "sfen": "2spk/2P2/1K2B/GpSPb/2g2 b - 1"
+    },
+    {
+        "day": 34,
+        "bitboard": 690196,
+        "sfen": "2b1k/5/1K3/R1B1r/5 b - 1"
+    },
+    {
+        "day": 35,
+        "bitboard": 2607252,
+        "sfen": "2s1k/2P2/1K2P/GpGp1/1s3 b - 1"
+    },
+    {
+        "day": 36,
+        "bitboard": 2690304,
+        "sfen": "5/3k1/sS3/1G2K/1g3 b - 1"
+    },
+    {
+        "day": 37,
+        "bitboard": 1296404,
+        "sfen": "2g1k/5/1K2P/RpG2/r4 b - 1"
+    },
+    {
+        "day": 38,
+        "bitboard": 2107845,
+        "sfen": "k1S2/1bsB1/1p1P1/5/1K3 b - 1"
+    },
+    {
+        "day": 39,
+        "bitboard": 14090324,
+        "sfen": "2b1k/1p3/5/1RGK1/P1ps1 b - 1"
+    },
+    {
+        "day": 40,
+        "bitboard": 179347,
+        "sfen": "pk2p/2g2/pGPP1/P1K2/5 b - 1"
+    },
+    {
+        "day": 41,
+        "bitboard": 13832498,
+        "sfen": "1g2G/k2G1/2g2/1PS2/p1Ks1 b - 1"
+    },
+    {
+        "day": 42,
+        "bitboard": 14090260,
+        "sfen": "2r1k/5/5/1RBK1/G1gb1 b - 1"
+    },
+    {
+        "day": 43,
+        "bitboard": 15729829,
+        "sfen": "p1k2/p1g2/s4/5/KRpR1 b - 1"
+    },
+    {
+        "day": 44,
+        "bitboard": 20011777,
+        "sfen": "k4/3pP/1SK1s/1p3/SP2s b - 1"
+    },
+    {
+        "day": 45,
+        "bitboard": 2143117,
+        "sfen": "k1SR1/2gGs/2bB1/r4/1K3 b - 1"
+    },
+    {
+        "day": 46,
+        "bitboard": 18583769,
+        "sfen": "G2kr/1PR2/2B2/Kbg1S/p3s b - 1"
+    },
+    {
+        "day": 47,
+        "bitboard": 6861111,
+        "sfen": "pSr1s/R2G1/2kp1/K3P/1Pg2 b - 1"
+    },
+    {
+        "day": 48,
+        "bitboard": 6861111,
+        "sfen": "pSb1s/B2G1/2kp1/K3P/1Pg2 b - 1"
+    },
+    {
+        "day": 49,
+        "bitboard": 18907273,
+        "sfen": "R2r1/2k2/5/b4/1B2K b - 1"
+    },
+    {
+        "day": 50,
+        "bitboard": 179347,
+        "sfen": "sk2p/2s2/pGGP1/P1K2/5 b - 1"
+    },
+    {
+        "day": 51,
+        "bitboard": 2690304,
+        "sfen": "5/3k1/sS3/1G2K/1g3 b - 1"
+    },
+    {
+        "day": 52,
+        "bitboard": 318209,
+        "sfen": "G4/3gr/1pP1k/K2R1/5 b - 1"
+    },
+    {
+        "day": 53,
+        "bitboard": 6888704,
+        "sfen": "5/3k1/PSs2/1B2K/1pb2 b - 1"
+    },
+    {
+        "day": 54,
+        "bitboard": 9474358,
+        "sfen": "1Gp1s/P2R1/2k2/K4/b2p1 b - 1"
+    },
+    {
+        "day": 55,
+        "bitboard": 179347,
+        "sfen": "pk2p/2g2/pGPP1/P1K2/5 b - 1"
+    },
+    {
+        "day": 56,
+        "bitboard": 13832498,
+        "sfen": "1g2G/k2G1/2g2/1PS2/p1Ks1 b - 1"
+    },
+    {
+        "day": 57,
+        "bitboard": 6888704,
+        "sfen": "5/3k1/GBb2/1R2K/1gr2 b - 1"
+    },
+    {
+        "day": 58,
+        "bitboard": 8702729,
+        "sfen": "R2p1/3sg/1p2k/K2R1/3p1 b - 1"
+    },
+    {
+        "day": 59,
+        "bitboard": 20011777,
+        "sfen": "k4/3pP/1SK1s/1p3/SP2s b - 1"
+    },
+    {
+        "day": 60,
+        "bitboard": 19435830,
+        "sfen": "1Sb1s/B2G1/2k2/K3R/1g2r b - 1"
+    },
+    {
+        "day": 61,
+        "bitboard": 6861111,
+        "sfen": "pSb1s/B2G1/2kr1/K3R/1Pg2 b - 1"
+    },
+    {
+        "day": 62,
+        "bitboard": 6861111,
+        "sfen": "pSr1s/R2G1/2kp1/K3P/1Pg2 b - 1"
+    },
+    {
+        "day": 63,
+        "bitboard": 6861111,
+        "sfen": "pSb1s/B2G1/2kp1/K3P/1Pg2 b - 1"
+    },
+    {
+        "day": 64,
+        "bitboard": 4269696,
+        "sfen": "5/2k1r/R2b1/1B3/2K2 b - 1"
+    },
+    {
+        "day": 65,
+        "bitboard": 179347,
+        "sfen": "sk2p/2s2/pGGP1/P1K2/5 b - 1"
+    },
+    {
+        "day": 66,
+        "bitboard": 71044,
+        "sfen": "2k2/2sg1/S1G2/1K3/5 b - 1"
+    },
+    {
+        "day": 67,
+        "bitboard": 1121668,
+        "sfen": "2k2/2gr1/GPR2/1K3/p4 b - 1"
+    },
+    {
+        "day": 68,
+        "bitboard": 18416401,
+        "sfen": "S3k/3PB/5/1K2s/p3b b - 1"
+    },
+    {
+        "day": 69,
+        "bitboard": 4802210,
+        "sfen": "1s3/b1p1P/G3k/1K2p/2R2 b - 1"
+    },
+    {
+        "day": 70,
+        "bitboard": 179347,
+        "sfen": "pk2p/2g2/pGPP1/P1K2/5 b - 1"
+    },
+    {
+        "day": 71,
+        "bitboard": 179347,
+        "sfen": "gk2p/2g2/sGGP1/S1K2/5 b - 1"
+    },
+    {
+        "day": 72,
+        "bitboard": 2801677,
+        "sfen": "k1br1/5/4B/G1K1R/1g3 b - 1"
+    },
+    {
+        "day": 73,
+        "bitboard": 2408902,
+        "sfen": "1pR2/1pgs1/4k/K2p1/1R3 b - 1"
+    },
+    {
+        "day": 74,
+        "bitboard": 179347,
+        "sfen": "sk2p/2s2/pSSP1/P1K2/5 b - 1"
+    },
+    {
+        "day": 75,
+        "bitboard": 179347,
+        "sfen": "sk2r/2g2/bGSR1/B1K2/5 b - 1"
+    },
+    {
+        "day": 76,
+        "bitboard": 14441516,
+        "sfen": "2PR1/S4/prG1k/3bg/K1Bs1 b - 1"
+    },
+    {
+        "day": 77,
+        "bitboard": 16258668,
+        "sfen": "2Pr1/kP2g/p1K2/4s/GpSR1 b - 1"
+    },
+    {
+        "day": 78,
+        "bitboard": 6473614,
+        "sfen": "1PSb1/2pgs/B3k/K1P2/1Gp2 b - 1"
+    },
+    {
+        "day": 79,
+        "bitboard": 2146692,
+        "sfen": "2B2/2rb1/4k/K4/1R3 b - 1"
+    },
+    {
+        "day": 80,
+        "bitboard": 12596629,
+        "sfen": "P1k1s/2sp1/P1Gp1/5/2KG1 b - 1"
+    },
+    {
+        "day": 81,
+        "bitboard": 16796225,
+        "sfen": "k4/1g2s/1S2G/5/4K b - 1"
+    },
+    {
+        "day": 82,
+        "bitboard": 4277922,
+        "sfen": "1g3/r1p1P/G3k/1K3/2R2 b - 1"
+    },
+    {
+        "day": 83,
+        "bitboard": 19039106,
+        "sfen": "1B3/2sSk/5/p1b2/1P2K b - 1"
+    },
+    {
+        "day": 84,
+        "bitboard": 4802210,
+        "sfen": "1s3/b1p1P/G3k/1K2p/2R2 b - 1"
+    },
+    {
+        "day": 85,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 86,
+        "bitboard": 5850786,
+        "sfen": "1g3/g1s1S/G3k/1K2p/P1G2 b - 1"
+    },
+    {
+        "day": 87,
+        "bitboard": 3350535,
+        "sfen": "kgR2/5/3K1/1bG2/Br3 b - 1"
+    },
+    {
+        "day": 88,
+        "bitboard": 28312230,
+        "sfen": "1ks2/g1R1R/5/5/Kp1pp b - 1"
+    },
+    {
+        "day": 89,
+        "bitboard": 13502888,
+        "sfen": "3s1/P1pS1/1k3/2pPK/2sS1 b - 1"
+    },
+    {
+        "day": 90,
+        "bitboard": 1177376,
+        "sfen": "5/B2Gg/K1ksr/bR3/S4 b - 1"
+    },
+    {
+        "day": 91,
+        "bitboard": 18216736,
+        "sfen": "5/B2Gg/K1ksr/bR1P1/S3p b - 1"
+    },
+    {
+        "day": 92,
+        "bitboard": 15145617,
+        "sfen": "k3g/2p1R/1KP2/1pPG1/1rsS1 b - 1"
+    },
+    {
+        "day": 93,
+        "bitboard": 18216736,
+        "sfen": "5/B2Gg/K1ksp/bP1P1/S3p b - 1"
+    },
+    {
+        "day": 94,
+        "bitboard": 4770816,
+        "sfen": "5/5/kb2K/r3B/2R2 b - 1"
+    },
+    {
+        "day": 95,
+        "bitboard": 12596629,
+        "sfen": "P1k1s/2sp1/P1Gp1/5/2KG1 b - 1"
+    },
+    {
+        "day": 96,
+        "bitboard": 16796225,
+        "sfen": "k4/1g2s/1S2G/5/4K b - 1"
+    },
+    {
+        "day": 97,
+        "bitboard": 299420,
+        "sfen": "2GPk/2rg1/2R2/K2p1/5 b - 1"
+    },
+    {
+        "day": 98,
+        "bitboard": 1704928,
+        "sfen": "5/PpkSB/5/2K1s/b4 b - 1"
+    },
+    {
+        "day": 99,
+        "bitboard": 1186445,
+        "sfen": "b1GP1/2p1R/1pk2/2s2/K4 b - 1"
+    },
+    {
+        "day": 100,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 101,
+        "bitboard": 11930257,
+        "sfen": "k3g/2p1S/1K3/2PG1/sg1G1 b - 1"
+    },
+    {
+        "day": 102,
+        "bitboard": 10226193,
+        "sfen": "k3r/4G/1K3/3Rg/b2B1 b - 1"
+    },
+    {
+        "day": 103,
+        "bitboard": 9324689,
+        "sfen": "k3g/2p2/1K2p/2pRs/3R1 b - 1"
+    },
+    {
+        "day": 104,
+        "bitboard": 13502888,
+        "sfen": "3s1/P1pS1/1k3/2pPK/2sS1 b - 1"
+    },
+    {
+        "day": 105,
+        "bitboard": 17616065,
+        "sfen": "k4/1gB2/sS2G/r2Rb/4K b - 1"
+    },
+    {
+        "day": 106,
+        "bitboard": 15758419,
+        "sfen": "Sk2g/1p3/R1brB/5/sGKP1 b - 1"
+    },
+    {
+        "day": 107,
+        "bitboard": 8228970,
+        "sfen": "1p1g1/kS3/2p2/KP1Rs/PGr2 b - 1"
+    },
+    {
+        "day": 108,
+        "bitboard": 15758419,
+        "sfen": "Sk2g/1p3/P1bpB/5/sGKP1 b - 1"
+    },
+    {
+        "day": 109,
+        "bitboard": 918400,
+        "sfen": "5/2kBR/5/2Kbr/5 b - 1"
+    },
+    {
+        "day": 110,
+        "bitboard": 12596629,
+        "sfen": "P1k1s/2sp1/P1Gp1/5/2KG1 b - 1"
+    },
+    {
+        "day": 111,
+        "bitboard": 918400,
+        "sfen": "5/2kSG/5/2Ksg/5 b - 1"
+    },
+    {
+        "day": 112,
+        "bitboard": 1060146,
+        "sfen": "1G2R/P2g1/kp1r1/5/K4 b - 1"
+    },
+    {
+        "day": 113,
+        "bitboard": 25264778,
+        "sfen": "1S1p1/2P1k/5/bB3/3Ks b - 1"
+    },
+    {
+        "day": 114,
+        "bitboard": 25264842,
+        "sfen": "1G1p1/1pP1k/5/bR3/3Ks b - 1"
+    },
+    {
+        "day": 115,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 116,
+        "bitboard": 22055577,
+        "sfen": "s2Gg/2G1k/1S3/P4/g1p1K b - 1"
+    },
+    {
+        "day": 117,
+        "bitboard": 2628882,
+        "sfen": "1k2B/3R1/bGr2/4K/1g3 b - 1"
+    },
+    {
+        "day": 118,
+        "bitboard": 726291,
+        "sfen": "pR2g/3k1/R1p2/1sp1K/5 b - 1"
+    },
+    {
+        "day": 119,
+        "bitboard": 13502888,
+        "sfen": "3s1/P1pS1/1k3/2pPK/2sS1 b - 1"
+    },
+    {
+        "day": 120,
+        "bitboard": 13131026,
+        "sfen": "1k2S/3G1/sBg1R/4K/2br1 b - 1"
+    },
+    {
+        "day": 121,
+        "bitboard": 18601016,
+        "sfen": "3Rb/k4/r1s1P/BSp1K/g3G b - 1"
+    },
+    {
+        "day": 122,
+        "bitboard": 23792723,
+        "sfen": "GP2R/1s3/pk3/1rP1K/1Sg1p b - 1"
+    },
+    {
+        "day": 123,
+        "bitboard": 18601016,
+        "sfen": "3Pb/k4/p1s1P/BSp1K/g3G b - 1"
+    },
+    {
+        "day": 124,
+        "bitboard": 9963784,
+        "sfen": "3b1/3B1/1k3/4K/r2R1 b - 1"
+    },
+    {
+        "day": 125,
+        "bitboard": 12596629,
+        "sfen": "P1k1s/2sp1/P1Gp1/5/2KG1 b - 1"
+    },
+    {
+        "day": 126,
+        "bitboard": 9963784,
+        "sfen": "3s1/3S1/1k3/4K/g2G1 b - 1"
+    },
+    {
+        "day": 127,
+        "bitboard": 17418273,
+        "sfen": "k4/r4/1R2G/PK2g/4p b - 1"
+    },
+    {
+        "day": 128,
+        "bitboard": 17418273,
+        "sfen": "k4/b4/1B2S/PK2s/4p b - 1"
+    },
+    {
+        "day": 129,
+        "bitboard": 1745421,
+        "sfen": "R1sk1/4p/3p1/G1K1P/b4 b - 1"
+    },
+    {
+        "day": 130,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 131,
+        "bitboard": 6986288,
+        "sfen": "4g/p3k/1Sg2/G1G1P/1Ks2 b - 1"
+    },
+    {
+        "day": 132,
+        "bitboard": 11012520,
+        "sfen": "3b1/G1gB1/1k3/4K/1r1R1 b - 1"
+    },
+    {
+        "day": 133,
+        "bitboard": 162890,
+        "sfen": "1g1p1/1R3/pKRsk/2p2/5 b - 1"
+    },
+    {
+        "day": 134,
+        "bitboard": 8541293,
+        "sfen": "s1pP1/SP3/s1S1k/2K2/3p1 b - 1"
+    },
+    {
+        "day": 135,
+        "bitboard": 20450387,
+        "sfen": "GR2B/1s3/rk3/4K/gS2b b - 1"
+    },
+    {
+        "day": 136,
+        "bitboard": 23792723,
+        "sfen": "GR2B/1s3/rk3/1bP1K/1Sg1p b - 1"
+    },
+    {
+        "day": 137,
+        "bitboard": 23792723,
+        "sfen": "GP2R/1s3/pk3/1rP1K/1Sg1p b - 1"
+    },
+    {
+        "day": 138,
+        "bitboard": 1693910,
+        "sfen": "1Pg1b/1SP2/1KG1k/ps2B/p4 b - 1"
+    },
+    {
+        "day": 139,
+        "bitboard": 12587084,
+        "sfen": "2kr1/1b3/2B2/5/2KR1 b - 1"
+    },
+    {
+        "day": 140,
+        "bitboard": 12596629,
+        "sfen": "P1k1s/2sp1/P1Gp1/5/2KG1 b - 1"
+    },
+    {
+        "day": 141,
+        "bitboard": 16928801,
+        "sfen": "g4/S4/2G1k/2K2/4s b - 1"
+    },
+    {
+        "day": 142,
+        "bitboard": 12589205,
+        "sfen": "P1k1r/2g2/1pG2/5/2KR1 b - 1"
+    },
+    {
+        "day": 143,
+        "bitboard": 152109,
+        "sfen": "b1pP1/S3s/2B1k/2K2/5 b - 1"
+    },
+    {
+        "day": 144,
+        "bitboard": 48737,
+        "sfen": "R4/ps2G/pkPK1/b4/5 b - 1"
+    },
+    {
+        "day": 145,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 146,
+        "bitboard": 25300786,
+        "sfen": "1k2g/p2PG/SK3/2g2/3Gs b - 1"
+    },
+    {
+        "day": 147,
+        "bitboard": 29363730,
+        "sfen": "1k2b/4R/GK3/5/2gBr b - 1"
+    },
+    {
+        "day": 148,
+        "bitboard": 7351303,
+        "sfen": "kpR2/5/sg1K1/5/Rpp2 b - 1"
+    },
+    {
+        "day": 149,
+        "bitboard": 19951785,
+        "sfen": "P2k1/P1s2/2SSs/5/Kp2p b - 1"
+    },
+    {
+        "day": 150,
+        "bitboard": 21872864,
+        "sfen": "5/rkS2/4K/bG1gs/2B1R b - 1"
+    },
+    {
+        "day": 151,
+        "bitboard": 18509574,
+        "sfen": "1pr2/3sG/Bk1bg/2P1R/S3K b - 1"
+    },
+    {
+        "day": 152,
+        "bitboard": 4165864,
+        "sfen": "3g1/pkr2/2P2/SspKG/PR3 b - 1"
+    },
+    {
+        "day": 153,
+        "bitboard": 18509574,
+        "sfen": "1pp2/3sG/Bk1bg/2P1P/S3K b - 1"
+    },
+    {
+        "day": 154,
+        "bitboard": 9732360,
+        "sfen": "3B1/3k1/5/b2K1/r2R1 b - 1"
+    },
+    {
+        "day": 155,
+        "bitboard": 4336043,
+        "sfen": "sk1p1/s1PG1/1G1K1/2p2/2P2 b - 1"
+    },
+    {
+        "day": 156,
+        "bitboard": 868544,
+        "sfen": "5/1kS2/4K/1G1gs/5 b - 1"
+    },
+    {
+        "day": 157,
+        "bitboard": 29363730,
+        "sfen": "1k2g/4R/PK3/5/2pGr b - 1"
+    },
+    {
+        "day": 158,
+        "bitboard": 29363730,
+        "sfen": "1k2s/4B/PK3/5/2pSb b - 1"
+    },
+    {
+        "day": 159,
+        "bitboard": 29363762,
+        "sfen": "1k2s/p3R/PK3/5/2pGb b - 1"
+    },
+    {
+        "day": 160,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 161,
+        "bitboard": 19951785,
+        "sfen": "S2k1/P1g2/2GGg/5/Kp2s b - 1"
+    },
+    {
+        "day": 162,
+        "bitboard": 9451593,
+        "sfen": "G2k1/1b3/1rRB1/5/K2g1 b - 1"
+    },
+    {
+        "day": 163,
+        "bitboard": 23150985,
+        "sfen": "p2s1/2pg1/4k/1R3/1pR1K b - 1"
+    },
+    {
+        "day": 164,
+        "bitboard": 23145034,
+        "sfen": "1S1P1/1s2s/1S1k1/1K3/1pP1p b - 1"
+    },
+    {
+        "day": 165,
+        "bitboard": 18378500,
+        "sfen": "2r2/3sG/Bk1bg/4R/S3K b - 1"
+    },
+    {
+        "day": 166,
+        "bitboard": 18509574,
+        "sfen": "1pr2/3sG/Bk1bg/2P1R/S3K b - 1"
+    },
+    {
+        "day": 167,
+        "bitboard": 4165864,
+        "sfen": "3g1/pkr2/2P2/SspKG/PR3 b - 1"
+    },
+    {
+        "day": 168,
+        "bitboard": 18509574,
+        "sfen": "1pp2/3sG/Bk1bg/2P1P/S3K b - 1"
+    },
+    {
+        "day": 169,
+        "bitboard": 2491936,
+        "sfen": "5/k3b/B4/2RK1/1r3 b - 1"
+    },
+    {
+        "day": 170,
+        "bitboard": 4336043,
+        "sfen": "sk1p1/s1PG1/1G1K1/2p2/2P2 b - 1"
+    },
+    {
+        "day": 171,
+        "bitboard": 10531,
+        "sfen": "sk3/g2G1/1S1K1/5/5 b - 1"
+    },
+    {
+        "day": 172,
+        "bitboard": 2216132,
+        "sfen": "2P2/1gr2/2G1k/RK3/1p3 b - 1"
+    },
+    {
+        "day": 173,
+        "bitboard": 9634311,
+        "sfen": "Sbk2/4p/5/1KB2/P2s1 b - 1"
+    },
+    {
+        "day": 174,
+        "bitboard": 2216133,
+        "sfen": "p1P2/1sb2/2G1k/RK3/1p3 b - 1"
+    },
+    {
+        "day": 175,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 176,
+        "bitboard": 7212673,
+        "sfen": "g4/2k1S/Ks3/2pGG/1gP2 b - 1"
+    },
+    {
+        "day": 177,
+        "bitboard": 20982051,
+        "sfen": "bk3/r2R1/1B1K1/5/2G1g b - 1"
+    },
+    {
+        "day": 178,
+        "bitboard": 8983721,
+        "sfen": "p2R1/k1g2/p1R2/1K2p/3s1 b - 1"
+    },
+    {
+        "day": 179,
+        "bitboard": 23145034,
+        "sfen": "1S1P1/1s2s/1S1k1/1K3/1pP1p b - 1"
+    },
+    {
+        "day": 180,
+        "bitboard": 24387630,
+        "sfen": "1rsR1/k4/3b1/3B1/gSG1K b - 1"
+    },
+    {
+        "day": 181,
+        "bitboard": 12702613,
+        "sfen": "r1B1P/2sRg/2S1k/GK3/2pb1 b - 1"
+    },
+    {
+        "day": 182,
+        "bitboard": 6170795,
+        "sfen": "PS1k1/p1R2/1K1p1/2Grg/s1P2 b - 1"
+    },
+    {
+        "day": 183,
+        "bitboard": 12702613,
+        "sfen": "p1B1P/2sPg/2S1k/GK3/2pb1 b - 1"
+    },
+    {
+        "day": 184,
+        "bitboard": 8458408,
+        "sfen": "3B1/k1r2/2R2/1K3/3b1 b - 1"
+    },
+    {
+        "day": 185,
+        "bitboard": 4336043,
+        "sfen": "sk1p1/s1PG1/1G1K1/2p2/2P2 b - 1"
+    },
+    {
+        "day": 186,
+        "bitboard": 10531,
+        "sfen": "sk3/g2G1/1S1K1/5/5 b - 1"
+    },
+    {
+        "day": 187,
+        "bitboard": 2216132,
+        "sfen": "2P2/1gr2/2G1k/RK3/1p3 b - 1"
+    },
+    {
+        "day": 188,
+        "bitboard": 20982051,
+        "sfen": "sk3/b2B1/1S1K1/5/2P1p b - 1"
+    },
+    {
+        "day": 189,
+        "bitboard": 20982059,
+        "sfen": "sk1p1/b2R1/1G1K1/5/2P1p b - 1"
+    },
+    {
+        "day": 190,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 191,
+        "bitboard": 29631258,
+        "sfen": "1k1sp/3PS/3K1/3G1/2Ggg b - 1"
+    },
+    {
+        "day": 192,
+        "bitboard": 26515457,
+        "sfen": "k4/5/1BK2/r2g1/R2Gb b - 1"
+    },
+    {
+        "day": 193,
+        "bitboard": 4752590,
+        "sfen": "1kps1/1gR2/p4/p3R/2K2 b - 1"
+    },
+    {
+        "day": 194,
+        "bitboard": 26257737,
+        "sfen": "p2s1/1S1s1/1S1k1/K4/P2pP b - 1"
+    },
+    {
+        "day": 195,
+        "bitboard": 5884450,
+        "sfen": "1k3/r3s/1S2B/bK2g/R1G2 b - 1"
+    },
+    {
+        "day": 196,
+        "bitboard": 12769438,
+        "sfen": "1kPpg/2R2/1SB1r/b1K2/2sG1 b - 1"
+    },
+    {
+        "day": 197,
+        "bitboard": 11557241,
+        "sfen": "G2Sk/pR1r1/1pK1s/5/PP1g1 b - 1"
+    },
+    {
+        "day": 198,
+        "bitboard": 12769438,
+        "sfen": "1kPpg/2P2/1SB1p/b1K2/2sG1 b - 1"
+    },
+    {
+        "day": 199,
+        "bitboard": 21039618,
+        "sfen": "1k3/4b/1B3/1K3/2R1r b - 1"
+    },
+    {
+        "day": 200,
+        "bitboard": 5884450,
+        "sfen": "1k3/p3s/1G2P/pK2s/P1G2 b - 1"
+    },
+    {
+        "day": 201,
+        "bitboard": 21039618,
+        "sfen": "1k3/4s/1S3/1K3/2G1g b - 1"
+    },
+    {
+        "day": 202,
+        "bitboard": 2560548,
+        "sfen": "2R2/k3g/2K2/1PGr1/1p3 b - 1"
+    },
+    {
+        "day": 203,
+        "bitboard": 4835842,
+        "sfen": "1k3/4s/1S2P/pK2b/2B2 b - 1"
+    },
+    {
+        "day": 204,
+        "bitboard": 4835874,
+        "sfen": "1k3/p3s/1G2P/pK2b/2R2 b - 1"
+    },
+    {
+        "day": 205,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 206,
+        "bitboard": 28574904,
+        "sfen": "3kp/P1s2/S4/3g1/KG1Gg b - 1"
+    },
+    {
+        "day": 207,
+        "bitboard": 52278,
+        "sfen": "1Br1g/R4/bK2k/G4/5 b - 1"
+    },
+    {
+        "day": 208,
+        "bitboard": 1249893,
+        "sfen": "p1R2/kp2s/2K2/1gR2/p4 b - 1"
+    },
+    {
+        "day": 209,
+        "bitboard": 5301138,
+        "sfen": "1S2s/2PSs/3kP/K4/p1p2 b - 1"
+    },
+    {
+        "day": 210,
+        "bitboard": 4936229,
+        "sfen": "r1G2/k3s/2K1R/1BS1g/2b2 b - 1"
+    },
+    {
+        "day": 211,
+        "bitboard": 9655525,
+        "sfen": "r1G2/kpP2/s1K1R/1BS2/g2b1 b - 1"
+    },
+    {
+        "day": 212,
+        "bitboard": 684781,
+        "sfen": "g1pk1/spR1r/2PSP/2K1G/5 b - 1"
+    },
+    {
+        "day": 213,
+        "bitboard": 19456461,
+        "sfen": "b1Pp1/1pgB1/3ks/G3P/1K2S b - 1"
+    },
+    {
+        "day": 214,
+        "bitboard": 19494,
+        "sfen": "1Br2/R4/bK2k/5/5 b - 1"
+    },
+    {
+        "day": 215,
+        "bitboard": 8580233,
+        "sfen": "s2k1/2s2/Pp1PK/p1G2/3G1 b - 1"
+    },
+    {
+        "day": 216,
+        "bitboard": 22852,
+        "sfen": "2s2/1g1G1/1kS1K/5/5 b - 1"
+    },
+    {
+        "day": 217,
+        "bitboard": 8545417,
+        "sfen": "g2k1/2r2/P2pK/2R2/3G1 b - 1"
+    },
+    {
+        "day": 218,
+        "bitboard": 9229313,
+        "sfen": "P4/5/k1S1p/s2Kb/3B1 b - 1"
+    },
+    {
+        "day": 219,
+        "bitboard": 8547465,
+        "sfen": "s2k1/2b2/Pp1pK/2R2/3G1 b - 1"
+    },
+    {
+        "day": 220,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 221,
+        "bitboard": 8580233,
+        "sfen": "g2k1/2g2/Sp1PK/s1G2/3G1 b - 1"
+    },
+    {
+        "day": 222,
+        "bitboard": 23945,
+        "sfen": "G2b1/2rR1/gkB1K/5/5 b - 1"
+    },
+    {
+        "day": 223,
+        "bitboard": 8430054,
+        "sfen": "1pg2/skpR1/3K1/R4/3p1 b - 1"
+    },
+    {
+        "day": 224,
+        "bitboard": 28116612,
+        "sfen": "2S2/2k1S/p4/1K1ss/1p1PP b - 1"
+    },
+    {
+        "day": 225,
+        "bitboard": 10654316,
+        "sfen": "2gk1/Gr2R/2K2/b1B2/1s1S1 b - 1"
+    },
+    {
+        "day": 226,
+        "bitboard": 17922827,
+        "sfen": "kb1P1/3Rg/1pKSG/1r3/B3s b - 1"
+    },
+    {
+        "day": 227,
+        "bitboard": 684781,
+        "sfen": "g1pk1/spR1r/2PSP/2K1G/5 b - 1"
+    },
+    {
+        "day": 228,
+        "bitboard": 19456461,
+        "sfen": "b1Pp1/1pgB1/3ks/G3P/1K2S b - 1"
+    },
+    {
+        "day": 229,
+        "bitboard": 13108737,
+        "sfen": "B4/4k/R4/4r/2Kb1 b - 1"
+    },
+    {
+        "day": 230,
+        "bitboard": 680621,
+        "sfen": "s1pk1/s1P1p/3GP/2K1G/5 b - 1"
+    },
+    {
+        "day": 231,
+        "bitboard": 663593,
+        "sfen": "g2k1/s4/3S1/2K1G/5 b - 1"
+    },
+    {
+        "day": 232,
+        "bitboard": 664233,
+        "sfen": "r2k1/g1P1p/3G1/2K1R/5 b - 1"
+    },
+    {
+        "day": 233,
+        "bitboard": 21040643,
+        "sfen": "kB3/4b/sK3/1S3/2P1p b - 1"
+    },
+    {
+        "day": 234,
+        "bitboard": 9588844,
+        "sfen": "2bk1/Rp3/2K1p/2P2/s2G1 b - 1"
+    },
+    {
+        "day": 235,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 236,
+        "bitboard": 539293,
+        "sfen": "k1SgG/2s1p/1GgP1/4K/5 b - 1"
+    },
+    {
+        "day": 237,
+        "bitboard": 17303709,
+        "sfen": "k1GrR/2g2/1B3/4K/4b b - 1"
+    },
+    {
+        "day": 238,
+        "bitboard": 13444609,
+        "sfen": "R4/4k/R2p1/1p1pg/2Ks1 b - 1"
+    },
+    {
+        "day": 239,
+        "bitboard": 28116612,
+        "sfen": "2S2/2k1S/p4/1K1ss/1p1PP b - 1"
+    },
+    {
+        "day": 240,
+        "bitboard": 3762328,
+        "sfen": "3kb/2s2/1B1rS/1R2g/KG3 b - 1"
+    },
+    {
+        "day": 241,
+        "bitboard": 25649497,
+        "sfen": "s2gP/1k1p1/3bB/1KGS1/3Rr b - 1"
+    },
+    {
+        "day": 242,
+        "bitboard": 684781,
+        "sfen": "g1pk1/spR1r/2PSP/2K1G/5 b - 1"
+    },
+    {
+        "day": 243,
+        "bitboard": 8780332,
+        "sfen": "2pg1/B3P/1SGpk/PK1s1/3b1 b - 1"
+    },
+    {
+        "day": 244,
+        "bitboard": 96264,
+        "sfen": "3r1/5/1BRbk/1K3/5 b - 1"
+    },
+    {
+        "day": 245,
+        "bitboard": 12255509,
+        "sfen": "s1k1P/3s1/5/1KG1G/Pp1p1 b - 1"
+    },
+    {
+        "day": 246,
+        "bitboard": 16779594,
+        "sfen": "1g1s1/1S1k1/1G3/5/4K b - 1"
+    },
+    {
+        "day": 247,
+        "bitboard": 17629740,
+        "sfen": "2kr1/P3R/5/1g1GK/4p b - 1"
+    },
+    {
+        "day": 248,
+        "bitboard": 17629740,
+        "sfen": "2kb1/P3B/5/1s1SK/4p b - 1"
+    },
+    {
+        "day": 249,
+        "bitboard": 8588184,
+        "sfen": "3pp/2ksG/1R3/1Kb2/3P1 b - 1"
+    },
+    {
+        "day": 250,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 251,
+        "bitboard": 16024416,
+        "sfen": "5/gS1kp/5/g2G1/GPKs1 b - 1"
+    },
+    {
+        "day": 252,
+        "bitboard": 3305478,
+        "sfen": "1kb2/5/2gRr/2B2/KG3 b - 1"
+    },
+    {
+        "day": 253,
+        "bitboard": 9216526,
+        "sfen": "1pkg1/4R/3p1/s2RK/3p1 b - 1"
+    },
+    {
+        "day": 254,
+        "bitboard": 30494913,
+        "sfen": "k4/1pS2/2P1S/1p3/P1ssK b - 1"
+    },
+    {
+        "day": 255,
+        "bitboard": 16024416,
+        "sfen": "5/sB1kr/5/g2G1/SRKb1 b - 1"
+    },
+    {
+        "day": 256,
+        "bitboard": 25649497,
+        "sfen": "s2gP/1k1p1/3bB/1KGS1/3Rr b - 1"
+    },
+    {
+        "day": 257,
+        "bitboard": 17382805,
+        "sfen": "k1r1P/2pG1/Kspg1/1S2P/4R b - 1"
+    },
+    {
+        "day": 258,
+        "bitboard": 12072501,
+        "sfen": "G1k1P/b3p/P1sS1/4p/BK1g1 b - 1"
+    },
+    {
+        "day": 259,
+        "bitboard": 16851028,
+        "sfen": "2B1k/1R3/3b1/1r3/4K b - 1"
+    },
+    {
+        "day": 260,
+        "bitboard": 12255509,
+        "sfen": "s1k1P/3s1/5/1KG1G/Pp1p1 b - 1"
+    },
+    {
+        "day": 261,
+        "bitboard": 16779594,
+        "sfen": "1g1s1/1S1k1/1G3/5/4K b - 1"
+    },
+    {
+        "day": 262,
+        "bitboard": 12636230,
+        "sfen": "1pG2/1r3/2k1K/R4/2Pg1 b - 1"
+    },
+    {
+        "day": 263,
+        "bitboard": 479305,
+        "sfen": "s2b1/1k3/2p1P/1KBS1/5 b - 1"
+    },
+    {
+        "day": 264,
+        "bitboard": 17309191,
+        "sfen": "kPR2/4G/sKb2/4p/4p b - 1"
+    },
+    {
+        "day": 265,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 266,
+        "bitboard": 23092872,
+        "sfen": "3g1/2s1S/pgG1k/5/1PG1K b - 1"
+    },
+    {
+        "day": 267,
+        "bitboard": 12636230,
+        "sfen": "1gB2/1r3/2k1K/R4/2Gb1 b - 1"
+    },
+    {
+        "day": 268,
+        "bitboard": 24166785,
+        "sfen": "k4/2Rp1/4R/p4/gsp1K b - 1"
+    },
+    {
+        "day": 269,
+        "bitboard": 30494913,
+        "sfen": "k4/1pS2/2P1S/1p3/P1ssK b - 1"
+    },
+    {
+        "day": 270,
+        "bitboard": 18616508,
+        "sfen": "2bsg/r1k2/2B2/3SK/G3R b - 1"
+    },
+    {
+        "day": 271,
+        "bitboard": 18624956,
+        "sfen": "2bsg/r1kP1/2Bp1/3SK/G3R b - 1"
+    },
+    {
+        "day": 272,
+        "bitboard": 18402843,
+        "sfen": "pk1Gs/4S/rP2K/g3p/P3R b - 1"
+    },
+    {
+        "day": 273,
+        "bitboard": 18402843,
+        "sfen": "pk1Gs/4S/bP2K/g3p/P3B b - 1"
+    },
+    {
+        "day": 274,
+        "bitboard": 532774,
+        "sfen": "1kB2/r2b1/3K1/4R/5 b - 1"
+    },
+    {
+        "day": 275,
+        "bitboard": 12255509,
+        "sfen": "s1k1P/3s1/5/1KG1G/Pp1p1 b - 1"
+    },
+    {
+        "day": 276,
+        "bitboard": 2114146,
+        "sfen": "1s3/SG2k/4g/5/1K3 b - 1"
+    },
+    {
+        "day": 277,
+        "bitboard": 4237411,
+        "sfen": "Pp3/gr3/1k1G1/R4/2K2 b - 1"
+    },
+    {
+        "day": 278,
+        "bitboard": 4802586,
+        "sfen": "1B1sP/5/1b2k/1K2p/2S2 b - 1"
+    },
+    {
+        "day": 279,
+        "bitboard": 4810778,
+        "sfen": "1R1sP/5/1b1pk/1K2p/2G2 b - 1"
+    },
+    {
+        "day": 280,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 281,
+        "bitboard": 23092872,
+        "sfen": "3g1/2s1S/pgG1k/5/1PG1K b - 1"
+    },
+    {
+        "day": 282,
+        "bitboard": 4237411,
+        "sfen": "Gg3/br3/1k1B1/R4/2K2 b - 1"
+    },
+    {
+        "day": 283,
+        "bitboard": 19270915,
+        "sfen": "gp3/3k1/RK3/2Rs1/1p2p b - 1"
+    },
+    {
+        "day": 284,
+        "bitboard": 6568744,
+        "sfen": "3s1/p2SS/1ksK1/3P1/1pP2 b - 1"
+    },
+    {
+        "day": 285,
+        "bitboard": 14011008,
+        "sfen": "5/2k1S/1r2g/bG1R1/s1BK1 b - 1"
+    },
+    {
+        "day": 286,
+        "bitboard": 13921112,
+        "sfen": "3Pg/1r1SG/1k1Ks/3B1/p1Rb1 b - 1"
+    },
+    {
+        "day": 287,
+        "bitboard": 15178370,
+        "sfen": "1P3/2k1S/1pp2/gGrP1/1sRK1 b - 1"
+    },
+    {
+        "day": 288,
+        "bitboard": 13921112,
+        "sfen": "3Pg/1p1SG/1k1Ks/3B1/p1Pb1 b - 1"
+    },
+    {
+        "day": 289,
+        "bitboard": 8519703,
+        "sfen": "kbR1r/5/5/2K2/3B1 b - 1"
+    },
+    {
+        "day": 290,
+        "bitboard": 12255509,
+        "sfen": "s1k1P/3s1/5/1KG1G/Pp1p1 b - 1"
+    },
+    {
+        "day": 291,
+        "bitboard": 8399624,
+        "sfen": "3g1/3SG/1k1K1/5/3s1 b - 1"
+    },
+    {
+        "day": 292,
+        "bitboard": 12714039,
+        "sfen": "kgR1P/r4/5/2K2/2pG1 b - 1"
+    },
+    {
+        "day": 293,
+        "bitboard": 5385345,
+        "sfen": "B4/2b2/Sk1p1/2P2/K1s2 b - 1"
+    },
+    {
+        "day": 294,
+        "bitboard": 7885345,
+        "sfen": "b4/s3R/2k1p/4P/KpG2 b - 1"
+    },
+    {
+        "day": 295,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 296,
+        "bitboard": 23092872,
+        "sfen": "3g1/2s1S/pgG1k/5/1PG1K b - 1"
+    },
+    {
+        "day": 297,
+        "bitboard": 5788193,
+        "sfen": "r4/b3R/2k1g/4G/K1B2 b - 1"
+    },
+    {
+        "day": 298,
+        "bitboard": 1870021,
+        "sfen": "R1p2/1sk2/1g3/R2pp/K4 b - 1"
+    },
+    {
+        "day": 299,
+        "bitboard": 9579086,
+        "sfen": "1Sps1/1k2s/1p1S1/2K2/P2P1 b - 1"
+    },
+    {
+        "day": 300,
+        "bitboard": 15873048,
+        "sfen": "3rk/5/G1Kb1/2R2/gsBS1 b - 1"
+    },
+    {
+        "day": 301,
+        "bitboard": 18186927,
+        "sfen": "PsSg1/k1r1b/5/Gp1B1/R3K b - 1"
+    },
+    {
+        "day": 302,
+        "bitboard": 24846613,
+        "sfen": "s1k1P/3g1/3P1/1KG1S/Rpr1p b - 1"
+    },
+    {
+        "day": 303,
+        "bitboard": 23101080,
+        "sfen": "3sp/2b1B/pPGgk/5/1PS1K b - 1"
+    },
+    {
+        "day": 304,
+        "bitboard": 13112336,
+        "sfen": "4k/5/R1K2/4r/2bB1 b - 1"
+    },
+    {
+        "day": 305,
+        "bitboard": 12255509,
+        "sfen": "s1k1P/3s1/5/1KG1G/Pp1p1 b - 1"
+    },
+    {
+        "day": 306,
+        "bitboard": 1182738,
+        "sfen": "1s2g/5/kS3/2K2/G4 b - 1"
+    },
+    {
+        "day": 307,
+        "bitboard": 2031749,
+        "sfen": "g1k2/2r2/5/1KRpG/P4 b - 1"
+    },
+    {
+        "day": 308,
+        "bitboard": 2031749,
+        "sfen": "s1k2/2b2/5/1KBpS/P4 b - 1"
+    },
+    {
+        "day": 309,
+        "bitboard": 13764145,
+        "sfen": "k3p/p3s/P4/2R2/K1Gb1 b - 1"
+    },
+    {
+        "day": 310,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 311,
+        "bitboard": 22154801,
+        "sfen": "k3s/p3P/Sg3/2G2/K1G1g b - 1"
+    },
+    {
+        "day": 312,
+        "bitboard": 13764113,
+        "sfen": "k3g/4b/G4/2R2/K1Br1 b - 1"
+    },
+    {
+        "day": 313,
+        "bitboard": 7735588,
+        "sfen": "2p2/k2g1/1R3/2pR1/Kps2 b - 1"
+    },
+    {
+        "day": 314,
+        "bitboard": 13773891,
+        "sfen": "Pp3/1s3/SS1k1/2p2/K1sP1 b - 1"
+    },
+    {
+        "day": 315,
+        "bitboard": 1449498,
+        "sfen": "1s1bg/4r/kSR2/2KB1/G4 b - 1"
+    },
+    {
+        "day": 316,
+        "bitboard": 5651514,
+        "sfen": "1s1bP/g4/kSRr1/2KB1/G1p2 b - 1"
+    },
+    {
+        "day": 317,
+        "bitboard": 20173636,
+        "sfen": "2s2/1k1SP/2R1K/ppg2/Gr2P b - 1"
+    },
+    {
+        "day": 318,
+        "bitboard": 5651514,
+        "sfen": "1s1bP/g4/kSPp1/2KB1/G1p2 b - 1"
+    },
+    {
+        "day": 319,
+        "bitboard": 2900001,
+        "sfen": "B4/k4/4K/3rb/1R3 b - 1"
+    },
+    {
+        "day": 320,
+        "bitboard": 6966818,
+        "sfen": "1P3/p3p/PK2k/2G1s/1Gs2 b - 1"
+    },
+    {
+        "day": 321,
+        "bitboard": 123936,
+        "sfen": "5/k4/s2KG/gS3/5 b - 1"
+    },
+    {
+        "day": 322,
+        "bitboard": 5243254,
+        "sfen": "1pP1G/Rr1k1/5/5/g1K2 b - 1"
+    },
+    {
+        "day": 323,
+        "bitboard": 8392396,
+        "sfen": "2Bs1/1pP1S/bk3/5/3K1 b - 1"
+    },
+    {
+        "day": 324,
+        "bitboard": 3558672,
+        "sfen": "4p/3p1/PK2k/2Gs1/bR3 b - 1"
+    },
+    {
+        "day": 325,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 326,
+        "bitboard": 10364352,
+        "sfen": "5/1pks1/S2g1/2GgG/K2P1 b - 1"
+    },
+    {
+        "day": 327,
+        "bitboard": 1062004,
+        "sfen": "2G1k/br3/K1gB1/5/R4 b - 1"
+    },
+    {
+        "day": 328,
+        "bitboard": 8775200,
+        "sfen": "5/k3p/s2KR/gR1p1/3p1 b - 1"
+    },
+    {
+        "day": 329,
+        "bitboard": 869734,
+        "sfen": "1sp2/kS1S1/s3P/1P1pK/5 b - 1"
+    },
+    {
+        "day": 330,
+        "bitboard": 20234524,
+        "sfen": "2RSk/3b1/4s/G2B1/rg2K b - 1"
+    },
+    {
+        "day": 331,
+        "bitboard": 1690086,
+        "sfen": "1gb2/kSPG1/1s2B/pR2K/r4 b - 1"
+    },
+    {
+        "day": 332,
+        "bitboard": 1690086,
+        "sfen": "1gr2/kSPG1/1s2R/pP2K/p4 b - 1"
+    },
+    {
+        "day": 333,
+        "bitboard": 16402306,
+        "sfen": "1P3/2kpb/B3g/2G1S/KspP1 b - 1"
+    },
+    {
+        "day": 334,
+        "bitboard": 526506,
+        "sfen": "1r1R1/k1B2/1b3/4K/5 b - 1"
+    },
+    {
+        "day": 335,
+        "bitboard": 10364352,
+        "sfen": "5/1pkp1/P2s1/2GsG/K2P1 b - 1"
+    },
+    {
+        "day": 336,
+        "bitboard": 526506,
+        "sfen": "1g1G1/k1S2/1s3/4K/5 b - 1"
+    },
+    {
+        "day": 337,
+        "bitboard": 665770,
+        "sfen": "1r1R1/k1G2/1g1P1/2p1K/5 b - 1"
+    },
+    {
+        "day": 338,
+        "bitboard": 8392396,
+        "sfen": "2Bs1/1pP1S/bk3/5/3K1 b - 1"
+    },
+    {
+        "day": 339,
+        "bitboard": 666794,
+        "sfen": "1b1R1/k1G2/ps1P1/2p1K/5 b - 1"
+    },
+    {
+        "day": 340,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 341,
+        "bitboard": 17444010,
+        "sfen": "1g1G1/k1G2/pg1S1/2s1K/4P b - 1"
+    },
+    {
+        "day": 342,
+        "bitboard": 665770,
+        "sfen": "1r1R1/k1B2/1b1G1/2g1K/5 b - 1"
+    },
+    {
+        "day": 343,
+        "bitboard": 17994628,
+        "sfen": "2k2/2pRp/2R2/g1K2/s3p b - 1"
+    },
+    {
+        "day": 344,
+        "bitboard": 4790083,
+        "sfen": "ps3/1S1Pk/S1p2/1K2s/2P2 b - 1"
+    },
+    {
+        "day": 345,
+        "bitboard": 8586955,
+        "sfen": "kb1r1/1gS1s/G4/1RK2/3B1 b - 1"
+    },
+    {
+        "day": 346,
+        "bitboard": 2972550,
+        "sfen": "1kS2/2rPb/1Bp1G/1K1gR/1s3 b - 1"
+    },
+    {
+        "day": 347,
+        "bitboard": 5318491,
+        "sfen": "rs1Pp/1S1Pk/G2p1/1K3/g1R2 b - 1"
+    },
+    {
+        "day": 348,
+        "bitboard": 5318491,
+        "sfen": "bs1Pp/1S1Pk/G2p1/1K3/g1B2 b - 1"
+    },
+    {
+        "day": 349,
+        "bitboard": 9455628,
+        "sfen": "2kr1/5/1K2b/5/B2R1 b - 1"
+    },
+    {
+        "day": 350,
+        "bitboard": 21125056,
+        "sfen": "5/1GpPs/K1k1s/2p2/2G1P b - 1"
+    },
+    {
+        "day": 351,
+        "bitboard": 132801,
+        "sfen": "k4/1gS1s/G4/2K2/5 b - 1"
+    },
+    {
+        "day": 352,
+        "bitboard": 28329996,
+        "sfen": "2kr1/5/1K2g/5/Gp1RP b - 1"
+    },
+    {
+        "day": 353,
+        "bitboard": 18499596,
+        "sfen": "2sk1/5/1P2B/2K1p/b3S b - 1"
+    },
+    {
+        "day": 354,
+        "bitboard": 1430658,
+        "sfen": "1R3/2k2/b1p1s/Kp1G1/P4 b - 1"
+    },
+    {
+        "day": 355,
+        "bitboard": 874646,
+        "sfen": "1pk1p/2g2/1PP1G/1K1Pp/5 b - 1"
+    },
+    {
+        "day": 356,
+        "bitboard": 26953740,
+        "sfen": "2gk1/5/1S2G/1pK1s/g2PG b - 1"
+    },
+    {
+        "day": 357,
+        "bitboard": 2185377,
+        "sfen": "G4/R1r2/1kg1K/1B3/1b3 b - 1"
+    },
+    {
+        "day": 358,
+        "bitboard": 17994628,
+        "sfen": "2k2/2pRp/2R2/g1K2/s3p b - 1"
+    },
+    {
+        "day": 359,
+        "bitboard": 8586955,
+        "sfen": "kp1p1/1sS1s/S4/1PK2/3P1 b - 1"
+    },
+    {
+        "day": 360,
+        "bitboard": 8586955,
+        "sfen": "kb1r1/1gS1s/G4/1RK2/3B1 b - 1"
+    },
+    {
+        "day": 361,
+        "bitboard": 6188039,
+        "sfen": "Sks2/5/KP1bg/2rBG/p1R2 b - 1"
+    },
+    {
+        "day": 362,
+        "bitboard": 28724748,
+        "sfen": "2sk1/4p/PR2G/2Kp1/rg1PS b - 1"
+    },
+    {
+        "day": 363,
+        "bitboard": 6188039,
+        "sfen": "Sks2/5/KP1bg/2pBG/p1P2 b - 1"
+    },
+    {
+        "day": 364,
+        "bitboard": 12588352,
+        "sfen": "5/1R1b1/K1k2/5/2Br1 b - 1"
+    },
+    {
+        "day": 365,
+        "bitboard": 21125056,
+        "sfen": "5/1GpPs/K1k1s/2p2/2G1P b - 1"
+    }
+]

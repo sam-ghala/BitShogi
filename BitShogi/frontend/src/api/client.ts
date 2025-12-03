@@ -40,3 +40,24 @@ export async function getBotMove(sfen: string, botType: string = 'greedy'): Prom
 export async function getLegalMoves(sfen: string): Promise<{ moves: string[]; count: number }> {
   return fetchJson(`${API_BASE}/game/legal-moves?sfen=${encodeURIComponent(sfen)}`);
 }
+
+export async function loadPosition(sfen: string): Promise<GameState & { success: boolean }> {
+  return fetchJson(`${API_BASE}/game/load`, {
+    method: 'POST',
+    body: JSON.stringify({ sfen }),
+  });
+}
+
+export interface PuzzleData {
+  day: number;
+  sfen: string;
+  bitboard: number;
+}
+
+export async function loadPuzzles(): Promise<PuzzleData[]> {
+  const response = await fetch('/puzzles.json');
+  if (!response.ok) {
+    throw new Error('Failed to load puzzles');
+  }
+  return response.json();
+}

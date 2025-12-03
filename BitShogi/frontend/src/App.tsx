@@ -129,6 +129,50 @@ function isPromoted(type: PieceType): boolean {
   return type.startsWith('PROMOTED_');
 }
 
+// Determine game result display
+function getResultDisplay(result: string, sideToMove: string): { text: string; isWin: boolean } {
+  // Debug log to see actual result value
+  console.log('Game result:', result, 'Side to move:', sideToMove);
+  
+  const resultUpper = result.toUpperCase();
+  
+  // Check various win conditions for BLACK (human player)
+  // If WHITE is in checkmate or BLACK wins
+  if (resultUpper.includes('BLACK_WIN') || 
+      resultUpper.includes('BLACKWIN') ||
+      resultUpper === 'CHECKMATE_WHITE' ||
+      resultUpper === 'WHITE_CHECKMATE') {
+    return { text: '🎉 You Win!', isWin: true };
+  }
+  
+  // Check various win conditions for WHITE (bot)
+  if (resultUpper.includes('WHITE_WIN') || 
+      resultUpper.includes('WHITEWIN') ||
+      resultUpper === 'CHECKMATE_BLACK' ||
+      resultUpper === 'BLACK_CHECKMATE') {
+    return { text: 'Bot Wins', isWin: false };
+  }
+  
+  // Generic CHECKMATE - determine winner by who was NOT to move
+  // When checkmate happens, the side to move is the one who is checkmated
+  if (resultUpper === 'CHECKMATE') {
+    // If it's WHITE's turn and it's checkmate, WHITE is checkmated, BLACK wins
+    if (sideToMove === 'WHITE') {
+      return { text: '🎉 You Win!', isWin: true };
+    } else {
+      return { text: 'Bot Wins', isWin: false };
+    }
+  }
+  
+  // Stalemate or other draws
+  if (resultUpper.includes('STALEMATE') || resultUpper.includes('DRAW')) {
+    return { text: 'Draw', isWin: false };
+  }
+  
+  // Fallback - shouldn't reach here normally
+  return { text: `Game Over: ${result}`, isWin: false };
+}
+
 // SVG Board Lines Component
 function BoardLines() {
   const size = 64;
@@ -184,15 +228,92 @@ function App() {
     to: string;
     pieceType: PieceType;
   } | null>(null);
+  
+  // Daily puzzle state
+  const [bitboardInt, setBitboardInt] = useState<number>(32539167);
+  const [dailyPuzzle, setDailyPuzzle] = useState<GameState | null>(null);
+  const [classicStartPosition, setClassicStartPosition] = useState<GameState | null>(null);
+  const [mode, setMode] = useState<'daily' | 'classic'>('daily');
+  const [puzzles, setPuzzles] = useState<api.PuzzleData[] | null>(null);
+  const [initialized, setInitialized] = useState(false);
 
-  // Start new game
-  const startNewGame = useCallback(async () => {
+  // Get today's puzzle index (1-365 based on day of year)
+  const getTodayPuzzleIndex = useCallback(() => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const diff = now.getTime() - start.getTime();
+    const oneDay = 1000 * 60 * 60 * 24;
+    const dayOfYear = Math.floor(diff / oneDay);
+    return dayOfYear; // 1-365
+  }, []);
+
+  // Load puzzles.json on mount
+  useEffect(() => {
+    api.loadPuzzles()
+      .then(data => setPuzzles(data))
+      .catch(err => console.warn('Failed to load puzzles.json:', err));
+  }, []);
+
+  // Load today's daily puzzle
+  const loadDailyPuzzle = useCallback(async () => {
     setLoading(true);
     setError(null);
     setSelection(null);
     setLastMove(null);
+    setMode('daily');
+    
+    try {
+      // Get today's puzzle from pre-generated list
+      if (puzzles && puzzles.length > 0) {
+        const dayIndex = getTodayPuzzleIndex();
+        const puzzleIndex = (dayIndex - 1) % puzzles.length;
+        const todayPuzzle = puzzles[puzzleIndex];
+        
+        setBitboardInt(todayPuzzle.bitboard);
+        
+        // Load the position to get legal moves, etc.
+        const gameState = await api.loadPosition(todayPuzzle.sfen);
+        if (gameState.success) {
+          setDailyPuzzle(gameState);
+          setGame(gameState);
+          setLoading(false);
+          return;
+        }
+      }
+      
+      // Fallback to classic game if puzzles not loaded
+      console.warn('Puzzles not loaded, falling back to classic game');
+      const newGame = await api.newGame();
+      setBitboardInt(32539167);
+      setGame(newGame);
+      setClassicStartPosition(newGame);
+      setMode('classic');
+    } catch (e: any) {
+      console.warn('Daily puzzle failed:', e);
+      try {
+        const newGame = await api.newGame();
+        setBitboardInt(32539167);
+        setGame(newGame);
+        setClassicStartPosition(newGame);
+        setMode('classic');
+      } catch (e2: any) {
+        setError(e2.message || 'Failed to start game');
+      }
+    }
+    setLoading(false);
+  }, [puzzles, getTodayPuzzleIndex]);
+
+  // Load classic minishogi starting position
+  const loadClassicGame = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    setSelection(null);
+    setLastMove(null);
+    setMode('classic');
+    setBitboardInt(32539167);  // Standard position bitboard
     try {
       const newGame = await api.newGame();
+      setClassicStartPosition(newGame);
       setGame(newGame);
     } catch (e: any) {
       setError(e.message || 'Failed to start game');
@@ -200,10 +321,46 @@ function App() {
     setLoading(false);
   }, []);
 
-  // Initialize game on mount
+  // Reset to current mode's starting position
+  const resetGame = useCallback(() => {
+    setSelection(null);
+    setLastMove(null);
+    setError(null);
+    
+    if (mode === 'daily' && dailyPuzzle) {
+      setGame(dailyPuzzle);
+    } else if (mode === 'classic' && classicStartPosition) {
+      setGame(classicStartPosition);
+    } else if (mode === 'daily') {
+      loadDailyPuzzle();
+    } else {
+      loadClassicGame();
+    }
+  }, [mode, dailyPuzzle, classicStartPosition, loadDailyPuzzle, loadClassicGame]);
+
+  // Initialize game on mount - only runs once when puzzles are loaded
   useEffect(() => {
-    startNewGame();
-  }, [startNewGame]);
+    // Only initialize once
+    if (initialized) return;
+    
+    if (puzzles !== null && puzzles.length > 0) {
+      setInitialized(true);
+      loadDailyPuzzle();
+    } else if (puzzles === null) {
+      // Puzzles still loading, wait a bit then fallback to classic
+      const timer = setTimeout(() => {
+        if (!initialized) {
+          setInitialized(true);
+          loadClassicGame();
+        }
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else {
+      // puzzles is empty array - no puzzles available
+      setInitialized(true);
+      loadClassicGame();
+    }
+  }, [puzzles, initialized, loadDailyPuzzle, loadClassicGame]);
 
   // Execute a move
   const executeMove = useCallback(async (moveStr: string, fromSquare?: string, toSquare?: string) => {
@@ -378,16 +535,19 @@ function App() {
   const isGameOver = game.result !== 'ONGOING';
   const files = [1, 2, 3, 4, 5];
   const ranks = ['a', 'b', 'c', 'd', 'e'];
+  
+  // Get result display
+  const resultDisplay = isGameOver ? getResultDisplay(game.result, game.side_to_move) : null;
 
   return (
     <>
       <h1>BitShogi</h1>
-      <p className="subtitle">32539167</p>
+      <p className="subtitle">{bitboardInt}</p>
       
       <div className="game-container">
         {/* Left Sidebar - Opponent's hand */}
         <div className="sidebar sidebar-left">
-          <div className="hand">
+          <div className="hand opponent-hand">
             <div className="hand-title">White's Hand</div>
             <div className="hand-pieces">
               {Object.keys(game.hand.WHITE).length === 0 ? (
@@ -453,7 +613,7 @@ function App() {
 
         {/* Right Sidebar - Player's hand + controls */}
         <div className="sidebar sidebar-right">
-          <div className="hand">
+          <div className="hand player-hand">
             <div className="hand-title">Your Hand</div>
             <div className="hand-pieces">
               {Object.keys(game.hand.BLACK).length === 0 ? (
@@ -486,11 +646,9 @@ function App() {
               <p className="status check">Check!</p>
             )}
             
-            {isGameOver && (
-              <p className="status game-over">
-                {game.result.includes('BLACK') ? '🎉 You Win!' : 
-                 game.result.includes('WHITE') ? 'Bot Wins' : 
-                 'Draw'}
+            {isGameOver && resultDisplay && (
+              <p className={`status game-over ${resultDisplay.isWin ? 'win' : ''}`}>
+                {resultDisplay.text}
               </p>
             )}
             
@@ -503,8 +661,22 @@ function App() {
             )}
             
             <div className="controls">
-              <button onClick={startNewGame} disabled={loading}>
-                New Game
+              {/* <button onClick={resetGame} disabled={loading}>
+                Reset
+              </button> */}
+              <button 
+                onClick={loadClassicGame} 
+                disabled={loading}
+                className={mode === 'classic' ? 'active' : ''}
+              >
+                Classic
+              </button>
+              <button 
+                onClick={loadDailyPuzzle} 
+                disabled={loading}
+                className={`daily-btn ${mode === 'daily' ? 'active' : ''}`}
+              >
+                Daily
               </button>
             </div>
           </div>
@@ -542,7 +714,7 @@ function App() {
         Author: Sam Ghalayini - <a href="https://github.com/sam-ghala/BitShogi" target="_blank" rel="noopener noreferrer">Code</a>
         </div>
         <div style={{ fontSize: '0.8em', opacity: 0.8, marginTop: '4px' }}>
-        32539167 is the bitboard integer for the minishogi starting position
+        playing a little bit every day using bitboards
         </div>
       </footer>
     </>

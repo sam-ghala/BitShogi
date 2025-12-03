@@ -1,12 +1,21 @@
-# server.jl
-
-# julia --project=. server/server.jl
+# ===========================================================================
+# server.jl - HTTP server for BitShogi
+# ===========================================================================
+# 
+# Run with: julia --project=. server/server.jl
+#
+# ===========================================================================
 
 using HTTP
 using JSON3
 
+# Include the engine
 include("../src/BitShogi.jl")
 using .BitShogi
+
+# ---------------------------------------------------------------------------
+# CORS Middleware
+# ---------------------------------------------------------------------------
 
 function cors_headers()
     return [
@@ -31,7 +40,11 @@ function handle_cors(handler)
         end
         return response
     end
-end  
+end
+
+# ---------------------------------------------------------------------------
+# Route Handlers
+# ---------------------------------------------------------------------------
 
 function handle_root(req::HTTP.Request)
     return HTTP.Response(200, JSON3.write(Dict(
@@ -41,7 +54,9 @@ function handle_root(req::HTTP.Request)
             "GET /api/game/new",
             "POST /api/game/move",
             "POST /api/game/bot-move",
-            "GET /api/game/legal-moves"
+            "GET /api/game/legal-moves",
+            "GET /api/game/daily",
+            "GET /api/game/daily?date=YYYY-MM-DD"
         ]
     )))
 end
@@ -105,7 +120,46 @@ function handle_legal_moves(req::HTTP.Request)
     end
 end
 
-# router 
+function handle_daily_puzzle(req::HTTP.Request)
+    try
+        # Check if a specific date was requested
+        uri = HTTP.URI(req.target)
+        params = HTTP.queryparams(uri)
+        date_str = get(params, "date", "")
+        
+        result = if isempty(date_str)
+            BitShogi.api_daily_puzzle()
+        else
+            BitShogi.api_daily_puzzle_for_date(date_str)
+        end
+        
+        return HTTP.Response(200, JSON3.write(result))
+    catch e
+        return HTTP.Response(400, JSON3.write(Dict("error" => string(e))))
+    end
+end
+
+function handle_load_position(req::HTTP.Request)
+    try
+        body = JSON3.read(String(req.body))
+        sfen = string(body[:sfen])
+        
+        result = BitShogi.api_load_position(sfen)
+        
+        if !get(result, "success", false)
+            return HTTP.Response(400, JSON3.write(result))
+        end
+        
+        return HTTP.Response(200, JSON3.write(result))
+    catch e
+        return HTTP.Response(400, JSON3.write(Dict("error" => string(e), "success" => false)))
+    end
+end
+
+# ---------------------------------------------------------------------------
+# Router
+# ---------------------------------------------------------------------------
+
 function router(req::HTTP.Request)
     # Parse path
     uri = HTTP.URI(req.target)
@@ -117,18 +171,25 @@ function router(req::HTTP.Request)
         return handle_root(req)
     elseif path == "/api/game/new" && method == "GET"
         return handle_new_game(req)
+    elseif path == "/api/game/load" && method == "POST"
+        return handle_load_position(req)
     elseif path == "/api/game/move" && method == "POST"
         return handle_make_move(req)
     elseif path == "/api/game/bot-move" && method == "POST"
         return handle_bot_move(req)
     elseif startswith(path, "/api/game/legal-moves") && method == "GET"
         return handle_legal_moves(req)
+    elseif startswith(path, "/api/game/daily") && method == "GET"
+        return handle_daily_puzzle(req)
     else
         return HTTP.Response(404, JSON3.write(Dict("error" => "Not found: $path")))
     end
 end
 
-# entry point 
+# ---------------------------------------------------------------------------
+# Server Entry Point
+# ---------------------------------------------------------------------------
+
 function start_server(; host="0.0.0.0", port=8000)
     # Initialize engine
     println("Initializing BitShogi engine...")

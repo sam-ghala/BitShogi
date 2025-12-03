@@ -1,10 +1,30 @@
 # api, json web server integration
+# ===========================================================================
+# api.jl - JSON API for web server integration
+# ===========================================================================
 
 using JSON3
 
 function api_new_game()::Dict{String, Any}
     game = GameState()
     return Dict{String, Any}(
+        "sfen" => to_sfen(game),
+        "side_to_move" => string(game.side_to_move),
+        "legal_moves" => get_legal_move_strings(game.board, game.side_to_move),
+        "is_check" => is_in_check(game),
+        "result" => string(game.result),
+        "hand" => get_hand_info(game.board)
+    )
+end
+
+function api_load_position(sfen::String)::Dict{String, Any}
+    game = parse_sfen(sfen)
+    if game === nothing
+        return Dict{String, Any}("error" => "Invalid SFEN", "success" => false)
+    end
+    
+    return Dict{String, Any}(
+        "success" => true,
         "sfen" => to_sfen(game),
         "side_to_move" => string(game.side_to_move),
         "legal_moves" => get_legal_move_strings(game.board, game.side_to_move),
@@ -76,6 +96,64 @@ function api_get_legal_moves(sfen::String)::Dict{String, Any}
     )
 end
 
+"""
+    api_daily_puzzle() -> Dict{String, Any}
+
+Get today's daily puzzle - a deterministic random position based on the date.
+"""
+function api_daily_puzzle()::Dict{String, Any}
+    sfen, bitboard_int = generate_today_puzzle()
+    state = parse_sfen(sfen)
+    
+    if state === nothing
+        # Fallback to standard position
+        state = GameState()
+        sfen = to_sfen(state)
+        bitboard_int = UInt32(32539167)  # Standard position bitboard
+    end
+    
+    return Dict{String, Any}(
+        "sfen" => sfen,
+        "side_to_move" => string(state.side_to_move),
+        "legal_moves" => get_legal_move_strings(state.board, state.side_to_move),
+        "is_check" => is_in_check(state),
+        "result" => string(state.result),
+        "hand" => get_hand_info(state.board),
+        "bitboard_int" => bitboard_int,
+        "date" => string(Dates.today())
+    )
+end
+
+"""
+    api_daily_puzzle_for_date(date_str::String) -> Dict{String, Any}
+
+Get the daily puzzle for a specific date (format: "YYYY-MM-DD").
+"""
+function api_daily_puzzle_for_date(date_str::String)::Dict{String, Any}
+    try
+        date = Date(date_str)
+        sfen, bitboard_int = generate_daily_puzzle(date)
+        state = parse_sfen(sfen)
+        
+        if state === nothing
+            return Dict{String, Any}("error" => "Failed to generate puzzle", "success" => false)
+        end
+        
+        return Dict{String, Any}(
+            "sfen" => sfen,
+            "side_to_move" => string(state.side_to_move),
+            "legal_moves" => get_legal_move_strings(state.board, state.side_to_move),
+            "is_check" => is_in_check(state),
+            "result" => string(state.result),
+            "hand" => get_hand_info(state.board),
+            "bitboard_int" => bitboard_int,
+            "date" => date_str
+        )
+    catch e
+        return Dict{String, Any}("error" => "Invalid date format. Use YYYY-MM-DD", "success" => false)
+    end
+end
+
 # Get hand pieces info for both players
 function get_hand_info(board::BoardState)::Dict{String, Any}
     piece_names = ["PAWN", "LANCE", "KNIGHT", "SILVER", "GOLD", "BISHOP", "ROOK"]
@@ -101,7 +179,10 @@ function get_hand_info(board::BoardState)::Dict{String, Any}
     )
 end
 
-# cli server 
+# ---------------------------------------------------------------------------
+# CLI Server (for subprocess communication - optional)
+# ---------------------------------------------------------------------------
+
 function handle_json_request(request_json::String)::String
     try
         request = JSON3.read(request_json)
