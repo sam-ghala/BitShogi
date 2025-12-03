@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  License: PD. Made by mapbox: https://github.com/mapbox/maki 
+  Modified to be a 3x3 grid of touching circles.
+-->
+<svg width="800px" height="800px" viewBox="0 0 15 15" version="1.1" id="circle-grid" xmlns="http://www.w3.org/2000/svg">
+  
+  <!-- 
+    Layout Logic:
+    ViewBox size: 15x15
+    Grid: 3 rows, 3 columns
+    Circle Diameter: 15 / 3 = 5
+    Circle Radius (r): 2.5
+    Fill Color: #A07A4A
+  -->
+
+  <!-- Row 1 (y=2.5) -->
+  <circle cx="2.5" cy="2.5" r="2.5" fill="#A07A4A" />
+  <circle cx="7.5" cy="2.5" r="2.5" fill="#A07A4A" />
+  <circle cx="12.5" cy="2.5" r="2.5" fill="#A07A4A" />
+
+  <!-- Row 2 (y=7.5) -->
+  <circle cx="2.5" cy="7.5" r="2.5" fill="#A07A4A" />
+  <circle cx="7.5" cy="7.5" r="2.5" fill="#A07A4A" />
+  <circle cx="12.5" cy="7.5" r="2.5" fill="#A07A4A" />
+
+  <!-- Row 3 (y=12.5) -->
+  <circle cx="2.5" cy="12.5" r="2.5" fill="#A07A4A" />
+  <circle cx="7.5" cy="12.5" r="2.5" fill="#A07A4A" />
+  <circle cx="12.5" cy="12.5" r="2.5" fill="#A07A4A" />
+
+</svg>

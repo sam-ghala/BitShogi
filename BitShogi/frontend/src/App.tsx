@@ -2,13 +2,55 @@ import { useState, useEffect, useCallback } from 'react';
 import { GameState, Piece, Selection, PieceType, Color } from './types/game';
 import * as api from './api/client';
 
-// Piece symbols (Kanji)
+// Piece image paths - maps piece types to SVG filenames
+const PIECE_IMAGES: Record<string, string> = {
+  PAWN: '/pieces/pawn.svg',
+  SILVER: '/pieces/silver.svg',
+  GOLD: '/pieces/gold.svg',
+  BISHOP: '/pieces/bishop.svg',
+  ROOK: '/pieces/rook.svg',
+  KING: '/pieces/king.svg',
+  PROMOTED_PAWN: '/pieces/pawn-p.svg',
+  PROMOTED_SILVER: '/pieces/silver-p.svg',
+  PROMOTED_BISHOP: '/pieces/bishop-p.svg',
+  PROMOTED_ROOK: '/pieces/rook-p.svg',
+  // Fallbacks for standard shogi (not used in minishogi but keeping for compatibility)
+  LANCE: '/pieces/lance.svg',
+  KNIGHT: '/pieces/knight.svg',
+  PROMOTED_LANCE: '/pieces/lance-p.svg',
+  PROMOTED_KNIGHT: '/pieces/knight-p.svg',
+};
+
+// Fallback kanji symbols (used if SVG not found)
 const PIECE_SYMBOLS: Record<string, string> = {
   PAWN: '歩', LANCE: '香', KNIGHT: '桂', SILVER: '銀',
   GOLD: '金', BISHOP: '角', ROOK: '飛', KING: '王',
   PROMOTED_PAWN: 'と', PROMOTED_LANCE: '杏', PROMOTED_KNIGHT: '圭',
   PROMOTED_SILVER: '全', PROMOTED_BISHOP: '馬', PROMOTED_ROOK: '龍',
 };
+
+// Piece component - renders SVG image with fallback to kanji
+function PieceImage({ type, className }: { type: string; className?: string }) {
+  const imgSrc = PIECE_IMAGES[type];
+  const fallback = PIECE_SYMBOLS[type] || '?';
+  
+  return (
+    <img 
+      src={imgSrc} 
+      alt={type}
+      className={`piece-img ${className || ''}`}
+      onError={(e) => {
+        // If SVG fails to load, replace with text fallback
+        const target = e.target as HTMLImageElement;
+        target.style.display = 'none';
+        const span = document.createElement('span');
+        span.textContent = fallback;
+        span.className = 'piece-fallback';
+        target.parentNode?.appendChild(span);
+      }}
+    />
+  );
+}
 
 // Parse SFEN to get board pieces
 function parseSfenBoard(sfen: string): Map<string, Piece> {
@@ -87,6 +129,50 @@ function isPromoted(type: PieceType): boolean {
   return type.startsWith('PROMOTED_');
 }
 
+// SVG Board Lines Component
+function BoardLines() {
+  const size = 64;
+  const lines: JSX.Element[] = [];
+  
+  for (let row = 0; row < 5; row++) {
+    for (let col = 0; col < 5; col++) {
+      const cx = col * size + size / 2;
+      const cy = row * size + size / 2;
+      
+      // Horizontal line (right)
+      if (col < 4) {
+        lines.push(
+          <line key={`h-${row}-${col}`} x1={cx} y1={cy} x2={cx + size} y2={cy} />
+        );
+      }
+      // Vertical line (down)
+      if (row < 4) {
+        lines.push(
+          <line key={`v-${row}-${col}`} x1={cx} y1={cy} x2={cx} y2={cy + size} />
+        );
+      }
+      // Diagonal down-right
+      if (col < 4 && row < 4) {
+        lines.push(
+          <line key={`dr-${row}-${col}`} x1={cx} y1={cy} x2={cx + size} y2={cy + size} />
+        );
+      }
+      // Diagonal down-left
+      if (col > 0 && row < 4) {
+        lines.push(
+          <line key={`dl-${row}-${col}`} x1={cx} y1={cy} x2={cx - size} y2={cy + size} />
+        );
+      }
+    }
+  }
+  
+  return (
+    <svg className="board-lines" width={5 * size} height={5 * size}>
+      {lines}
+    </svg>
+  );
+}
+
 function App() {
   const [game, setGame] = useState<GameState | null>(null);
   const [selection, setSelection] = useState<Selection | null>(null);
@@ -127,7 +213,6 @@ function App() {
     setError(null);
     
     try {
-      // Make player move
       const afterPlayerMove = await api.makeMove(game.sfen, moveStr);
       
       if (!afterPlayerMove.success) {
@@ -138,7 +223,6 @@ function App() {
       
       setLastMove({ from: fromSquare, to: toSquare });
       
-      // Update game state
       const newState: GameState = {
         sfen: afterPlayerMove.sfen!,
         side_to_move: afterPlayerMove.side_to_move!,
@@ -149,12 +233,11 @@ function App() {
       };
       setGame(newState);
       
-      // If game not over and it's bot's turn (WHITE), get bot move
+      // Bot's turn
       if (newState.result === 'ONGOING' && newState.side_to_move === 'WHITE') {
         const botMoveResult = await api.getBotMove(newState.sfen, 'greedy');
         
         if (botMoveResult.success && botMoveResult.move) {
-          // Parse bot move for highlighting
           const botFrom = botMoveResult.move.includes('*') 
             ? undefined 
             : botMoveResult.move.substring(0, 2);
@@ -193,26 +276,20 @@ function App() {
     const clickedPiece = pieces.get(notation);
     
     if (selection === null) {
-      // First click - select a piece
       if (clickedPiece && clickedPiece.color === 'BLACK') {
         setSelection({ type: 'board', square: notation });
       }
     } else if (selection.type === 'board' && selection.square) {
-      // Second click with board piece selected
       if (notation === selection.square) {
-        // Clicked same square - deselect
         setSelection(null);
       } else if (clickedPiece && clickedPiece.color === 'BLACK') {
-        // Clicked another own piece - switch selection
         setSelection({ type: 'board', square: notation });
       } else {
-        // Try to move
         const moveBase = `${selection.square}${notation}`;
         const canPromote = game.legal_moves.includes(moveBase + '+');
         const canNotPromote = game.legal_moves.includes(moveBase);
         
         if (canPromote && canNotPromote) {
-          // Ask for promotion choice
           const piece = pieces.get(selection.square);
           if (piece) {
             setPromotionChoice({
@@ -222,17 +299,14 @@ function App() {
             });
           }
         } else if (canPromote) {
-          // Must promote
           executeMove(moveBase + '+', selection.square, notation);
         } else if (canNotPromote) {
-          // Regular move
           executeMove(moveBase, selection.square, notation);
         }
         
         setSelection(null);
       }
     } else if (selection.type === 'hand' && selection.pieceType) {
-      // Drop move from hand
       const dropMove = `${getPieceChar(selection.pieceType)}*${notation}`;
       
       if (game.legal_moves.includes(dropMove)) {
@@ -247,10 +321,9 @@ function App() {
   const handleHandClick = useCallback((pieceType: PieceType, color: Color) => {
     if (!game || game.side_to_move !== color || loading) return;
     if (game.result !== 'ONGOING') return;
-    if (color !== 'BLACK') return; // Only player can select hand pieces
+    if (color !== 'BLACK') return;
     
     if (selection?.type === 'hand' && selection.pieceType === pieceType) {
-      // Deselect
       setSelection(null);
     } else {
       setSelection({ type: 'hand', pieceType });
@@ -266,7 +339,7 @@ function App() {
     setPromotionChoice(null);
   }, [promotionChoice, executeMove]);
 
-  // Get legal target squares for current selection
+  // Get legal target squares
   const getLegalTargets = useCallback((): Set<string> => {
     if (!game || !selection) return new Set();
     
@@ -275,16 +348,14 @@ function App() {
     if (selection.type === 'board' && selection.square) {
       game.legal_moves.forEach(move => {
         if (move.startsWith(selection.square!)) {
-          const dest = move.substring(2, 4);
-          targets.add(dest);
+          targets.add(move.substring(2, 4));
         }
       });
     } else if (selection.type === 'hand' && selection.pieceType) {
       const pieceChar = getPieceChar(selection.pieceType);
       game.legal_moves.forEach(move => {
         if (move.startsWith(`${pieceChar}*`)) {
-          const dest = move.substring(2, 4);
-          targets.add(dest);
+          targets.add(move.substring(2, 4));
         }
       });
     }
@@ -292,7 +363,7 @@ function App() {
     return targets;
   }, [game, selection]);
 
-  // Render loading state
+  // Loading state
   if (!game) {
     return (
       <div className="loading">
@@ -305,15 +376,17 @@ function App() {
   const pieces = parseSfenBoard(game.sfen);
   const legalTargets = getLegalTargets();
   const isGameOver = game.result !== 'ONGOING';
+  const files = [1, 2, 3, 4, 5];
+  const ranks = ['a', 'b', 'c', 'd', 'e'];
 
   return (
     <>
-      <h1>将棋</h1>
-      <p className="subtitle">Minishogi</p>
+      <h1>BitShogi</h1>
+      <p className="subtitle">32539167</p>
       
       <div className="game-container">
-        {/* Opponent's hand (WHITE - top) */}
-        <div className="hands-container">
+        {/* Left Sidebar - Opponent's hand */}
+        <div className="sidebar sidebar-left">
           <div className="hand">
             <div className="hand-title">White's Hand</div>
             <div className="hand-pieces">
@@ -321,8 +394,8 @@ function App() {
                 <span className="empty-hand">Empty</span>
               ) : (
                 Object.entries(game.hand.WHITE).map(([type, count]) => (
-                  <div key={type} className="hand-piece white-hand">
-                    <span className="piece white">{PIECE_SYMBOLS[type]}</span>
+                  <div key={type} className="hand-piece opponent">
+                    <PieceImage type={type} />
                     {count > 1 && <span className="count">×{count}</span>}
                   </div>
                 ))
@@ -334,43 +407,52 @@ function App() {
         {/* Board */}
         <div className="board-wrapper">
           <div className="board-with-coords">
-            <div></div>
             <div className="file-coords">
-              {[1, 2, 3, 4, 5].map(f => <span key={f}>{f}</span>)}
+              {files.map(f => <span key={f}>{f}</span>)}
             </div>
-            <div className="rank-coords">
-              {['a', 'b', 'c', 'd', 'e'].map(r => <span key={r}>{r}</span>)}
-            </div>
-            <div className="board">
-              {[1, 2, 3, 4, 5].map(rank => (
-                [1, 2, 3, 4, 5].map(file => {
-                  const notation = `${file}${String.fromCharCode(96 + rank)}`;
-                  const piece = pieces.get(notation);
-                  const isSelected = selection?.type === 'board' && selection.square === notation;
-                  const isLegalTarget = legalTargets.has(notation);
-                  const isLastMoveSquare = lastMove?.from === notation || lastMove?.to === notation;
-                  
-                  return (
-                    <div
-                      key={notation}
-                      className={`square ${isSelected ? 'selected' : ''} ${isLegalTarget ? 'legal-target' : ''} ${isLastMoveSquare ? 'last-move' : ''}`}
-                      onClick={() => handleSquareClick(notation)}
-                    >
-                      {piece && (
-                        <span className={`piece ${piece.color.toLowerCase()} ${isPromoted(piece.type) ? 'promoted' : ''}`}>
-                          {PIECE_SYMBOLS[piece.type]}
-                        </span>
-                      )}
-                    </div>
-                  );
-                })
-              )).flat()}
+            
+            <div className="board-row-wrapper">
+              <div className="rank-coords">
+                {ranks.map(r => <span key={r} className="rank-coord">{r}</span>)}
+              </div>
+              
+              <div className="board-container">
+                <BoardLines />
+                <div className="board">
+                  {ranks.map((rankChar, rankIdx) => (
+                    files.map(file => {
+                      const notation = `${file}${rankChar}`;
+                      const piece = pieces.get(notation);
+                      const hasPiece = piece !== undefined;
+                      const isSelected = selection?.type === 'board' && selection.square === notation;
+                      const isLegalTarget = legalTargets.has(notation);
+                      const isLastMoveSquare = lastMove?.from === notation || lastMove?.to === notation;
+                      const isMiddleRank = rankIdx === 2; // 'c' is middle rank
+                      
+                      return (
+                        <div
+                          key={notation}
+                          className={`square ${isMiddleRank ? 'rank-middle' : ''} ${hasPiece ? 'has-piece' : ''} ${isSelected ? 'selected' : ''} ${isLegalTarget ? 'legal-target' : ''} ${isLastMoveSquare ? 'last-move' : ''}`}
+                          onClick={() => handleSquareClick(notation)}
+                        >
+                          <div className="square-dot"></div>
+                          {piece && (
+                            <div className={`piece ${piece.color.toLowerCase()} ${isPromoted(piece.type) ? 'promoted' : ''}`}>
+                              <PieceImage type={piece.type} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })
+                  )).flat()}
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Player's hand (BLACK - bottom) */}
-        <div className="hands-container">
+        {/* Right Sidebar - Player's hand + controls */}
+        <div className="sidebar sidebar-right">
           <div className="hand">
             <div className="hand-title">Your Hand</div>
             <div className="hand-pieces">
@@ -383,59 +465,55 @@ function App() {
                     className={`hand-piece ${selection?.type === 'hand' && selection.pieceType === type ? 'selected' : ''}`}
                     onClick={() => handleHandClick(type as PieceType, 'BLACK')}
                   >
-                    <span className="piece black">{PIECE_SYMBOLS[type]}</span>
+                    <PieceImage type={type} />
                     {count > 1 && <span className="count">×{count}</span>}
                   </div>
                 ))
               )}
             </div>
           </div>
+
+          {/* Game Info */}
+          <div className="game-info">
+            {!isGameOver && (
+              <div className="turn-indicator">
+                <span className="turn-dot"></span>
+                <span>{game.side_to_move === 'BLACK' ? 'Your turn' : 'Thinking...'}</span>
+              </div>
+            )}
+            
+            {game.is_check && !isGameOver && (
+              <p className="status check">Check!</p>
+            )}
+            
+            {isGameOver && (
+              <p className="status game-over">
+                {game.result.includes('BLACK') ? '🎉 You Win!' : 
+                 game.result.includes('WHITE') ? 'Bot Wins' : 
+                 'Draw'}
+              </p>
+            )}
+            
+            {error && <p className="error">{error}</p>}
+            
+            {loading && (
+              <div className="loading">
+                <div className="spinner"></div>
+              </div>
+            )}
+            
+            <div className="controls">
+              <button onClick={startNewGame} disabled={loading}>
+                New Game
+              </button>
+            </div>
+          </div>
+
+          <p className="help-text">
+            Click a piece, then click where to move. Green dots show legal moves.
+          </p>
         </div>
       </div>
-
-      {/* Game Info */}
-      <div className="game-info">
-        {!isGameOver && (
-          <div className="turn-indicator">
-            <span className="turn-dot"></span>
-            <span>{game.side_to_move === 'BLACK' ? 'Your turn' : 'Bot thinking...'}</span>
-          </div>
-        )}
-        
-        {game.is_check && !isGameOver && (
-          <p className="status check">Check!</p>
-        )}
-        
-        {isGameOver && (
-          <p className="status game-over">
-            {game.result.includes('BLACK') ? '🎉 You Win!' : 
-             game.result.includes('WHITE') ? 'Bot Wins' : 
-             'Draw'}
-          </p>
-        )}
-        
-        {error && <p className="error">{error}</p>}
-        
-        {loading && (
-          <div className="loading">
-            <div className="spinner"></div>
-          </div>
-        )}
-      </div>
-
-      {/* Controls */}
-      <div className="controls">
-        <button onClick={startNewGame} disabled={loading}>
-          New Game
-        </button>
-      </div>
-
-      {/* Help Text */}
-      <p className="help-text">
-        Click a piece to select it, then click a destination to move.
-        Click pieces in your hand to drop them on the board.
-        Green dots show legal moves.
-      </p>
 
       {/* Promotion Dialog */}
       {promotionChoice && (
@@ -444,19 +522,29 @@ function App() {
             <h3>Promote piece?</h3>
             <div className="promotion-choices">
               <div className="promotion-choice" onClick={() => handlePromotionChoice(true)}>
-                <span className="piece black promoted">
-                  {PIECE_SYMBOLS[`PROMOTED_${promotionChoice.pieceType}`] || '?'}
-                </span>
+                <div className="piece promoted">
+                  <PieceImage type={`PROMOTED_${promotionChoice.pieceType}`} />
+                </div>
               </div>
               <div className="promotion-choice" onClick={() => handlePromotionChoice(false)}>
-                <span className="piece black">
-                  {PIECE_SYMBOLS[promotionChoice.pieceType]}
-                </span>
+                <div className="piece">
+                  <PieceImage type={promotionChoice.pieceType} />
+                </div>
               </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* Footer */}
+      <footer className="footer" style={{ textAlign: 'center'}}>
+        <div>
+        Author: Sam Ghalayini - <a href="https://github.com/sam-ghala/BitShogi" target="_blank" rel="noopener noreferrer">Code</a>
+        </div>
+        <div style={{ fontSize: '0.8em', opacity: 0.8, marginTop: '4px' }}>
+        32539167 is the bitboard integer for the minishogi starting position
+        </div>
+      </footer>
     </>
   );
 }

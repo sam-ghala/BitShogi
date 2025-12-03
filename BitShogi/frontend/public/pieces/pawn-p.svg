@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  License: PD. Made by mapbox: https://github.com/mapbox/maki 
+  Modified to display the custom 7-circle layout (OOO / OOO / O), centered in the 15x15 viewBox. 
+-->
+<svg width="800px" height="800px" viewBox="0 0 15 15" version="1.1" id="circle-grid" xmlns="http://www.w3.org/2000/svg">
+  
+  <!-- BACKGROUND: Wooden Go board surface (light wood tone) -->
+  <rect x="0" y="0" width="15" height="15" fill="#0000" />
+  
+  <!-- 
+    All circles have Radius (r) = 2.5 and Fill = #A07A4A (darker wood).
+    Vertical centers (cy) are placed at 2.5, 7.5, and 12.5 for even spacing.
+  -->
+
+  <!-- Row 1: O O O (Touching horizontally) -->
+  <circle cx="2.5" cy="2.5" r="2.5" fill="#A07A4A" />   <!-- Top Left -->
+  <circle cx="7.5" cy="2.5" r="2.5" fill="#A07A4A" />   <!-- Top Center -->
+  <circle cx="12.5" cy="2.5" r="2.5" fill="#A07A4A" />  <!-- Top Right -->
+
+  <!-- Row 2: O O O (Touching horizontally) -->
+  <circle cx="2.5" cy="7.5" r="2.5" fill="#A07A4A" />   <!-- Middle Left -->
+  <circle cx="7.5" cy="7.5" r="2.5" fill="#A07A4A" />   <!-- Middle Center -->
+  <circle cx="12.5" cy="7.5" r="2.5" fill="#A07A4A" />  <!-- Middle Right -->
+
+  <!-- Row 3: O (Centered horizontally) -->
+  <circle cx="7.5" cy="12.5" r="2.5" fill="#A07A4A" />  <!-- Bottom Center -->
+
+</svg>

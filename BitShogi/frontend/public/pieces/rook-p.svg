@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  License: PD. Made by Mary Akveo: https://maryakveo.com/ 
+  Modified to be a plus sign with a circle in the center, using the wood color #A07A4A.
+-->
+<svg width="800px" height="800px" viewBox="0 0 24 24" id="plus-circle" xmlns="http://www.w3.org/2000/svg" class="icon line-color">
+  
+  <!-- The Plus Sign Path -->
+  <!-- Stroke color changed to #A07A4A -->
+  <path id="primary" d="M5,12H19M12,5V19" style="fill: none; stroke: #A07A4A; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>
+  
+  <!-- Center Circle -->
+  <!-- Center (cx, cy) is 12, 12. Radius set to 4 to sit nicely on the intersection. -->
+  <circle cx="12" cy="12" r="4" fill="#A07A4A" />
+
+</svg>

@@ -29,3 +29,4 @@ A chess-like game engine implemented in Julia.
 * **Frontend:** [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) (Vite)
 * **Verification:** [Lean 4](https://leanprover.github.io/)
 * **Infrastructure:** Docker & Docker Compose
+* [SVG files](https://www.svgviewer.dev/)
