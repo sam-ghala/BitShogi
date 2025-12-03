@@ -4,26 +4,13 @@
 
 A chess-like game engine implemented in Julia.
 
-<!-- ### Roadmap
+### Roadmap
 * **Lean Verifications:** Formal verification practice of game logic using Lean 4
 * **Pleasant UI:** Readable game pieces UI/UX
 * **Daily Board Setups:** Non-trivial daily board setups (High Branching Factor?)
 * **Game Database:** Need saved games to train on later down the line
 * **Bot Variety:** Additional simple strategy bots with description of what move they made
-* **A bot that learns:** NNUE or RL models -->
-'''mermaid
-timeline
-    title BitShogi Development Path
-    Current Focus
-        : Lean Verifications
-        : Pleasant UI
-    Upcoming Features
-        : Daily Challenges (Branching Mates)
-        : Game Database (Save/Load)
-    Future Goals
-        : Bot Variety & Personalities
-        : Advanced AI (NNUE/RL Models)
-'''
+* **A bot that learns:** NNUE or RL models
 
 ### Background Resources
 * **Shogi Rules:** [Wikipedia - Minishogi](https://en.wikipedia.org/wiki/Minishogi) | [Shogi Harbour](https://shogiharbour.com/)
