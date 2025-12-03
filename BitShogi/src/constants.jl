@@ -1,6 +1,5 @@
 # ===========================================================================
 # constants.jl - Board configuration for variants (starting with 5x5)
-# ===========================================================================
 #
 # PURPOSE:
 #   Define all board-size-dependent constants in one place.

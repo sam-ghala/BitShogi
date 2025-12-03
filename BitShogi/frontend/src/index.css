@@ -27,6 +27,10 @@
   --accent-green: #4a9;
   --text-dark: #2c3e50;
   --text-muted: #5a6a7a;
+  
+  /* Board dimensions */
+  --square-size: 64px;
+  --board-padding: 12px;
 }
 
 body {
@@ -264,6 +268,48 @@ button:disabled {
   transform: none;
 }
 
+/* Bot Selector */
+.bot-selector {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.bot-selector label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.bot-selector select {
+  font-family: inherit;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.75rem;
+  border: 1px solid rgba(61, 58, 79, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bot-selector select:hover {
+  border-color: var(--accent-gold);
+}
+
+.bot-selector select:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.bot-selector select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Help text */
 .help-text {
   font-size: 0.65rem;
@@ -291,7 +337,7 @@ button:disabled {
 }
 
 .file-coords span {
-  width: 64px;
+  width: var(--square-size);
   text-align: center;
   font-size: 0.75rem;
   color: var(--text-muted);
@@ -307,11 +353,11 @@ button:disabled {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  padding: 12px 4px 12px 0;
+  padding: var(--board-padding) 4px var(--board-padding) 0;
 }
 
 .rank-coord {
-  height: 64px;
+  height: var(--square-size);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -325,15 +371,17 @@ button:disabled {
   position: relative;
   background: var(--board-bg);
   border-radius: 8px;
-  padding: 12px;
+  padding: var(--board-padding);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* SVG Lines - positioned behind squares */
+/* SVG Lines - positioned behind squares, scales with board */
 .board-lines {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: var(--board-padding);
+  left: var(--board-padding);
+  width: calc(5 * var(--square-size));
+  height: calc(5 * var(--square-size));
   pointer-events: none;
   z-index: 1;
 }
@@ -346,16 +394,16 @@ button:disabled {
 /* Board Grid */
 .board {
   display: grid;
-  grid-template-columns: repeat(5, 64px);
-  grid-template-rows: repeat(5, 64px);
+  grid-template-columns: repeat(5, var(--square-size));
+  grid-template-rows: repeat(5, var(--square-size));
   position: relative;
   z-index: 2;
 }
 
 /* Square */
 .square {
-  width: 64px;
-  height: 64px;
+  width: var(--square-size);
+  height: var(--square-size);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -591,6 +639,11 @@ button:disabled {
    ============================================ */
 
 @media (max-width: 768px) {
+  :root {
+    --square-size: 56px;
+    --board-padding: 12px;
+  }
+  
   #root {
     padding: 1rem 0.5rem;
   }
@@ -611,49 +664,9 @@ button:disabled {
     gap: 1rem;
   }
   
-  /* Hide sidebars on mobile - we'll show content below board */
-  .sidebar {
-    display: none;
-  }
-  
   /* Board wrapper adjustments */
   .board-wrapper {
     order: 1;
-  }
-  
-  /* Mobile-specific panels below board */
-  .game-container::after {
-    content: '';
-    display: block;
-    order: 2;
-  }
-  
-  /* Create mobile bottom section */
-  .mobile-bottom {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    width: 100%;
-    max-width: 360px;
-  }
-  
-  .help-text {
-    display: none;
-  }
-  
-  .footer {
-    margin-top: 1rem;
-    padding: 0.5rem;
-    font-size: 0.7rem;
-  }
-}
-
-/* Show mobile layout elements */
-@media (max-width: 768px) {
-  .game-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
   
   /* Re-show sidebars but as bottom panels */
@@ -715,30 +728,7 @@ button:disabled {
     font-size: 0.7rem;
   }
   
-  /* Smaller board on small screens */
-  .board {
-    grid-template-columns: repeat(5, 56px);
-    grid-template-rows: repeat(5, 56px);
-  }
-  
-  .square {
-    width: 56px;
-    height: 56px;
-  }
-  
-  .rank-coord {
-    height: 56px;
-  }
-  
-  .file-coords span {
-    width: 56px;
-  }
-  
-  .board-lines {
-    width: calc(5 * 56px);
-    height: calc(5 * 56px);
-  }
-  
+  /* Dots scale with square */
   .square-dot {
     width: 18px;
     height: 18px;
@@ -754,39 +744,37 @@ button:disabled {
     width: 42px;
     height: 42px;
   }
+  
+  .help-text {
+    display: none;
+  }
+  
+  .footer {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    font-size: 0.7rem;
+  }
+  
+  /* Bot selector mobile */
+  .bot-selector {
+    margin-top: 0.5rem;
+  }
+  
+  .bot-selector select {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.7rem;
+  }
 }
 
 /* Extra small screens */
 @media (max-width: 400px) {
+  :root {
+    --square-size: 48px;
+    --board-padding: 8px;
+  }
+  
   h1 {
     font-size: 1.5rem;
-  }
-  
-  .board {
-    grid-template-columns: repeat(5, 48px);
-    grid-template-rows: repeat(5, 48px);
-  }
-  
-  .square {
-    width: 48px;
-    height: 48px;
-  }
-  
-  .rank-coord {
-    height: 48px;
-  }
-  
-  .file-coords span {
-    width: 48px;
-  }
-  
-  .board-container {
-    padding: 8px;
-  }
-  
-  .board-lines {
-    top: 8px;
-    left: 8px;
   }
   
   .square-dot {

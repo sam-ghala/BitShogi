@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
-import { GameState, Piece, Selection, PieceType, Color } from './types/game';
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import './index.css';
 import * as api from './api/client';
 
-// Piece image paths - maps piece types to SVG filenames
+// SVG piece paths - custom pieces in public/pieces/
 const PIECE_IMAGES: Record<string, string> = {
   PAWN: '/pieces/pawn.svg',
   SILVER: '/pieces/silver.svg',
@@ -14,14 +14,14 @@ const PIECE_IMAGES: Record<string, string> = {
   PROMOTED_SILVER: '/pieces/silver-p.svg',
   PROMOTED_BISHOP: '/pieces/bishop-p.svg',
   PROMOTED_ROOK: '/pieces/rook-p.svg',
-  // Fallbacks for standard shogi (not used in minishogi but keeping for compatibility)
+  // Fallback for standard shogi pieces not in minishogi
   LANCE: '/pieces/lance.svg',
   KNIGHT: '/pieces/knight.svg',
   PROMOTED_LANCE: '/pieces/lance-p.svg',
   PROMOTED_KNIGHT: '/pieces/knight-p.svg',
 };
 
-// Fallback kanji symbols (used if SVG not found)
+// Fallback kanji symbols
 const PIECE_SYMBOLS: Record<string, string> = {
   PAWN: '歩', LANCE: '香', KNIGHT: '桂', SILVER: '銀',
   GOLD: '金', BISHOP: '角', ROOK: '飛', KING: '王',
@@ -115,7 +115,7 @@ function parseSfenBoard(sfen: string): Map<string, Piece> {
   return pieces;
 }
 
-// Get piece char for drop move notation
+// Get piece character for drop notation
 function getPieceChar(type: PieceType): string {
   const map: Record<string, string> = {
     PAWN: 'P', LANCE: 'L', KNIGHT: 'N', SILVER: 'S',
@@ -173,9 +173,40 @@ function getResultDisplay(result: string, sideToMove: string): { text: string; i
   return { text: `Game Over: ${result}`, isWin: false };
 }
 
-// SVG Board Lines Component
+// Types
+type PieceType = 'PAWN' | 'LANCE' | 'KNIGHT' | 'SILVER' | 'GOLD' | 'BISHOP' | 'ROOK' | 'KING' |
+                 'PROMOTED_PAWN' | 'PROMOTED_LANCE' | 'PROMOTED_KNIGHT' | 'PROMOTED_SILVER' |
+                 'PROMOTED_BISHOP' | 'PROMOTED_ROOK';
+type Color = 'BLACK' | 'WHITE';
+type BotType = 'random' | 'greedy' | 'simple';
+
+interface Piece {
+  type: PieceType;
+  color: Color;
+}
+
+interface Selection {
+  type: 'board' | 'hand';
+  square?: string;
+  pieceType?: PieceType;
+}
+
+interface GameState {
+  sfen: string;
+  side_to_move: Color;
+  legal_moves: string[];
+  is_check: boolean;
+  result: string;
+  hand: {
+    BLACK: Record<string, number>;
+    WHITE: Record<string, number>;
+  };
+}
+
+// SVG Board Lines Component - uses viewBox for responsive scaling
 function BoardLines() {
   const size = 64;
+  const totalSize = 5 * size;
   const lines: JSX.Element[] = [];
   
   for (let row = 0; row < 5; row++) {
@@ -211,11 +242,22 @@ function BoardLines() {
   }
   
   return (
-    <svg className="board-lines" width={5 * size} height={5 * size}>
+    <svg 
+      className="board-lines" 
+      viewBox={`0 0 ${totalSize} ${totalSize}`}
+      preserveAspectRatio="none"
+    >
       {lines}
     </svg>
   );
 }
+
+// Available bots with display names
+const BOT_OPTIONS: { value: BotType; label: string }[] = [
+  { value: 'random', label: 'Random' },
+  { value: 'greedy', label: 'Greedy' },
+  { value: 'simple', label: 'Simple (1-ply)' },
+];
 
 function App() {
   const [game, setGame] = useState<GameState | null>(null);
@@ -236,6 +278,9 @@ function App() {
   const [mode, setMode] = useState<'daily' | 'classic'>('daily');
   const [puzzles, setPuzzles] = useState<api.PuzzleData[] | null>(null);
   const [initialized, setInitialized] = useState(false);
+  
+  // Bot selection state
+  const [selectedBot, setSelectedBot] = useState<BotType>('greedy');
 
   // Get today's puzzle index (1-365 based on day of year)
   const getTodayPuzzleIndex = useCallback(() => {
@@ -338,6 +383,25 @@ function App() {
     }
   }, [mode, dailyPuzzle, classicStartPosition, loadDailyPuzzle, loadClassicGame]);
 
+  // Handle bot change - reset game when bot changes
+  const handleBotChange = useCallback((newBot: BotType) => {
+    setSelectedBot(newBot);
+    // Reset to starting position when bot changes
+    setSelection(null);
+    setLastMove(null);
+    setError(null);
+    
+    if (mode === 'daily' && dailyPuzzle) {
+      setGame(dailyPuzzle);
+    } else if (mode === 'classic' && classicStartPosition) {
+      setGame(classicStartPosition);
+    } else if (mode === 'daily') {
+      loadDailyPuzzle();
+    } else {
+      loadClassicGame();
+    }
+  }, [mode, dailyPuzzle, classicStartPosition, loadDailyPuzzle, loadClassicGame]);
+
   // Initialize game on mount - only runs once when puzzles are loaded
   useEffect(() => {
     // Only initialize once
@@ -378,6 +442,7 @@ function App() {
         return;
       }
       
+      // Update last move highlight
       setLastMove({ from: fromSquare, to: toSquare });
       
       const newState: GameState = {
@@ -390,9 +455,9 @@ function App() {
       };
       setGame(newState);
       
-      // Bot's turn
+      // Bot's turn - use selected bot type
       if (newState.result === 'ONGOING' && newState.side_to_move === 'WHITE') {
-        const botMoveResult = await api.getBotMove(newState.sfen, 'greedy');
+        const botMoveResult = await api.getBotMove(newState.sfen, selectedBot);
         
         if (botMoveResult.success && botMoveResult.move) {
           const botFrom = botMoveResult.move.includes('*') 
@@ -422,7 +487,7 @@ function App() {
     }
     
     setLoading(false);
-  }, [game]);
+  }, [game, selectedBot]);
 
   // Handle board square click
   const handleSquareClick = useCallback((notation: string) => {
@@ -505,14 +570,16 @@ function App() {
     if (selection.type === 'board' && selection.square) {
       game.legal_moves.forEach(move => {
         if (move.startsWith(selection.square!)) {
-          targets.add(move.substring(2, 4));
+          const to = move.substring(2, 4);
+          targets.add(to);
         }
       });
     } else if (selection.type === 'hand' && selection.pieceType) {
       const pieceChar = getPieceChar(selection.pieceType);
       game.legal_moves.forEach(move => {
         if (move.startsWith(`${pieceChar}*`)) {
-          targets.add(move.substring(2, 4));
+          const to = move.substring(2, 4);
+          targets.add(to);
         }
       });
     }
@@ -520,24 +587,54 @@ function App() {
     return targets;
   }, [game, selection]);
 
-  // Loading state
+  // Compute derived state
+  const pieces = useMemo(() => game ? parseSfenBoard(game.sfen) : new Map(), [game?.sfen]);
+  const legalTargets = useMemo(() => getLegalTargets(), [getLegalTargets]);
+  const isGameOver = game?.result !== 'ONGOING';
+  const resultDisplay = isGameOver ? getResultDisplay(game!.result, game!.side_to_move) : null;
+
+  // Render board
+  const renderBoard = () => {
+    const squares = [];
+    
+    for (let rank = 1; rank <= 5; rank++) {
+      for (let file = 1; file <= 5; file++) {
+        const notation = `${file}${String.fromCharCode(96 + rank)}`;
+        const piece = pieces.get(notation);
+        const isSelected = selection?.type === 'board' && selection.square === notation;
+        const isLegalTarget = legalTargets.has(notation);
+        const isLastMoveSquare = lastMove && (lastMove.from === notation || lastMove.to === notation);
+        const isMiddleRank = rank === 3;
+        
+        squares.push(
+          <div
+            key={notation}
+            className={`square ${isSelected ? 'selected' : ''} ${isLegalTarget ? 'legal-target' : ''} ${isLastMoveSquare ? 'last-move' : ''} ${piece ? 'has-piece' : ''} ${isMiddleRank ? 'rank-middle' : ''}`}
+            onClick={() => handleSquareClick(notation)}
+          >
+            <div className="square-dot"></div>
+            {piece && (
+              <div className={`piece ${piece.color.toLowerCase()} ${isPromoted(piece.type) ? 'promoted' : ''}`}>
+                <PieceImage type={piece.type} />
+              </div>
+            )}
+          </div>
+        );
+      }
+    }
+    
+    return squares;
+  };
+
+  // Render loading state
   if (!game) {
     return (
       <div className="loading">
         <div className="spinner"></div>
-        <span>Loading game...</span>
+        <span>Loading...</span>
       </div>
     );
   }
-
-  const pieces = parseSfenBoard(game.sfen);
-  const legalTargets = getLegalTargets();
-  const isGameOver = game.result !== 'ONGOING';
-  const files = [1, 2, 3, 4, 5];
-  const ranks = ['a', 'b', 'c', 'd', 'e'];
-  
-  // Get result display
-  const resultDisplay = isGameOver ? getResultDisplay(game.result, game.side_to_move) : null;
 
   return (
     <>
@@ -545,10 +642,10 @@ function App() {
       <p className="subtitle">{bitboardInt}</p>
       
       <div className="game-container">
-        {/* Left Sidebar - Opponent's hand */}
+        {/* Left sidebar - Opponent's hand */}
         <div className="sidebar sidebar-left">
-          <div className="hand opponent-hand">
-            <div className="hand-title">White's Hand</div>
+          <div className="hand">
+            <p className="hand-title">White's Hand</p>
             <div className="hand-pieces">
               {Object.keys(game.hand.WHITE).length === 0 ? (
                 <span className="empty-hand">Empty</span>
@@ -567,54 +664,36 @@ function App() {
         {/* Board */}
         <div className="board-wrapper">
           <div className="board-with-coords">
+            {/* File coordinates (1-5) */}
             <div className="file-coords">
-              {files.map(f => <span key={f}>{f}</span>)}
+              {[1, 2, 3, 4, 5].map(f => (
+                <span key={f}>{f}</span>
+              ))}
             </div>
             
             <div className="board-row-wrapper">
+              {/* Rank coordinates (a-e) */}
               <div className="rank-coords">
-                {ranks.map(r => <span key={r} className="rank-coord">{r}</span>)}
+                {['a', 'b', 'c', 'd', 'e'].map(r => (
+                  <span key={r} className="rank-coord">{r}</span>
+                ))}
               </div>
               
+              {/* Board with SVG lines */}
               <div className="board-container">
                 <BoardLines />
                 <div className="board">
-                  {ranks.map((rankChar, rankIdx) => (
-                    files.map(file => {
-                      const notation = `${file}${rankChar}`;
-                      const piece = pieces.get(notation);
-                      const hasPiece = piece !== undefined;
-                      const isSelected = selection?.type === 'board' && selection.square === notation;
-                      const isLegalTarget = legalTargets.has(notation);
-                      const isLastMoveSquare = lastMove?.from === notation || lastMove?.to === notation;
-                      const isMiddleRank = rankIdx === 2; // 'c' is middle rank
-                      
-                      return (
-                        <div
-                          key={notation}
-                          className={`square ${isMiddleRank ? 'rank-middle' : ''} ${hasPiece ? 'has-piece' : ''} ${isSelected ? 'selected' : ''} ${isLegalTarget ? 'legal-target' : ''} ${isLastMoveSquare ? 'last-move' : ''}`}
-                          onClick={() => handleSquareClick(notation)}
-                        >
-                          <div className="square-dot"></div>
-                          {piece && (
-                            <div className={`piece ${piece.color.toLowerCase()} ${isPromoted(piece.type) ? 'promoted' : ''}`}>
-                              <PieceImage type={piece.type} />
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })
-                  )).flat()}
+                  {renderBoard()}
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Sidebar - Player's hand + controls */}
+        {/* Right sidebar - Player's hand and controls */}
         <div className="sidebar sidebar-right">
-          <div className="hand player-hand">
-            <div className="hand-title">Your Hand</div>
+          <div className="hand">
+            <p className="hand-title">Your Hand</p>
             <div className="hand-pieces">
               {Object.keys(game.hand.BLACK).length === 0 ? (
                 <span className="empty-hand">Empty</span>
@@ -661,9 +740,9 @@ function App() {
             )}
             
             <div className="controls">
-              {/* <button onClick={resetGame} disabled={loading}>
+              <button onClick={resetGame} disabled={loading}>
                 Reset
-              </button> */}
+              </button>
               <button 
                 onClick={loadClassicGame} 
                 disabled={loading}
@@ -679,27 +758,44 @@ function App() {
                 Daily
               </button>
             </div>
+            
+            {/* Bot selector */}
+            <div className="bot-selector">
+              <label htmlFor="bot-select">Opponent:</label>
+              <select 
+                id="bot-select"
+                value={selectedBot}
+                onChange={(e) => handleBotChange(e.target.value as BotType)}
+                disabled={loading}
+              >
+                {BOT_OPTIONS.map(bot => (
+                  <option key={bot.value} value={bot.value}>
+                    {bot.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <p className="help-text">
-            Click a piece, then click where to move. Green dots show legal moves.
+            Click a piece to select, then click a destination. Green dots show legal moves.
           </p>
         </div>
       </div>
 
-      {/* Promotion Dialog */}
+      {/* Promotion dialog */}
       {promotionChoice && (
-        <div className="promotion-overlay" onClick={() => setPromotionChoice(null)}>
-          <div className="promotion-dialog" onClick={e => e.stopPropagation()}>
+        <div className="promotion-overlay">
+          <div className="promotion-dialog">
             <h3>Promote piece?</h3>
             <div className="promotion-choices">
               <div className="promotion-choice" onClick={() => handlePromotionChoice(true)}>
-                <div className="piece promoted">
-                  <PieceImage type={`PROMOTED_${promotionChoice.pieceType}`} />
+                <div className="piece black promoted">
+                  <PieceImage type={`PROMOTED_${promotionChoice.pieceType}` as PieceType} />
                 </div>
               </div>
               <div className="promotion-choice" onClick={() => handlePromotionChoice(false)}>
-                <div className="piece">
+                <div className="piece black">
                   <PieceImage type={promotionChoice.pieceType} />
                 </div>
               </div>
@@ -709,13 +805,9 @@ function App() {
       )}
 
       {/* Footer */}
-      <footer className="footer" style={{ textAlign: 'center'}}>
-        <div>
-        Author: Sam Ghalayini - <a href="https://github.com/sam-ghala/BitShogi" target="_blank" rel="noopener noreferrer">Code</a>
-        </div>
-        <div style={{ fontSize: '0.8em', opacity: 0.8, marginTop: '4px' }}>
-        playing a little bit every day using bitboards
-        </div>
+      <footer className="footer">
+        <p>Author: Sam Ghalayini - <a href="https://github.com/SamGhalayworx/BitShogi" target="_blank" rel="noopener noreferrer">Code</a></p>
+        <p>playing a little bit every day using bitboards</p>
       </footer>
     </>
   );
