@@ -590,8 +590,8 @@ function App() {
   // Compute derived state
   const pieces = useMemo(() => game ? parseSfenBoard(game.sfen) : new Map(), [game?.sfen]);
   const legalTargets = useMemo(() => getLegalTargets(), [getLegalTargets]);
-  const isGameOver = game?.result !== 'ONGOING';
-  const resultDisplay = isGameOver ? getResultDisplay(game!.result, game!.side_to_move) : null;
+  const isGameOver = game !== null && game.result !== 'ONGOING';
+  const resultDisplay = isGameOver ? getResultDisplay(game.result, game.side_to_move) : null;
 
   // Render board
   const renderBoard = () => {
@@ -740,9 +740,9 @@ function App() {
             )}
             
             <div className="controls">
-              <button onClick={resetGame} disabled={loading}>
+              {/* <button onClick={resetGame} disabled={loading}>
                 Reset
-              </button>
+              </button> */}
               <button 
                 onClick={loadClassicGame} 
                 disabled={loading}
@@ -805,7 +805,7 @@ function App() {
       )}
 
       {/* Footer */}
-      <footer className="footer">
+      <footer className="footer" style={{ textAlign: 'center'}}>
         <p>Author: Sam Ghalayini - <a href="https://github.com/SamGhalayworx/BitShogi" target="_blank" rel="noopener noreferrer">Code</a></p>
         <p>playing a little bit every day using bitboards</p>
       </footer>
