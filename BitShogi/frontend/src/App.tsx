@@ -134,29 +134,35 @@ function getResultDisplay(result: string, sideToMove: string): { text: string; i
   // Debug log to see actual result value
   console.log('Game result:', result, 'Side to move:', sideToMove);
   
-  const resultUpper = result.toUpperCase();
+  const resultUpper = result.toUpperCase().trim();
   
   // Check various win conditions for BLACK (human player)
   // If WHITE is in checkmate or BLACK wins
   if (resultUpper.includes('BLACK_WIN') || 
-      resultUpper.includes('BLACKWIN') ||
-      resultUpper === 'CHECKMATE_WHITE' ||
-      resultUpper === 'WHITE_CHECKMATE') {
+      resultUpper.includes('BLACKWIN')) {
     return { text: '🎉 You Win!', isWin: true };
   }
   
   // Check various win conditions for WHITE (bot)
   if (resultUpper.includes('WHITE_WIN') || 
-      resultUpper.includes('WHITEWIN') ||
-      resultUpper === 'CHECKMATE_BLACK' ||
-      resultUpper === 'BLACK_CHECKMATE') {
+      resultUpper.includes('WHITEWIN')) {
     return { text: 'Bot Wins', isWin: false };
   }
   
-  // Generic CHECKMATE - determine winner by who was NOT to move
+  // Any result containing CHECKMATE or just MATE - determine winner by side to move
   // When checkmate happens, the side to move is the one who is checkmated
-  if (resultUpper === 'CHECKMATE') {
-    // If it's WHITE's turn and it's checkmate, WHITE is checkmated, BLACK wins
+  if (resultUpper.includes('CHECKMATE') || resultUpper.includes('MATE')) {
+    // Check if result specifies the winner
+    if (resultUpper.includes('WHITE') || resultUpper.includes('W_')) {
+      // WHITE is checkmated, BLACK wins
+      return { text: '🎉 You Win!', isWin: true };
+    }
+    if (resultUpper.includes('BLACK') || resultUpper.includes('B_')) {
+      // BLACK is checkmated, WHITE wins
+      return { text: 'Bot Wins', isWin: false };
+    }
+    // Generic checkmate - determine by side to move
+    // The side to move when checkmated is the loser
     if (sideToMove === 'WHITE') {
       return { text: '🎉 You Win!', isWin: true };
     } else {
@@ -164,12 +170,18 @@ function getResultDisplay(result: string, sideToMove: string): { text: string; i
     }
   }
   
-  // Stalemate or other draws
-  if (resultUpper.includes('STALEMATE') || resultUpper.includes('DRAW')) {
+  // Stalemate (no legal moves but not in check) - this is a draw
+  if (resultUpper.includes('STALEMATE')) {
+    return { text: 'Draw (Stalemate)', isWin: false };
+  }
+  
+  // Explicit draw
+  if (resultUpper.includes('DRAW')) {
     return { text: 'Draw', isWin: false };
   }
   
-  // Fallback - shouldn't reach here normally
+  // Fallback - show the actual result so we can debug
+  console.warn('Unknown game result:', result);
   return { text: `Game Over: ${result}`, isWin: false };
 }
 
