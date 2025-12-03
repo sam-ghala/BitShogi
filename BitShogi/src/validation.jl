@@ -476,7 +476,7 @@ function format_move_verbose(move::Move, state::BoardState)::String
     to_sq = move_to(move)
     pt = move_piece(move)
     is_promo = move_is_promotion(move)
-    captured = move_captured(move)
+    captured = move_capture(move)
     
     piece_char = get(PIECE_TYPE_TO_CHAR, pt, '?')
     

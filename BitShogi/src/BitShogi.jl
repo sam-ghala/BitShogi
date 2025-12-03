@@ -9,5 +9,8 @@ include("board_state.jl")
 include("move_generation.jl")
 include("validation.jl")
 include("game_state.jl")
+include("perft.jl")
+include("bot.jl")
+include("api.jl")
 
 end

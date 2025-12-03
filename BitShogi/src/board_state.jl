@@ -187,6 +187,11 @@ function update_occupied!(state::BoardState)
     state.occupied = state.occupied_by[Int(BLACK)] | state.occupied_by[Int(WHITE)]
 end
 
+@inline function is_empty_sq(state::BoardState, sq::Int)::Bool
+    return !test_bit(state.occupied, sq)
+end
+# @inline is_empty_sq(state::BoardState, sq::Int)::Bool = !test_bit(state.occupied, sq)
+
 #all pieces of one color
 @inline pieces(state::BoardState, color::Color)::Bitboard = state.occupied_by[Int(color)]
 # all occupied squares bitboard
@@ -196,7 +201,8 @@ end
 # is square occupied by color
 @inline is_occupied_by(state::BoardState, sq::Int, color::Color)::Bool = test_bit(state.occupied_by[Int(color)], sq)
 # king square 
-@inline king_square(state::BoardState, color::Color)::Bitboard = state.king_sq[Int(color)]
+# @inline king_square(state::BoardState, color::Color)::Bitboard = state.king_sq[Int(color)]
+@inline king_square(state::BoardState, color::Color)::Int = state.king_sq[Int(color)]
 
 # what piece on given square
 function piece_at(state::BoardState, sq::Int)::Union{Tuple{PieceType, Color}, Nothing}
