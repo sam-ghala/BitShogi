@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import './index.css';
 import * as api from './api/client';
 
@@ -884,8 +885,9 @@ function App() {
       )}
 
       {/* Footer */}
-      <footer className="footer">
-        <p>Author: Sam Ghalayini - <a href="https://github.com/SamGhalayworx/BitShogi" target="_blank" rel="noopener noreferrer">Code</a></p>
+      <footer className="footer" style={{ textAlign: 'center'}}>
+        <p>Author: Sam Ghalayini</p>
+        <p><a href="https://github.com/SamGhalayworx/BitShogi" target="_blank" rel="noopener noreferrer">Code</a> - <Link to="/rules">Rules</Link></p>
         <p>playing a little bit every day using bitboards</p>
       </footer>
     </>
