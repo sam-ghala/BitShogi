@@ -678,7 +678,7 @@ function App() {
         const isSelected = selection?.type === 'board' && selection.square === notation;
         const isLegalTarget = legalTargets.has(notation);
         const isLastMoveSquare = lastMove && (lastMove.from === notation || lastMove.to === notation);
-        const isMiddleRank = rank === 3;
+        const isMiddleRank = rank === 3 || rank === 2 || rank === 4;
         
         squares.push(
           <div
@@ -891,6 +891,7 @@ function App() {
         <p><a href="https://github.com/SamGhalayworx/BitShogi" target="_blank" rel="noopener noreferrer">Code</a> - <Link to="/rules">Rules</Link></p>
         <p>playing a little bit every day using bitboards</p>
       </footer>
+      <Analytics />
     </>
   );
 }

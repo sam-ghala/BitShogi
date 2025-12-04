@@ -44,7 +44,7 @@ const MAX_HAND_COUNT = 2 # can have one of your opponent's piece and your own pi
 # ---------------------------------------------------------------------------
 # SECTION 3: Promotion Zones
 # ---------------------------------------------------------------------------
-const PROMOTION_ZONE_SIZE = 2
+const PROMOTION_ZONE_SIZE = 1
 const BLACK_PROMOTION_RANKS = 1:PROMOTION_ZONE_SIZE
 const WHITE_PROMOTION_RANKS = (BOARD_SIZE - PROMOTION_ZONE_SIZE + 1):BOARD_SIZE
 const BLACK_MUST_PROMOTE_RANK = 1
