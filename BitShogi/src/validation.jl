@@ -98,7 +98,7 @@ function parse_drop_move(notation::AbstractString, state::BoardState, color::Col
 
     # destination
     to_sq = parse_square(notation[3:end])
-    if to_sq == nothing 
+    if to_sq === nothing 
         return nothing 
     end
     # piece in hand?
