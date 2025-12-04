@@ -1,6 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg fill="#A07A4A" width="800px" height="800px" viewBox="0 0 24 24" id="plus" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color">
-  <circle cx="12" cy="12" r="4" fill="#A07A4A"/>
-    
-  <path id="primary" d="M5,12H19M12,5V19" transform="rotate(45 12 12)" style="fill: none; stroke: #A07A4A; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>
+<svg width="64px" height="64px" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <path fill="#7A5C38" d="M26.667 26.667H37.333V37.333H26.667V26.667z"/>
+  
+  <path fill="#A07A4A" d="M16 16H26.667V26.667H16V16z"/>
+  <path fill="#A07A4A" d="M37.333 16H48V26.667H37.333V16z"/>
+  <path fill="#A07A4A" d="M16 37.333H26.667V48H16V37.333z"/>
+  <path fill="#A07A4A" d="M37.333 37.333H48V48H37.333V37.333z"/>
+  
+  <path fill="#A07A4A" d="M5.333 5.333H16V16H5.333V5.333z"/> <path fill="#A07A4A" d="M48 5.333H58.667V16H48V5.333z"/>    <path fill="#A07A4A" d="M5.333 48H16V58.667H5.333V48z"/>     <path fill="#A07A4A" d="M48 48H58.667V58.667H48V48z"/>       <path fill="#C29A6B" d="M26.667 16H37.333V26.667H26.667V16z"/>
+  <path fill="#C29A6B" d="M26.667 37.333H37.333V48H26.667V37.333z"/>
+  <path fill="#C29A6B" d="M16 26.667H26.667V37.333H16V26.667z"/>
+  <path fill="#C29A6B" d="M37.333 26.667H48V37.333H37.333V26.667z"/>
 </svg>

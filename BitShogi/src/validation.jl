@@ -199,8 +199,8 @@ function validate_drop_move(state::BoardState, move::Move, color::Color)::Tuple{
     end
     # lance restrictions 
         if pt == LANCE
-        if (color == BLACK && rank == BLACK_MUST_PROMOTE_PAWN_RANK) ||
-           (color == WHITE && rank == WHITE_MUST_PROMOTE_PAWN_RANK)
+        if (color == BLACK && rank == BLACK_MUST_PROMOTE_RANK) ||
+           (color == WHITE && rank == WHITE_MUST_PROMOTE_RANK)
             return (false, "Cannot drop lance on last rank")
         end
     end

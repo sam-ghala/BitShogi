@@ -292,7 +292,7 @@ end
 end
 @inline function lance_attacks(sq::Int, occupied::Bitboard, color::Color)::Bitboard
     entry = LANCE_MAGICS[Int(color), sq]
-    if is_empty(entry.attacks)
+    if isempty(entry.attacks)
         return EMPTY_BB
     end
 

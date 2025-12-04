@@ -5,48 +5,70 @@
 #   generate_puzzle_file(365, "frontend/public/puzzles.json")
 #
 # This creates puzzles.json in the frontend/public folder
+#
+# Pieces available (depends on engine support):
+#   P/p = Pawn, L/l = Lance, N/n = Knight, S/s = Silver, G/g = Gold
+#   B/b = Bishop, R/r = Rook, K/k = King
+#
+# Note: If certain piece types fail to generate, the engine may not support them yet.
 
 using Random
 using JSON3
 
+# Standard minishogi position - will be filtered out
+const STANDARD_SFEN = "rbsgk/4p/5/P4/KGSBR b - 1"
+
 # Piece configurations (black_pieces, white_pieces) - SFEN characters
+# Configs are tagged with which non-minishogi pieces they use for diagnostics
 const PUZZLE_PIECE_CONFIGS = [
-    # Full armies
-    (["G", "S", "B", "R", "P"], ["g", "s", "b", "r", "p"]),
-    # No bishops
-    (["G", "S", "R", "P", "P"], ["g", "s", "r", "p", "p"]),
-    # No rooks  
-    (["G", "S", "B", "P", "P"], ["g", "s", "b", "p", "p"]),
-    # Heavy pieces only
-    (["R", "B"], ["r", "b"]),
-    # Gold vs Silver
-    (["G", "G", "P", "P"], ["s", "s", "p", "p"]),
-    # Minimal generals
-    (["G", "S"], ["g", "s"]),
-    # Rook battle
-    (["R", "G", "P"], ["r", "g", "p"]),
-    # Bishop battle
-    (["B", "S", "P"], ["b", "s", "p"]),
-    # Asymmetric Rook vs Bishop
-    (["R", "G", "P"], ["b", "s", "p", "p"]),
-    # Pawn army
-    (["G", "P", "P", "P"], ["g", "p", "p", "p"]),
-    # Double generals
-    (["G", "G", "S", "P"], ["g", "g", "s", "p"]),
-    # Power pieces
-    (["R", "B", "G"], ["r", "b", "g"]),
-    # Heavy vs Light
-    (["R", "R"], ["g", "s", "p", "p", "p"]),
-    # All silvers
-    (["S", "S", "P", "P"], ["s", "s", "p", "p"]),
-    # No pawns
-    (["G", "S", "B", "R"], ["g", "s", "b", "r"]),
+    # === Classic minishogi configs (no L/N) ===
+    (["G", "S", "B", "R", "P"], ["g", "s", "b", "r", "p"], "minishogi"),
+    (["G", "S", "R", "P", "P"], ["g", "s", "r", "p", "p"], "minishogi"),
+    (["G", "S", "B", "P", "P"], ["g", "s", "b", "p", "p"], "minishogi"),
+    (["R", "B"], ["r", "b"], "minishogi"),
+    (["G", "G", "P", "P"], ["s", "s", "p", "p"], "minishogi"),
+    (["G", "S"], ["g", "s"], "minishogi"),
+    (["R", "G", "P"], ["r", "g", "p"], "minishogi"),
+    (["B", "S", "P"], ["b", "s", "p"], "minishogi"),
+    (["R", "G", "P"], ["b", "s", "p", "p"], "minishogi"),
+    (["G", "P", "P", "P"], ["g", "p", "p", "p"], "minishogi"),
+    (["G", "G", "S", "P"], ["g", "g", "s", "p"], "minishogi"),
+    (["R", "B", "G"], ["r", "b", "g"], "minishogi"),
+    (["R", "R"], ["g", "s", "p", "p", "p"], "minishogi"),
+    (["S", "S", "P", "P"], ["s", "s", "p", "p"], "minishogi"),
+    (["G", "S", "B", "R"], ["g", "s", "b", "r"], "minishogi"),
+    
+    # === Configs with Lance ===
+    (["L", "L", "G", "P"], ["l", "l", "g", "p"], "lance"),
+    (["R", "L", "G", "P"], ["r", "l", "g", "p"], "lance"),
+    (["L", "L", "L", "G"], ["l", "l", "s", "p"], "lance"),
+    (["L", "L", "S", "P"], ["b", "g", "p", "p"], "lance"),
+    (["G", "S", "B", "L", "P"], ["g", "s", "b", "l", "p"], "lance"),
+    
+    # === Configs with Knight ===
+    (["N", "N", "G", "P"], ["n", "n", "g", "p"], "knight"),
+    (["N", "B", "G", "P"], ["n", "b", "g", "p"], "knight"),
+    (["N", "N", "S", "S"], ["n", "n", "s", "s"], "knight"),
+    (["N", "N", "G", "P", "P"], ["r", "g", "p"], "knight"),
+    (["G", "S", "B", "N", "P"], ["g", "s", "b", "n", "p"], "knight"),
+    
+    # === Mixed Lance and Knight ===
+    (["L", "N", "G", "P"], ["l", "n", "g", "p"], "lance+knight"),
+    (["L", "N", "S", "G", "B"], ["l", "n", "s", "g", "b"], "lance+knight"),
+    (["L", "L", "N", "N"], ["l", "l", "n", "n"], "lance+knight"),
+    (["R", "L", "N", "G"], ["r", "l", "n", "g"], "lance+knight"),
+    (["L", "N", "S", "G", "R"], ["l", "n", "s", "g", "r"], "lance+knight"),
 ]
 
 const PUZZLE_PIECE_VALUES = Dict(
-    "P" => 1, "p" => 1, "S" => 5, "s" => 5,
-    "G" => 5, "g" => 5, "B" => 8, "b" => 8,
-    "R" => 9, "r" => 9, "K" => 0, "k" => 0
+    "P" => 1, "p" => 1, 
+    "L" => 3, "l" => 3,   # Lance - forward only but long range
+    "N" => 3, "n" => 3,   # Knight - jumping piece
+    "S" => 5, "s" => 5,
+    "G" => 5, "g" => 5, 
+    "B" => 8, "b" => 8,
+    "R" => 9, "r" => 9, 
+    "K" => 0, "k" => 0
 )
 
 """
@@ -182,53 +204,96 @@ function is_valid_puzzle(sfen::String)::Bool
         
         return true
     catch e
-        # Position is invalid (e.g., king can be captured)
+        # Position is invalid (e.g., king can be captured, unsupported piece type)
         return false
     end
 end
 
 """
-Generate a single valid puzzle.
+Generate a single valid puzzle. Returns (sfen, bitboard, success).
 """
-function generate_one_puzzle(seed::UInt64, config_idx::Int)::Tuple{String, UInt32}
-    black_pieces, white_pieces = PUZZLE_PIECE_CONFIGS[config_idx]
+function generate_one_puzzle(seed::UInt64, config_idx::Int)::Tuple{String, UInt32, Bool}
+    black_pieces, white_pieces, _ = PUZZLE_PIECE_CONFIGS[config_idx]
     
-    for attempt in 1:2000  # Increased attempts since many positions are invalid
+    for attempt in 1:2000
         rng = MersenneTwister(seed + UInt64(attempt))
         sfen = generate_puzzle_sfen(rng, black_pieces, white_pieces)
         if sfen !== nothing && is_valid_puzzle(sfen)
-            return (sfen, sfen_to_bitboard(sfen))
+            return (sfen, sfen_to_bitboard(sfen), true)
         end
     end
     
-    # Fallback to standard position
-    standard = "rbsgk/4p/5/P4/KGSBR b - 1"
-    return (standard, sfen_to_bitboard(standard))
+    # Failed to generate valid puzzle for this config
+    return ("", UInt32(0), false)
 end
 
 """
 Generate N puzzles and save to JSON file.
+Filters out the standard minishogi position and failed configs.
 """
 function generate_puzzle_file(n::Int=365, output_path::String="frontend/public/puzzles.json")
     println("Generating $n puzzles...")
+    println("Using $(length(PUZZLE_PIECE_CONFIGS)) piece configurations")
     
     puzzles = Vector{Dict{String, Any}}()
+    config_success = Dict{String, Int}()
+    config_fail = Dict{String, Int}()
     
-    for day in 1:n
-        seed = UInt64(20241203 * 10000 + day)  # Base seed + day
-        config_idx = ((day - 1) % length(PUZZLE_PIECE_CONFIGS)) + 1
+    day = 1
+    attempts = 0
+    max_attempts = n * 3  # Allow extra attempts to hit target count
+    
+    while length(puzzles) < n && attempts < max_attempts
+        attempts += 1
+        seed = UInt64(20241203 * 10000 + attempts)
+        config_idx = ((attempts - 1) % length(PUZZLE_PIECE_CONFIGS)) + 1
+        _, _, tag = PUZZLE_PIECE_CONFIGS[config_idx]
         
-        sfen, bitboard = generate_one_puzzle(seed, config_idx)
+        sfen, bitboard, success = generate_one_puzzle(seed, config_idx)
+        
+        if !success
+            config_fail[tag] = get(config_fail, tag, 0) + 1
+            continue
+        end
+        
+        # Filter out standard position
+        if sfen == STANDARD_SFEN
+            continue
+        end
+        
+        config_success[tag] = get(config_success, tag, 0) + 1
         
         push!(puzzles, Dict(
-            "day" => day,
+            "day" => length(puzzles) + 1,
             "sfen" => sfen,
             "bitboard" => bitboard
         ))
         
-        if day % 50 == 0
-            println("  Generated $day / $n puzzles")
+        if length(puzzles) % 50 == 0
+            println("  Generated $(length(puzzles)) / $n puzzles")
         end
+    end
+    
+    # Print diagnostics
+    println("\n=== Config Success Rates ===")
+    for tag in sort(collect(keys(config_success)))
+        s = get(config_success, tag, 0)
+        f = get(config_fail, tag, 0)
+        total = s + f
+        pct = total > 0 ? round(100 * s / total, digits=1) : 0
+        println("  $tag: $s/$total ($pct%)")
+    end
+    
+    # Check for configs that never succeeded
+    for tag in sort(collect(keys(config_fail)))
+        if !haskey(config_success, tag)
+            println("  ⚠️  $tag: 0 successes - engine may not support these pieces!")
+        end
+    end
+    
+    if length(puzzles) < n
+        println("\n⚠️  Only generated $(length(puzzles)) puzzles (target: $n)")
+        println("   Some piece configurations may not be supported by the engine.")
     end
     
     # Write to JSON file
@@ -236,7 +301,7 @@ function generate_puzzle_file(n::Int=365, output_path::String="frontend/public/p
         JSON3.pretty(f, puzzles)
     end
     
-    println("Saved to $output_path")
+    println("\nSaved $(length(puzzles)) puzzles to $output_path")
     return puzzles
 end
 
@@ -245,10 +310,55 @@ Quick test - generate and print a few puzzles.
 """
 function test_generator(n::Int=5)
     println("Testing puzzle generator...")
-    for day in 1:n
-        seed = UInt64(20241203 * 10000 + day)
-        config_idx = ((day - 1) % length(PUZZLE_PIECE_CONFIGS)) + 1
-        sfen, bb = generate_one_puzzle(seed, config_idx)
-        println("Day $day: $sfen (bitboard: $bb)")
+    for i in 1:n
+        seed = UInt64(20241203 * 10000 + i)
+        config_idx = ((i - 1) % length(PUZZLE_PIECE_CONFIGS)) + 1
+        black, white, tag = PUZZLE_PIECE_CONFIGS[config_idx]
+        sfen, bb, success = generate_one_puzzle(seed, config_idx)
+        if success
+            println("Config $config_idx ($tag): $sfen (bitboard: $bb)")
+        else
+            println("Config $config_idx ($tag): FAILED - engine may not support pieces: $black / $white")
+        end
     end
 end
+
+"""
+Test which piece types are supported by the engine.
+"""
+function test_piece_support()
+    println("Testing piece type support...")
+    
+    # Test positions where pieces are placed safely (kings far apart, no immediate captures)
+    test_positions = [
+        ("Pawn",   "4k/5/5/2P2/K4 b - 1"),
+        ("Silver", "4k/5/5/2S2/K4 b - 1"),
+        ("Gold",   "4k/5/5/2G2/K4 b - 1"),
+        ("Bishop", "4k/5/5/2B2/K4 b - 1"),
+        ("Rook",   "4k/5/5/2R2/K4 b - 1"),
+        ("Lance",  "4k/5/5/2L2/K4 b - 1"),
+        ("Knight", "4k/5/2N2/5/K4 b - 1"),  # Knight needs room to jump
+    ]
+    
+    for (name, sfen) in test_positions
+        try
+            state = parse_sfen(sfen)
+            if state === nothing
+                println("  $name: ❌ parse_sfen returned nothing")
+                continue
+            end
+            moves = generate_legal_moves(state.board, state.side_to_move)
+            println("  $name: ✓ $(length(moves)) legal moves")
+        catch e
+            println("  $name: ❌ Error: $(typeof(e))")
+            # Print more detail for debugging
+            if e isa MethodError
+                println("         Method: $(e.f), Args: $(typeof.(e.args))")
+            else
+                println("         $e")
+            end
+        end
+    end
+end
+# test_piece_support()
+generate_puzzle_file(1000)

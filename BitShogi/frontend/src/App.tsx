@@ -286,8 +286,9 @@ function App() {
   // Daily puzzle state
   const [bitboardInt, setBitboardInt] = useState<number>(32539167);
   const [dailyPuzzle, setDailyPuzzle] = useState<GameState | null>(null);
+  const [randomPuzzle, setRandomPuzzle] = useState<GameState | null>(null);
   const [classicStartPosition, setClassicStartPosition] = useState<GameState | null>(null);
-  const [mode, setMode] = useState<'daily' | 'classic'>('daily');
+  const [mode, setMode] = useState<'daily' | 'classic' | 'random'>('daily');
   const [puzzles, setPuzzles] = useState<api.PuzzleData[] | null>(null);
   const [initialized, setInitialized] = useState(false);
   
@@ -378,6 +379,54 @@ function App() {
     setLoading(false);
   }, []);
 
+  // Load a random puzzle from the list
+  const loadRandomPuzzle = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    setSelection(null);
+    setLastMove(null);
+    setMode('random');
+    
+    try {
+      if (puzzles && puzzles.length > 0) {
+        // Pick a random puzzle
+        const randomIndex = Math.floor(Math.random() * puzzles.length);
+        const puzzle = puzzles[randomIndex];
+        
+        setBitboardInt(puzzle.bitboard);
+        
+        // Load the position to get legal moves, etc.
+        const gameState = await api.loadPosition(puzzle.sfen);
+        if (gameState.success) {
+          setRandomPuzzle(gameState);
+          setGame(gameState);
+          setLoading(false);
+          return;
+        }
+      }
+      
+      // Fallback to classic game if puzzles not loaded
+      console.warn('Puzzles not loaded, falling back to classic game');
+      const newGame = await api.newGame();
+      setBitboardInt(32539167);
+      setGame(newGame);
+      setClassicStartPosition(newGame);
+      setMode('classic');
+    } catch (e: any) {
+      console.warn('Random puzzle failed:', e);
+      try {
+        const newGame = await api.newGame();
+        setBitboardInt(32539167);
+        setGame(newGame);
+        setClassicStartPosition(newGame);
+        setMode('classic');
+      } catch (e2: any) {
+        setError(e2.message || 'Failed to start game');
+      }
+    }
+    setLoading(false);
+  }, [puzzles]);
+
   // Reset to current mode's starting position
   const resetGame = useCallback(() => {
     setSelection(null);
@@ -388,12 +437,16 @@ function App() {
       setGame(dailyPuzzle);
     } else if (mode === 'classic' && classicStartPosition) {
       setGame(classicStartPosition);
+    } else if (mode === 'random' && randomPuzzle) {
+      setGame(randomPuzzle);
     } else if (mode === 'daily') {
       loadDailyPuzzle();
+    } else if (mode === 'random') {
+      loadRandomPuzzle();
     } else {
       loadClassicGame();
     }
-  }, [mode, dailyPuzzle, classicStartPosition, loadDailyPuzzle, loadClassicGame]);
+  }, [mode, dailyPuzzle, classicStartPosition, randomPuzzle, loadDailyPuzzle, loadClassicGame, loadRandomPuzzle]);
 
   // Handle bot change - reset game when bot changes
   const handleBotChange = useCallback((newBot: BotType) => {
@@ -407,12 +460,16 @@ function App() {
       setGame(dailyPuzzle);
     } else if (mode === 'classic' && classicStartPosition) {
       setGame(classicStartPosition);
+    } else if (mode === 'random' && randomPuzzle) {
+      setGame(randomPuzzle);
     } else if (mode === 'daily') {
       loadDailyPuzzle();
+    } else if (mode === 'random') {
+      loadRandomPuzzle();
     } else {
       loadClassicGame();
     }
-  }, [mode, dailyPuzzle, classicStartPosition, loadDailyPuzzle, loadClassicGame]);
+  }, [mode, dailyPuzzle, classicStartPosition, randomPuzzle, loadDailyPuzzle, loadClassicGame, loadRandomPuzzle]);
 
   // Initialize game on mount - only runs once when puzzles are loaded
   useEffect(() => {
@@ -467,8 +524,11 @@ function App() {
       };
       setGame(newState);
       
-      // Bot's turn - use selected bot type
+      // Bot's turn - use selected bot type with 2 second delay for "thinking" effect
       if (newState.result === 'ONGOING' && newState.side_to_move === 'WHITE') {
+        // Keep loading true, delay before bot moves
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
         const botMoveResult = await api.getBotMove(newState.sfen, selectedBot);
         
         if (botMoveResult.success && botMoveResult.move) {
@@ -657,7 +717,7 @@ function App() {
         {/* Left sidebar - Opponent's hand */}
         <div className="sidebar sidebar-left">
           <div className="hand">
-            <p className="hand-title">White's Hand</p>
+            <p className="hand-title">Bot's Hand</p>
             <div className="hand-pieces">
               {Object.keys(game.hand.WHITE).length === 0 ? (
                 <span className="empty-hand">Empty</span>
@@ -727,8 +787,8 @@ function App() {
           {/* Game Info */}
           <div className="game-info">
             {!isGameOver && (
-              <div className="turn-indicator">
-                <span className="turn-dot"></span>
+              <div className={`turn-indicator ${game.side_to_move === 'WHITE' ? 'thinking' : ''}`}>
+                <span className={`turn-dot ${game.side_to_move === 'WHITE' ? 'pulse' : ''}`}></span>
                 <span>{game.side_to_move === 'BLACK' ? 'Your turn' : 'Thinking...'}</span>
               </div>
             )}
@@ -769,11 +829,18 @@ function App() {
               >
                 Daily
               </button>
+              <button 
+                onClick={loadRandomPuzzle} 
+                disabled={loading}
+                className={`random-btn ${mode === 'random' ? 'active' : ''}`}
+              >
+                Random
+              </button>
             </div>
             
             {/* Bot selector */}
             <div className="bot-selector">
-              <label htmlFor="bot-select">Opponent:</label>
+              <label htmlFor="bot-select">Bot:</label>
               <select 
                 id="bot-select"
                 value={selectedBot}
@@ -817,7 +884,7 @@ function App() {
       )}
 
       {/* Footer */}
-      <footer className="footer" style={{ textAlign: 'center'}}>
+      <footer className="footer">
         <p>Author: Sam Ghalayini - <a href="https://github.com/SamGhalayworx/BitShogi" target="_blank" rel="noopener noreferrer">Code</a></p>
         <p>playing a little bit every day using bitboards</p>
       </footer>

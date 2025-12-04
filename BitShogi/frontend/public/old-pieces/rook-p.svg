@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg fill="#A07A4A" width="800px" height="800px" viewBox="0 0 24 24" id="plus" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" class="icon flat-line">
+  <circle cx="12" cy="12" r="5" fill="#A07A4A"/>
+    
+  <path id="primary" d="M2,12H22M12,2V22" style="fill: none; stroke: #A07A4A; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3;"></path>
+</svg>

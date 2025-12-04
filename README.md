@@ -17,6 +17,7 @@ A chess-like game engine implemented in Julia.
 * **Chess & Bitboards:** [Chess Programming Wiki - Bitboards](https://www.chessprogramming.org/Bitboards)
 * **Protocols:** [USI (Universal Shogi Interface) Protocol](https://www.chessprogramming.org/USI)
 * **Engine Dev:** [Computer Shogi Association](http://www2.computer-shogi.org/protocol/)
+* **ML Chess:**[Mastering Chess with a Transformer Model](https://arxiv.org/abs/2409.12272)
 
 ### Project Structure
 * **`BitShogi/src`**: Core game logic (Julia). Implements bitboards, move generation, and validation.

@@ -182,12 +182,35 @@ h1 {
   gap: 0.5rem;
 }
 
+.turn-indicator.thinking {
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
 .turn-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--accent-gold);
-  animation: pulse 1.5s infinite;
+}
+
+.turn-dot.pulse {
+  background: #f0c040;
+  animation: thinking-pulse 0.8s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(240, 192, 64, 0.6);
+}
+
+@keyframes thinking-pulse {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(240, 192, 64, 0.6);
+  }
+  50% { 
+    opacity: 0.7; 
+    transform: scale(1.2);
+    box-shadow: 0 0 16px rgba(240, 192, 64, 0.9);
+  }
 }
 
 @keyframes pulse {
@@ -260,6 +283,11 @@ button.active {
 button.daily-btn.active {
   background: var(--accent-green);
   box-shadow: 0 2px 8px rgba(68, 170, 153, 0.4);
+}
+
+button.random-btn.active {
+  background: var(--accent-pink);
+  box-shadow: 0 2px 8px rgba(255, 107, 157, 0.4);
 }
 
 button:disabled {

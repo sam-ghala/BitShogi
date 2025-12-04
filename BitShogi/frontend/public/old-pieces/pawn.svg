@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  License: PD. Made by mapbox: https://github.com/mapbox/maki 
+  Modified to be a 2x1 grid of touching circles, centered in the 15x15 viewBox. 
+-->
+<svg width="800px" height="800px" viewBox="0 0 15 15" version="1.1" id="circle-grid" xmlns="http://www.w3.org/2000/svg">
+  
+  <!-- BACKGROUND: Represents the wooden Go board surface (warm brown tone) -->
+  <rect x="0" y="0" width="15" height="15" fill="#0000" />
+  
+  <!-- 
+    The viewBox is 15x15. Radius (r) is 2.5 units.
+    The 2 circles (diameter 5 each) are centered vertically and horizontally.
+    Centered X: (15 - 5) / 2 + 2.5 = 7.5
+    Centered Y Top: (15 - 10) / 2 + 2.5 = 5.0
+    Centered Y Bottom: 5.0 + 5.0 = 10.0
+  -->
+
+  <!-- Top Circle (cy="5.0") -->
+  <circle cx="7.5" cy="5.0" r="2.5" fill="#A07A4A" />
+
+  <!-- Bottom Circle (cy="10.0") -->
+  <circle cx="7.5" cy="10.0" r="2.5" fill="#A07A4A" />
+
+</svg>
