@@ -830,3 +830,70 @@ button:disabled {
     height: 24px;
   }
 }
+
+/* Custom SFEN input - bit themed */
+.custom-sfen {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.custom-sfen-label {
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.custom-sfen-input {
+  display: inline-flex;
+  gap: 0;
+  justify-content: center;
+  background: var(--board-bg);
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.custom-sfen-input input {
+  padding: 0.5rem 0.75rem;
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 0.7rem;
+  border: none;
+  border-radius: 2px 0 0 2px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-dark);
+  width: 240px;
+}
+
+.custom-sfen-input input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.custom-sfen-input input:focus {
+  outline: none;
+  background: #fff;
+}
+
+.custom-sfen-input button {
+  padding: 0.5rem 0.75rem;
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  border: none;
+  border-radius: 0 2px 2px 0;
+  background: var(--dot-filled);
+  color: var(--board-bg);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.custom-sfen-input button:hover:not(:disabled) {
+  background: #fff;
+}
+
+.custom-sfen-input button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

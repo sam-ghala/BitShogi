@@ -278,6 +278,7 @@ function App() {
   const [selection, setSelection] = useState<Selection | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [customSfen, setCustomSfen] = useState<string>('');
   const [lastMove, setLastMove] = useState<{ from?: string; to?: string } | null>(null);
   const [promotionChoice, setPromotionChoice] = useState<{
     from: string;
@@ -431,6 +432,30 @@ function App() {
 
   // call it from the console 
   (window as any).loadRandomPuzzle = loadRandomPuzzle;
+
+  // Load a custom SFEN position
+  const loadCustomPosition = useCallback(async () => {
+    if (!customSfen.trim()) return;
+    
+    setLoading(true);
+    setError(null);
+    setSelection(null);
+    setLastMove(null);
+    setMode('random'); // reuse random mode for custom
+    
+    try {
+      const gameState = await api.loadPosition(customSfen.trim());
+      if (gameState.success) {
+        setBitboardInt(0); // no bitboard for custom
+        setGame(gameState);
+      } else {
+        setError('Invalid SFEN format');
+      }
+    } catch (e: any) {
+      setError(e.message || 'Failed to load position');
+    }
+    setLoading(false);
+  }, [customSfen]);
 
   // Reset to current mode's starting position
   const resetGame = useCallback(() => {
@@ -888,11 +913,30 @@ function App() {
         </div>
       )}
 
+      {/* Custom SFEN input */}
+    <div className="custom-sfen">
+      <p className="custom-sfen-label">SFEN board setup</p>
+      <div className="custom-sfen-input">
+        <input
+          type="text"
+          id="sfen-input"
+          autoComplete="off"
+          value={customSfen}
+          onChange={(e) => setCustomSfen(e.target.value)}
+          placeholder="e.g. rbsgk/4p/5/P4/KGSBR b - 1"
+          disabled={loading}
+        />
+        <button onClick={loadCustomPosition} disabled={loading || !customSfen.trim()}>
+          Load
+        </button>
+      </div>
+    </div>
+    
       {/* Footer */}
       <footer className="footer" style={{ textAlign: 'center'}}>
         <p>Author: Sam Ghalayini</p>
         <p><a href="https://github.com/SamGhalayworx/BitShogi" target="_blank" rel="noopener noreferrer">Code</a> - <Link to="/rules">Rules</Link></p>
-        <p>playing a little bit every day using bitboards</p>
+        <p>playing a little bit using bitboards</p>
       </footer>
       <Analytics />
     </>

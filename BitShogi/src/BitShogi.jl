@@ -13,6 +13,7 @@ include("perft.jl")
 include("bot.jl")
 include("api.jl")
 include("board_generator.jl")
+include("mirror_board_generator.jl")
 
 end
 

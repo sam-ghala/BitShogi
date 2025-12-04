@@ -188,7 +188,6 @@ function Rules() {
                 <strong>Capture the opponent's King to win.</strong>
               </p>
               <p>
-                Unlike chess, there is no checkmate announcement—you simply take the King.
                 If your King can be captured and you can't prevent it, you lose.
               </p>
             </div>
@@ -209,7 +208,7 @@ function Rules() {
               you can <strong>drop</strong> a piece from your hand onto any empty square.
             </p>
             <p>
-              Dropped pieces return to their unpromoted state. This makes shogi more dynamic—pieces 
+              Dropped pieces return to their unpromoted state. This makes shogi more dynamic. Pieces 
               never leave the game, and comebacks are always possible.
             </p>
           </div>
