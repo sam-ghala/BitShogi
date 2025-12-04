@@ -95,6 +95,8 @@ h1 {
   border-radius: 4px;
   padding: 8px;
   box-shadow: none;
+  border: 3px solid var(--board-bg);
+  border-radius: 6px;
 }
 
 .hand-title {
@@ -173,6 +175,8 @@ h1 {
   padding: 12px;
   text-align: center;
   box-shadow: none;
+  border: 3px solid var(--board-bg);
+  border-radius: 6px;
 }
 
 .turn-indicator {
