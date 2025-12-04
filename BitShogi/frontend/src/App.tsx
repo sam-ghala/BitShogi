@@ -527,7 +527,7 @@ function App() {
       // Bot's turn - use selected bot type with 2 second delay for "thinking" effect
       if (newState.result === 'ONGOING' && newState.side_to_move === 'WHITE') {
         // Keep loading true, delay before bot moves
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
         const botMoveResult = await api.getBotMove(newState.sfen, selectedBot);
         
