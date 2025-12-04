@@ -2,18 +2,14 @@
 
 > **BitShogi, playing a little bit every day using bitboards.**
 
-A chess-like game engine implemented in Julia.
+Play at [bitshogi.com](bitshogi.com)
 
-Play at (bitshogi.com)[bitshogi.com]
+Hi, I'm working on a chess-like game engine implemented in Julia. Credit for getting all the UI design done goes to Claude. Now that its playable, I'm working on creating a bot that can beat me. If you want to contribute or have any ideas or comments then open an issue or make a pull request. Thank you.
 
 ### Roadmap
-* **A bot that can beat me:** NNUE or RL models - CURRENT TASK
-* **Pleasant UI:** Readable game pieces UI/UX - DONE
-* **Daily Board Setups:** Non-trivial daily board setups (High Branching Factor?) - DONE
-* **Bot Variety:** Additional simple strategy bots with description of what move they made - Simple bots done
-* **Lean Verifications:** Formal verification practice of game logic using Lean 4 - Haven't started
+* **A bot that can beat me:** NNUE, RL, Transformer, minimax - CURRENT TASK
 
-### Background Resources
+### Some Resources I've found along the way
 * **Shogi Rules:** [Wikipedia - Minishogi](https://en.wikipedia.org/wiki/Minishogi) | [Shogi Harbour](https://shogiharbour.com/)
 * **Chess & Bitboards:** [Chess Programming Wiki - Bitboards](https://www.chessprogramming.org/Bitboards)
 * **Protocols:** [USI (Universal Shogi Interface) Protocol](https://www.chessprogramming.org/USI)
@@ -24,11 +20,15 @@ Play at (bitshogi.com)[bitshogi.com]
 * **`BitShogi/src`**: Core game logic (Julia). Implements bitboards, move generation, and validation.
 * **`BitShogi/server`**: REST API server handling game state and bot moves.
 * **`BitShogi/frontend`**: Interactive web interface for playing against the engine.
-* **`Shogi_lean`**: Formal verification and proofs of game logic.
+* **`Shogi_lean`**: Formal verification and proofs of game logic. Just to practice my lean.
 
 ### Tech Stack
-* **Backend:** [Julia 1.11](https://julialang.org/) (HTTP.jl, JSON3.jl)
+* **Engine:** [Julia 1.11](https://julialang.org/) (HTTP.jl, JSON3.jl)
 * **Frontend:** [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) (Vite)
 * **Verification:** [Lean 4](https://leanprover.github.io/)
-* **Infrastructure:** Docker & Docker Compose
+* **Infrastructure:** Docker, [Railway](https://railway.app/) (backend), [Vercel](https://vercel.com/) (frontend)
 * [SVG file design website](https://www.svgviewer.dev/)
+
+
+> [!TIP]
+> Run loadRandomPuzzle() in the console for another puzzle.
