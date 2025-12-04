@@ -1,7 +1,7 @@
 # simple bots for play testing
 # random bot - picks random legal move
 # greedy bot - captures when possible, then random
-# simplebot - material and center control 
+# minimax - 
 
 abstract type Bot end
 
@@ -12,7 +12,168 @@ function bot_name(bot::Bot)::String
     return string(typeof(bot))    
 end
 
-# random bot 
+# # # # # # # # # # # # # # # minimax bot # # # # # # # # # # # # # # 
+struct MinimaxBot <: Bot
+    depth::Int
+end
+
+MinimaxBot() = MinimaxBot(5)
+
+bot_name(::MinimaxBot) = "MinimaxBot"
+
+const PIECE_VALUES_BOT = Dict(
+    PAWN => 100, LANCE => 300, KNIGHT => 300, SILVER => 400,
+    GOLD => 500, BISHOP => 600, ROOK => 700, KING => 10000,
+    PROMOTED_PAWN => 400, PROMOTED_LANCE => 400, PROMOTED_KNIGHT => 400,
+    PROMOTED_SILVER => 500, PROMOTED_BISHOP => 800, PROMOTED_ROOK => 900
+)
+
+function evaluate_board(board::BoardState, color::Color)::Int
+    score = 0
+    # evaluate the board state and return our position value
+    for pt in instances(PieceType)
+        if pt == NO_PIECE
+            continue
+        end
+        value = get(PIECE_VALUES_BOT, pt, 0)
+        own = popcount(get_piece_bb(board, pt, color))
+        opp = popcount(get_piece_bb(board, pt, opposite(color)))
+        score += value * (own - opp)
+    end
+
+    # hand pieces are valuable 
+    for idx in 1:7
+        pt = hand_index_to_piece(idx)
+        value = get(PIECE_VALUES_BOT, pt, 0)
+        own_hand = board.hand[Int(color)][idx]
+        opp_hand = board.hand[Int(opposite(color))][idx]
+        score += Int(round(value * 1.1)) * (own_hand - opp_hand)
+    end
+
+    # control the inside space "I can't let you get close"
+    center_sq = 13
+    pc_at_center = piece_at(board, center_sq)
+    if pc_at_center !== nothing
+        pt, pc = pc_at_center
+        if pc == color 
+            score += 30
+        else
+            score -= 30
+        end
+    end
+    return score
+end
+
+function order_moves(board::BoardState, moves::Vector{Move}, side::Color)::Vector{Move}
+    scored = Tuple{Move, Int}[]
+
+    for move in moves
+        score = 0
+        captured = move_capture(move)
+        # score by piece value 
+        if captured != NO_PIECE
+            piece_value = get(PIECE_VALUES_BOT, PieceType(captured), 0)
+            score += 10000 + piece_value
+        end
+        
+        # promotions are good (not always though)
+        if move_is_promotion(move)
+            score += 5000
+        end
+        
+        # drops to center is not that bad of a choice
+        if move_is_drop(move)
+            to_sq = move_to(move)
+            if to_sq == 13 # center sq 
+                score += 100
+            end
+        end
+        push!(scored, (move, score))
+    end
+
+    # sort descending by score
+    sort!(scored, by = x -> -x[2])
+    return [m for (m, _) in scored]
+end
+
+function alphabeta(board::BoardState, depth::Int, α::Int, β::Int, maximizing::Bool, color::Color)::Int
+    # case 0, game over, depth over
+    if depth == 0
+        return evaluate_board(board, color)
+    end
+
+    side = maximizing ? color : opposite(color)
+    moves = generate_legal_moves(board, side)
+
+    # no legal moves
+    if isempty(moves)
+        if is_in_check(board, side)
+            # checkmate
+            return maximizing ? -100000 + (10 - depth) : 100000 - (10 - depth)
+        else
+            # stalemate 
+            return 0
+        end
+    end
+
+    ordered_moves = order_moves(board, moves, side)
+
+    if maximizing
+        value = typemin(Int) + 1000
+        for move in ordered_moves
+            new_board = copy(board)
+            apply_move!(new_board, move, side)
+            value = max(value, alphabeta(new_board, depth - 1, α, β, false, color))
+            α = max(α, value)
+            if α >= β
+                break  # β cutoff
+            end
+        end
+        return value
+    else
+        value = typemax(Int) - 1000
+        for move in ordered_moves
+            new_board = copy(board)
+            apply_move!(new_board, move, side)
+            value = min(value, alphabeta(new_board, depth - 1, α, β, true, color))
+            β = min(β, value)
+            if α >= β
+                break  # α cutoff
+            end
+        end
+        return value
+    end
+end
+
+function select_move(bot::MinimaxBot, game::GameState)::Union{Move, Nothing}
+    moves = get_legal_moves(game)
+    if isempty(moves)
+        return nothing
+    end
+
+    color = game.side_to_move
+    best_move = moves[1]
+    best_value = typemin(Int) + 1000
+    α = typemin(Int) + 1000
+    β = typemax(Int) - 1000
+
+    ordered_moves = order_moves(game.board, moves, color)
+
+    for move in ordered_moves
+        new_board = copy(game.board)
+        apply_move!(new_board, move, color)
+        # min opponents move
+        value = alphabeta(new_board, bot.depth - 1, α, β, false, color)
+        if value > best_value
+            best_value = value
+            best_move = move 
+        end
+        α = max(α, value)
+    end
+    return best_move
+end
+
+# # # # # # # # # # # # # # random bot # # # # # # # # # # # # # # 
 struct RandomBot <: Bot
     rng::AbstractRNG
 end
@@ -30,7 +191,7 @@ end
 
 bot_name(::RandomBot) = "RandomBot"
 
-# greedy bot
+# # # # # # # # # # # # # # greedy bot # # # # # # # # # # # # # # 
 struct GreedyBot <: Bot
     rng::AbstractRNG
 end
@@ -72,7 +233,8 @@ end
 
 bot_name(::GreedyBot) = "GreedyBot"
 
-# simp bot 
+# # # # # # # # # # # # # # simp bot # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # decomissioned # # # # # # # # # # # # # # 
 struct SimpleBot <: Bot
     depth::Int
 end
@@ -113,6 +275,8 @@ function evaluate_position(board::BoardState, color::Color)::Int
     return score
 end
 
+bot_name(::SimpleBot) = "SimpleBot"
+
 function select_move(bot::SimpleBot, game::GameState)::Union{Move, String}
     moves = get_legal_moves(game)
     if isempty(moves)
@@ -142,10 +306,8 @@ function select_move(bot::SimpleBot, game::GameState)::Union{Move, String}
     end
     return best_move
 end
-
-bot_name(::SimpleBot) = "SimpleBot"
-
-# playing the game
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # playing the game # # # # # # # # # # # # # # 
 function play_bot_game(white_bot::Bot, black_bot::Bot; max_moves::Int = 200, verbose::Bool = true)
     game = GameState()
     

@@ -53,8 +53,7 @@ function api_make_move(sfen::String, move_notation::String)::Dict{String, Any}
         "move_played" => move_notation
     )
 end
-
-function api_get_bot_move(sfen::String, bot_type::String = "greedy")::Dict{String, Any}
+function api_get_bot_move(sfen::String, bot_type::String = "minimax")::Dict{String, Any}
     game = parse_sfen(sfen)
     if game === nothing
         return Dict{String, Any}("error" => "Invalid SFEN", "success" => false)
@@ -66,6 +65,8 @@ function api_get_bot_move(sfen::String, bot_type::String = "greedy")::Dict{Strin
         GreedyBot()
     elseif bot_type == "simple"
         SimpleBot()
+    elseif bot_type == "minimax"
+        MinimaxBot(5)  # depth 4
     else
         GreedyBot()
     end

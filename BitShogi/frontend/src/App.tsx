@@ -192,7 +192,7 @@ type PieceType = 'PAWN' | 'LANCE' | 'KNIGHT' | 'SILVER' | 'GOLD' | 'BISHOP' | 'R
                  'PROMOTED_PAWN' | 'PROMOTED_LANCE' | 'PROMOTED_KNIGHT' | 'PROMOTED_SILVER' |
                  'PROMOTED_BISHOP' | 'PROMOTED_ROOK';
 type Color = 'BLACK' | 'WHITE';
-type BotType = 'random' | 'greedy' | 'simple';
+type BotType = 'random' | 'greedy' | 'minimax';
 
 interface Piece {
   type: PieceType;
@@ -270,7 +270,7 @@ function BoardLines() {
 const BOT_OPTIONS: { value: BotType; label: string }[] = [
   { value: 'random', label: 'Random' },
   { value: 'greedy', label: 'Greedy' },
-  { value: 'simple', label: 'Simple' },
+  { value: 'minimax', label: 'minimax' },
 ];
 
 function App() {
@@ -296,7 +296,7 @@ function App() {
   const [initialized, setInitialized] = useState(false);
   
   // Bot selection state
-  const [selectedBot, setSelectedBot] = useState<BotType>('greedy');
+  const [selectedBot, setSelectedBot] = useState<BotType>('minimax');
 
   // Get today's puzzle index (1-365 based on day of year)
   const getTodayPuzzleIndex = useCallback(() => {
