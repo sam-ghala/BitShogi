@@ -936,7 +936,7 @@ function App() {
       <footer className="footer" style={{ textAlign: 'center'}}>
         <p>Author: Sam Ghalayini</p>
         <p><a href="https://github.com/sam-ghala/BitShogi" target="_blank" rel="noopener noreferrer">Code</a> - <Link to="/rules">Rules</Link></p>
-        <p>playing a little bit using bitboards</p>
+        <p>playing a little bit every day using bitboards</p>
       </footer>
       <Analytics />
     </>

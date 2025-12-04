@@ -1,7 +1,4 @@
 # api, json web server integration
-# ===========================================================================
-# api.jl - JSON API for web server integration
-# ===========================================================================
 
 using JSON3
 
@@ -179,9 +176,7 @@ function get_hand_info(board::BoardState)::Dict{String, Any}
     )
 end
 
-# ---------------------------------------------------------------------------
-# CLI Server (for subprocess communication - optional)
-# ---------------------------------------------------------------------------
+# cli server 
 
 function handle_json_request(request_json::String)::String
     try
