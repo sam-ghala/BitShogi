@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { Analytics } from "@vercel/analytics/next"
 import './index.css';
 import * as api from './api/client';
 
