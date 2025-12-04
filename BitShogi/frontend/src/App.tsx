@@ -142,7 +142,7 @@ function getResultDisplay(result: string, sideToMove: string): { text: string; i
   // If WHITE is in checkmate or BLACK wins
   if (resultUpper.includes('BLACK_WIN') || 
       resultUpper.includes('BLACKWIN')) {
-    return { text: '🎉 You Win!', isWin: true };
+    return { text: 'You Win!', isWin: true };
   }
   
   // Check various win conditions for WHITE (bot)
@@ -157,7 +157,7 @@ function getResultDisplay(result: string, sideToMove: string): { text: string; i
     // Check if result specifies the winner
     if (resultUpper.includes('WHITE') || resultUpper.includes('W_')) {
       // WHITE is checkmated, BLACK wins
-      return { text: '🎉 You Win!', isWin: true };
+      return { text: 'You Win!', isWin: true };
     }
     if (resultUpper.includes('BLACK') || resultUpper.includes('B_')) {
       // BLACK is checkmated, WHITE wins
@@ -166,7 +166,7 @@ function getResultDisplay(result: string, sideToMove: string): { text: string; i
     // Generic checkmate - determine by side to move
     // The side to move when checkmated is the loser
     if (sideToMove === 'WHITE') {
-      return { text: '🎉 You Win!', isWin: true };
+      return { text: 'You Win!', isWin: true };
     } else {
       return { text: 'Bot Wins', isWin: false };
     }
