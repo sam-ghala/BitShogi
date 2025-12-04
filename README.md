@@ -7,7 +7,7 @@ A chess-like game engine implemented in Julia.
 Play at (bitshogi.com)[bitshogi.com]
 
 ### Roadmap
-* **A bot that learns:** NNUE or RL models - CURRENT TASK
+* **A bot that can beat me:** NNUE or RL models - CURRENT TASK
 * **Pleasant UI:** Readable game pieces UI/UX - DONE
 * **Daily Board Setups:** Non-trivial daily board setups (High Branching Factor?) - DONE
 * **Bot Variety:** Additional simple strategy bots with description of what move they made - Simple bots done
