@@ -248,13 +248,14 @@ h1 {
 }
 
 .status.game-over {
-  color: var(--dot-filled);
+  color: var(--board-bg);
   font-weight: 400;
   text-transform: uppercase;
+  text-decoration: underline;
 }
 
 .status.game-over.win {
-  color: var(--accent-gold);
+  color: var(--board-bg);
   font-size: 0.7rem;
 }
 
