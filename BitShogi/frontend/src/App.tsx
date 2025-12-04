@@ -429,6 +429,9 @@ function App() {
     setLoading(false);
   }, [puzzles]);
 
+  // call it from the console 
+  (window as any).loadRandomPuzzle = loadRandomPuzzle;
+
   // Reset to current mode's starting position
   const resetGame = useCallback(() => {
     setSelection(null);
