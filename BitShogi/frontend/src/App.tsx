@@ -269,7 +269,7 @@ function BoardLines() {
 const BOT_OPTIONS: { value: BotType; label: string }[] = [
   { value: 'random', label: 'Random' },
   { value: 'greedy', label: 'Greedy' },
-  { value: 'simple', label: 'Simple (1-ply)' },
+  { value: 'simple', label: 'Simple' },
 ];
 
 function App() {
@@ -830,13 +830,13 @@ function App() {
               >
                 Daily
               </button>
-              <button 
+              {/* <button 
                 onClick={loadRandomPuzzle} 
                 disabled={loading}
                 className={`random-btn ${mode === 'random' ? 'active' : ''}`}
               >
                 Random
-              </button>
+              </button> */}
             </div>
             
             {/* Bot selector */}
