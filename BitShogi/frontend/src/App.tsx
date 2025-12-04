@@ -192,7 +192,7 @@ type PieceType = 'PAWN' | 'LANCE' | 'KNIGHT' | 'SILVER' | 'GOLD' | 'BISHOP' | 'R
                  'PROMOTED_PAWN' | 'PROMOTED_LANCE' | 'PROMOTED_KNIGHT' | 'PROMOTED_SILVER' |
                  'PROMOTED_BISHOP' | 'PROMOTED_ROOK';
 type Color = 'BLACK' | 'WHITE';
-type BotType = 'random' | 'greedy' | 'minimax';
+type BotType = 'random' | 'greedy' | 'minimax' | 'minimax_easy';
 
 interface Piece {
   type: PieceType;
@@ -271,6 +271,7 @@ const BOT_OPTIONS: { value: BotType; label: string }[] = [
   { value: 'random', label: 'Random' },
   { value: 'greedy', label: 'Greedy' },
   { value: 'minimax', label: 'minimax' },
+  { value: 'minimax_easy', label: 'minimax_easy' },
 ];
 
 function App() {
