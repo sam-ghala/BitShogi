@@ -361,4 +361,4 @@ function test_piece_support()
     end
 end
 # test_piece_support()
-generate_puzzle_file(1000)
+# generate_puzzle_file(1000)
