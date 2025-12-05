@@ -61,3 +61,33 @@ export async function loadPuzzles(): Promise<PuzzleData[]> {
   }
   return response.json();
 }
+
+
+// Claude bot (non-streaming)
+export interface ClaudeMoveResult {
+  success: boolean;
+  move?: string;
+  reasoning?: string;
+  error?: string;
+}
+
+export async function getClaudeMove(sfen: string): Promise<ClaudeMoveResult> {
+  try {
+    const response = await fetch(`${API_BASE}/game/claude-move`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ sfen }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: 'Request failed' }));
+      return { success: false, error: error.error || 'Claude request failed' };
+    }
+
+    return response.json();
+  } catch (e: any) {
+    return { success: false, error: e.message || 'Request failed' };
+  }
+}

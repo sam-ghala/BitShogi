@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Analytics } from "@vercel/analytics/react"
 import './index.css';
@@ -16,7 +16,6 @@ const PIECE_IMAGES: Record<string, string> = {
   PROMOTED_SILVER: '/pieces/silver-p.svg',
   PROMOTED_BISHOP: '/pieces/bishop-p.svg',
   PROMOTED_ROOK: '/pieces/rook-p.svg',
-  // Fallback for standard shogi pieces not in minishogi
   LANCE: '/pieces/lance.svg',
   KNIGHT: '/pieces/knight.svg',
   PROMOTED_LANCE: '/pieces/lance-p.svg',
@@ -31,7 +30,7 @@ const PIECE_SYMBOLS: Record<string, string> = {
   PROMOTED_SILVER: '全', PROMOTED_BISHOP: '馬', PROMOTED_ROOK: '龍',
 };
 
-// Piece component - renders SVG image with fallback to kanji
+// Piece component
 function PieceImage({ type, className }: { type: string; className?: string }) {
   const imgSrc = PIECE_IMAGES[type];
   const fallback = PIECE_SYMBOLS[type] || '?';
@@ -42,7 +41,6 @@ function PieceImage({ type, className }: { type: string; className?: string }) {
       alt={type}
       className={`piece-img ${className || ''}`}
       onError={(e) => {
-        // If SVG fails to load, replace with text fallback
         const target = e.target as HTMLImageElement;
         target.style.display = 'none';
         const span = document.createElement('span');
@@ -117,7 +115,6 @@ function parseSfenBoard(sfen: string): Map<string, Piece> {
   return pieces;
 }
 
-// Get piece character for drop notation
 function getPieceChar(type: PieceType): string {
   const map: Record<string, string> = {
     PAWN: 'P', LANCE: 'L', KNIGHT: 'N', SILVER: 'S',
@@ -126,45 +123,28 @@ function getPieceChar(type: PieceType): string {
   return map[type] || '?';
 }
 
-// Check if a piece type is promoted
 function isPromoted(type: PieceType): boolean {
   return type.startsWith('PROMOTED_');
 }
 
-// Determine game result display
 function getResultDisplay(result: string, sideToMove: string): { text: string; isWin: boolean } {
-  // Debug log to see actual result value
-  console.log('Game result:', result, 'Side to move:', sideToMove);
-  
   const resultUpper = result.toUpperCase().trim();
   
-  // Check various win conditions for BLACK (human player)
-  // If WHITE is in checkmate or BLACK wins
-  if (resultUpper.includes('BLACK_WIN') || 
-      resultUpper.includes('BLACKWIN')) {
+  if (resultUpper.includes('BLACK_WIN') || resultUpper.includes('BLACKWIN')) {
     return { text: 'You Win!', isWin: true };
   }
   
-  // Check various win conditions for WHITE (bot)
-  if (resultUpper.includes('WHITE_WIN') || 
-      resultUpper.includes('WHITEWIN')) {
+  if (resultUpper.includes('WHITE_WIN') || resultUpper.includes('WHITEWIN')) {
     return { text: 'Bot Wins', isWin: false };
   }
   
-  // Any result containing CHECKMATE or just MATE - determine winner by side to move
-  // When checkmate happens, the side to move is the one who is checkmated
   if (resultUpper.includes('CHECKMATE') || resultUpper.includes('MATE')) {
-    // Check if result specifies the winner
     if (resultUpper.includes('WHITE') || resultUpper.includes('W_')) {
-      // WHITE is checkmated, BLACK wins
       return { text: 'You Win!', isWin: true };
     }
     if (resultUpper.includes('BLACK') || resultUpper.includes('B_')) {
-      // BLACK is checkmated, WHITE wins
       return { text: 'Bot Wins', isWin: false };
     }
-    // Generic checkmate - determine by side to move
-    // The side to move when checkmated is the loser
     if (sideToMove === 'WHITE') {
       return { text: 'You Win!', isWin: true };
     } else {
@@ -172,18 +152,14 @@ function getResultDisplay(result: string, sideToMove: string): { text: string; i
     }
   }
   
-  // Stalemate (no legal moves but not in check) - this is a draw
   if (resultUpper.includes('STALEMATE')) {
     return { text: 'Draw (Stalemate)', isWin: false };
   }
   
-  // Explicit draw
   if (resultUpper.includes('DRAW')) {
     return { text: 'Draw', isWin: false };
   }
   
-  // Fallback - show the actual result so we can debug
-  console.warn('Unknown game result:', result);
   return { text: `Game Over: ${result}`, isWin: false };
 }
 
@@ -192,7 +168,7 @@ type PieceType = 'PAWN' | 'LANCE' | 'KNIGHT' | 'SILVER' | 'GOLD' | 'BISHOP' | 'R
                  'PROMOTED_PAWN' | 'PROMOTED_LANCE' | 'PROMOTED_KNIGHT' | 'PROMOTED_SILVER' |
                  'PROMOTED_BISHOP' | 'PROMOTED_ROOK';
 type Color = 'BLACK' | 'WHITE';
-type BotType = 'random' | 'greedy' | 'minimax' | 'minimax_easy';
+type BotType = 'random' | 'greedy' | 'minimax' | 'claude';
 
 interface Piece {
   type: PieceType;
@@ -217,7 +193,6 @@ interface GameState {
   };
 }
 
-// SVG Board Lines Component - uses viewBox for responsive scaling
 function BoardLines() {
   const size = 64;
   const totalSize = 5 * size;
@@ -228,39 +203,23 @@ function BoardLines() {
       const cx = col * size + size / 2;
       const cy = row * size + size / 2;
       
-      // Horizontal line (right)
       if (col < 4) {
-        lines.push(
-          <line key={`h-${row}-${col}`} x1={cx} y1={cy} x2={cx + size} y2={cy} />
-        );
+        lines.push(<line key={`h-${row}-${col}`} x1={cx} y1={cy} x2={cx + size} y2={cy} />);
       }
-      // Vertical line (down)
       if (row < 4) {
-        lines.push(
-          <line key={`v-${row}-${col}`} x1={cx} y1={cy} x2={cx} y2={cy + size} />
-        );
+        lines.push(<line key={`v-${row}-${col}`} x1={cx} y1={cy} x2={cx} y2={cy + size} />);
       }
-      // Diagonal down-right
       if (col < 4 && row < 4) {
-        lines.push(
-          <line key={`dr-${row}-${col}`} x1={cx} y1={cy} x2={cx + size} y2={cy + size} />
-        );
+        lines.push(<line key={`dr-${row}-${col}`} x1={cx} y1={cy} x2={cx + size} y2={cy + size} />);
       }
-      // Diagonal down-left
       if (col > 0 && row < 4) {
-        lines.push(
-          <line key={`dl-${row}-${col}`} x1={cx} y1={cy} x2={cx - size} y2={cy + size} />
-        );
+        lines.push(<line key={`dl-${row}-${col}`} x1={cx} y1={cy} x2={cx - size} y2={cy + size} />);
       }
     }
   }
   
   return (
-    <svg 
-      className="board-lines" 
-      viewBox={`0 0 ${totalSize} ${totalSize}`}
-      preserveAspectRatio="none"
-    >
+    <svg className="board-lines" viewBox={`0 0 ${totalSize} ${totalSize}`} preserveAspectRatio="none">
       {lines}
     </svg>
   );
@@ -270,8 +229,8 @@ function BoardLines() {
 const BOT_OPTIONS: { value: BotType; label: string }[] = [
   { value: 'random', label: 'Random' },
   { value: 'greedy', label: 'Greedy' },
-  { value: 'minimax', label: 'minimax' },
-  { value: 'minimax_easy', label: 'minimax_easy' },
+  { value: 'minimax', label: 'Minimax' },
+  { value: 'claude', label: 'Claude' },
 ];
 
 function App() {
@@ -298,34 +257,43 @@ function App() {
   
   // Bot selection state
   const [selectedBot, setSelectedBot] = useState<BotType>('minimax');
+  
+  // Claude reasoning state
+  const [claudeReasoning, setClaudeReasoning] = useState<string>('');
+  const [claudeThinking, setClaudeThinking] = useState(false);
+  const reasoningRef = useRef<HTMLPreElement>(null);
 
-  // Get today's puzzle index (1-365 based on day of year)
+  // Auto-scroll reasoning box
+  useEffect(() => {
+    if (reasoningRef.current) {
+      reasoningRef.current.scrollTop = reasoningRef.current.scrollHeight;
+    }
+  }, [claudeReasoning]);
+
   const getTodayPuzzleIndex = useCallback(() => {
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 0);
     const diff = now.getTime() - start.getTime();
     const oneDay = 1000 * 60 * 60 * 24;
     const dayOfYear = Math.floor(diff / oneDay);
-    return dayOfYear; // 1-365
+    return dayOfYear;
   }, []);
 
-  // Load puzzles.json on mount
   useEffect(() => {
     api.loadPuzzles()
       .then(data => setPuzzles(data))
       .catch(err => console.warn('Failed to load puzzles.json:', err));
   }, []);
 
-  // Load today's daily puzzle
   const loadDailyPuzzle = useCallback(async () => {
     setLoading(true);
     setError(null);
     setSelection(null);
     setLastMove(null);
     setMode('daily');
+    setClaudeReasoning('');
     
     try {
-      // Get today's puzzle from pre-generated list
       if (puzzles && puzzles.length > 0) {
         const dayIndex = getTodayPuzzleIndex();
         const puzzleIndex = (dayIndex - 1) % puzzles.length;
@@ -333,7 +301,6 @@ function App() {
         
         setBitboardInt(todayPuzzle.bitboard);
         
-        // Load the position to get legal moves, etc.
         const gameState = await api.loadPosition(todayPuzzle.sfen);
         if (gameState.success) {
           setDailyPuzzle(gameState);
@@ -343,7 +310,6 @@ function App() {
         }
       }
       
-      // Fallback to classic game if puzzles not loaded
       console.warn('Puzzles not loaded, falling back to classic game');
       const newGame = await api.newGame();
       setBitboardInt(32539167);
@@ -365,14 +331,14 @@ function App() {
     setLoading(false);
   }, [puzzles, getTodayPuzzleIndex]);
 
-  // Load classic minishogi starting position
   const loadClassicGame = useCallback(async () => {
     setLoading(true);
     setError(null);
     setSelection(null);
     setLastMove(null);
     setMode('classic');
-    setBitboardInt(32539167);  // Standard position bitboard
+    setBitboardInt(32539167);
+    setClaudeReasoning('');
     try {
       const newGame = await api.newGame();
       setClassicStartPosition(newGame);
@@ -383,23 +349,21 @@ function App() {
     setLoading(false);
   }, []);
 
-  // Load a random puzzle from the list
   const loadRandomPuzzle = useCallback(async () => {
     setLoading(true);
     setError(null);
     setSelection(null);
     setLastMove(null);
     setMode('random');
+    setClaudeReasoning('');
     
     try {
       if (puzzles && puzzles.length > 0) {
-        // Pick a random puzzle
         const randomIndex = Math.floor(Math.random() * puzzles.length);
         const puzzle = puzzles[randomIndex];
         
         setBitboardInt(puzzle.bitboard);
         
-        // Load the position to get legal moves, etc.
         const gameState = await api.loadPosition(puzzle.sfen);
         if (gameState.success) {
           setRandomPuzzle(gameState);
@@ -409,7 +373,6 @@ function App() {
         }
       }
       
-      // Fallback to classic game if puzzles not loaded
       console.warn('Puzzles not loaded, falling back to classic game');
       const newGame = await api.newGame();
       setBitboardInt(32539167);
@@ -431,10 +394,8 @@ function App() {
     setLoading(false);
   }, [puzzles]);
 
-  // call it from the console 
   (window as any).loadRandomPuzzle = loadRandomPuzzle;
 
-  // Load a custom SFEN position
   const loadCustomPosition = useCallback(async () => {
     if (!customSfen.trim()) return;
     
@@ -442,12 +403,13 @@ function App() {
     setError(null);
     setSelection(null);
     setLastMove(null);
-    setMode('random'); // reuse random mode for custom
+    setMode('random');
+    setClaudeReasoning('');
     
     try {
       const gameState = await api.loadPosition(customSfen.trim());
       if (gameState.success) {
-        setBitboardInt(0); // no bitboard for custom
+        setBitboardInt(0);
         setGame(gameState);
       } else {
         setError('Invalid SFEN format');
@@ -458,11 +420,11 @@ function App() {
     setLoading(false);
   }, [customSfen]);
 
-  // Reset to current mode's starting position
   const resetGame = useCallback(() => {
     setSelection(null);
     setLastMove(null);
     setError(null);
+    setClaudeReasoning('');
     
     if (mode === 'daily' && dailyPuzzle) {
       setGame(dailyPuzzle);
@@ -479,13 +441,12 @@ function App() {
     }
   }, [mode, dailyPuzzle, classicStartPosition, randomPuzzle, loadDailyPuzzle, loadClassicGame, loadRandomPuzzle]);
 
-  // Handle bot change - reset game when bot changes
   const handleBotChange = useCallback((newBot: BotType) => {
     setSelectedBot(newBot);
-    // Reset to starting position when bot changes
     setSelection(null);
     setLastMove(null);
     setError(null);
+    setClaudeReasoning('');
     
     if (mode === 'daily' && dailyPuzzle) {
       setGame(dailyPuzzle);
@@ -502,16 +463,13 @@ function App() {
     }
   }, [mode, dailyPuzzle, classicStartPosition, randomPuzzle, loadDailyPuzzle, loadClassicGame, loadRandomPuzzle]);
 
-  // Initialize game on mount - only runs once when puzzles are loaded
   useEffect(() => {
-    // Only initialize once
     if (initialized) return;
     
     if (puzzles !== null && puzzles.length > 0) {
       setInitialized(true);
       loadDailyPuzzle();
     } else if (puzzles === null) {
-      // Puzzles still loading, wait a bit then fallback to classic
       const timer = setTimeout(() => {
         if (!initialized) {
           setInitialized(true);
@@ -520,7 +478,6 @@ function App() {
       }, 2000);
       return () => clearTimeout(timer);
     } else {
-      // puzzles is empty array - no puzzles available
       setInitialized(true);
       loadClassicGame();
     }
@@ -542,7 +499,6 @@ function App() {
         return;
       }
       
-      // Update last move highlight
       setLastMove({ from: fromSquare, to: toSquare });
       
       const newState: GameState = {
@@ -555,44 +511,89 @@ function App() {
       };
       setGame(newState);
       
-      // Bot's turn - use selected bot type with 2 second delay for "thinking" effect
+      // Bot's turn
       if (newState.result === 'ONGOING' && newState.side_to_move === 'WHITE') {
-        // Keep loading true, delay before bot moves
-        await new Promise(resolve => setTimeout(resolve, 1000));
         
-        const botMoveResult = await api.getBotMove(newState.sfen, selectedBot);
-        
-        if (botMoveResult.success && botMoveResult.move) {
-          const botFrom = botMoveResult.move.includes('*') 
-            ? undefined 
-            : botMoveResult.move.substring(0, 2);
-          const botTo = botMoveResult.move.includes('*')
-            ? botMoveResult.move.substring(2, 4)
-            : botMoveResult.move.substring(2, 4);
+        if (selectedBot === 'claude') {
+          // Use Claude bot
+          setClaudeThinking(true);
+          setClaudeReasoning('');
           
-          const afterBotMove = await api.makeMove(newState.sfen, botMoveResult.move);
+          const claudeResult = await api.getClaudeMove(newState.sfen);
           
-          if (afterBotMove.success) {
-            setLastMove({ from: botFrom, to: botTo });
-            setGame({
-              sfen: afterBotMove.sfen!,
-              side_to_move: afterBotMove.side_to_move!,
-              legal_moves: afterBotMove.legal_moves!,
-              is_check: afterBotMove.is_check!,
-              result: afterBotMove.result!,
-              hand: afterBotMove.hand!,
-            });
+          setClaudeThinking(false);
+          
+          if (claudeResult.success && claudeResult.move) {
+            // Show reasoning (remove the MOVE: line for display)
+            const displayText = (claudeResult.reasoning || '')
+              .replace(/MOVE:\s*[A-Za-z0-9\+\*]+\s*$/i, '')
+              .trim();
+            setClaudeReasoning(displayText);
+            
+            const botFrom = claudeResult.move.includes('*') 
+              ? undefined 
+              : claudeResult.move.substring(0, 2);
+            const botTo = claudeResult.move.includes('*')
+              ? claudeResult.move.substring(2, 4)
+              : claudeResult.move.substring(2, 4);
+            
+            const afterBotMove = await api.makeMove(newState.sfen, claudeResult.move);
+            
+            if (afterBotMove.success) {
+              setLastMove({ from: botFrom, to: botTo });
+              setGame({
+                sfen: afterBotMove.sfen!,
+                side_to_move: afterBotMove.side_to_move!,
+                legal_moves: afterBotMove.legal_moves!,
+                is_check: afterBotMove.is_check!,
+                result: afterBotMove.result!,
+                hand: afterBotMove.hand!,
+              });
+            }
+          } else {
+            setError(claudeResult.error || 'Claude failed to respond');
+            setClaudeReasoning('');
           }
+          setLoading(false);
+        } else {
+          // Use regular bot
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          const botMoveResult = await api.getBotMove(newState.sfen, selectedBot);
+          
+          if (botMoveResult.success && botMoveResult.move) {
+            const botFrom = botMoveResult.move.includes('*') 
+              ? undefined 
+              : botMoveResult.move.substring(0, 2);
+            const botTo = botMoveResult.move.includes('*')
+              ? botMoveResult.move.substring(2, 4)
+              : botMoveResult.move.substring(2, 4);
+            
+            const afterBotMove = await api.makeMove(newState.sfen, botMoveResult.move);
+            
+            if (afterBotMove.success) {
+              setLastMove({ from: botFrom, to: botTo });
+              setGame({
+                sfen: afterBotMove.sfen!,
+                side_to_move: afterBotMove.side_to_move!,
+                legal_moves: afterBotMove.legal_moves!,
+                is_check: afterBotMove.is_check!,
+                result: afterBotMove.result!,
+                hand: afterBotMove.hand!,
+              });
+            }
+          }
+          setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
     } catch (e: any) {
       setError(e.message || 'Move failed');
+      setLoading(false);
     }
-    
-    setLoading(false);
   }, [game, selectedBot]);
 
-  // Handle board square click
   const handleSquareClick = useCallback((notation: string) => {
     if (!game || game.side_to_move !== 'BLACK' || loading) return;
     if (game.result !== 'ONGOING') return;
@@ -642,7 +643,6 @@ function App() {
     }
   }, [game, selection, loading, executeMove]);
 
-  // Handle hand piece click
   const handleHandClick = useCallback((pieceType: PieceType, color: Color) => {
     if (!game || game.side_to_move !== color || loading) return;
     if (game.result !== 'ONGOING') return;
@@ -655,7 +655,6 @@ function App() {
     }
   }, [game, selection, loading]);
 
-  // Handle promotion choice
   const handlePromotionChoice = useCallback((promote: boolean) => {
     if (!promotionChoice) return;
     
@@ -664,7 +663,6 @@ function App() {
     setPromotionChoice(null);
   }, [promotionChoice, executeMove]);
 
-  // Get legal target squares
   const getLegalTargets = useCallback((): Set<string> => {
     if (!game || !selection) return new Set();
     
@@ -690,13 +688,11 @@ function App() {
     return targets;
   }, [game, selection]);
 
-  // Compute derived state
   const pieces = useMemo(() => game ? parseSfenBoard(game.sfen) : new Map(), [game?.sfen]);
   const legalTargets = useMemo(() => getLegalTargets(), [getLegalTargets]);
   const isGameOver = game !== null && game.result !== 'ONGOING';
   const resultDisplay = isGameOver ? getResultDisplay(game.result, game.side_to_move) : null;
 
-  // Render board
   const renderBoard = () => {
     const squares = [];
     
@@ -729,7 +725,6 @@ function App() {
     return squares;
   };
 
-  // Render loading state
   if (!game) {
     return (
       <div className="loading">
@@ -767,7 +762,6 @@ function App() {
         {/* Board */}
         <div className="board-wrapper">
           <div className="board-with-coords">
-            {/* File coordinates (1-5) */}
             <div className="file-coords">
               {[1, 2, 3, 4, 5].map(f => (
                 <span key={f}>{f}</span>
@@ -775,14 +769,12 @@ function App() {
             </div>
             
             <div className="board-row-wrapper">
-              {/* Rank coordinates (a-e) */}
               <div className="rank-coords">
                 {['a', 'b', 'c', 'd', 'e'].map(r => (
                   <span key={r} className="rank-coord">{r}</span>
                 ))}
               </div>
               
-              {/* Board with SVG lines */}
               <div className="board-container">
                 <BoardLines />
                 <div className="board">
@@ -820,7 +812,11 @@ function App() {
             {!isGameOver && (
               <div className={`turn-indicator ${game.side_to_move === 'WHITE' ? 'thinking' : ''}`}>
                 <span className={`turn-dot ${game.side_to_move === 'WHITE' ? 'pulse' : ''}`}></span>
-                <span>{game.side_to_move === 'BLACK' ? 'Your turn' : 'Thinking...'}</span>
+                <span>
+                  {game.side_to_move === 'BLACK' 
+                    ? 'Your turn' 
+                    : (claudeThinking ? 'Claude thinking...' : 'Thinking...')}
+                </span>
               </div>
             )}
             
@@ -836,16 +832,13 @@ function App() {
             
             {error && <p className="error">{error}</p>}
             
-            {loading && (
+            {loading && !claudeThinking && (
               <div className="loading">
                 <div className="spinner"></div>
               </div>
             )}
             
             <div className="controls">
-              {/* <button onClick={resetGame} disabled={loading}>
-                Reset
-              </button> */}
               <button 
                 onClick={loadClassicGame} 
                 disabled={loading}
@@ -860,13 +853,6 @@ function App() {
               >
                 Daily
               </button>
-              {/* <button 
-                onClick={loadRandomPuzzle} 
-                disabled={loading}
-                className={`random-btn ${mode === 'random' ? 'active' : ''}`}
-              >
-                Random
-              </button> */}
             </div>
             
             {/* Bot selector */}
@@ -893,6 +879,39 @@ function App() {
         </div>
       </div>
 
+      {/* Claude reasoning display */}
+      {selectedBot === 'claude' && (claudeReasoning || claudeThinking) && (
+        <div className="claude-reasoning">
+          <p className="reasoning-title">
+            {claudeThinking ? 'Claude is thinking...' : 'Claude\'s reasoning:'}
+          </p>
+          
+          {claudeThinking ? (
+            <div className="printer-animation">
+              <div className="printer-container">
+                {/* 1. Top Face (Lid) */}
+                <div className="printer-top"></div>
+                
+                {/* 2. Right Face (Side Panel) */}
+                <div className="printer-side"></div>
+                
+                {/* 3. Front Face (Contains mechanism) */}
+                <div className="printer-front">
+                  <div className="slit-cover"></div>
+                  <div className="slit-hole"></div>
+                  <div className="paper"></div>
+                  <div className="printer-light"></div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <pre ref={reasoningRef} className="reasoning-text">
+              {claudeReasoning}
+            </pre>
+          )}
+        </div>
+      )}
+
       {/* Promotion dialog */}
       {promotionChoice && (
         <div className="promotion-overlay">
@@ -915,23 +934,23 @@ function App() {
       )}
 
       {/* Custom SFEN input */}
-    <div className="custom-sfen">
-      <p className="custom-sfen-label">SFEN board setup</p>
-      <div className="custom-sfen-input">
-        <input
-          type="text"
-          id="sfen-input"
-          autoComplete="off"
-          value={customSfen}
-          onChange={(e) => setCustomSfen(e.target.value)}
-          placeholder="e.g. rbsgk/4p/5/P4/KGSBR b - 1"
-          disabled={loading}
-        />
-        <button onClick={loadCustomPosition} disabled={loading || !customSfen.trim()}>
-          Load
-        </button>
+      <div className="custom-sfen">
+        <p className="custom-sfen-label">SFEN board setup</p>
+        <div className="custom-sfen-input">
+          <input
+            type="text"
+            id="sfen-input"
+            autoComplete="off"
+            value={customSfen}
+            onChange={(e) => setCustomSfen(e.target.value)}
+            placeholder="e.g. rbsgk/4p/5/P4/KGSBR b - 1"
+            disabled={loading}
+          />
+          <button onClick={loadCustomPosition} disabled={loading || !customSfen.trim()}>
+            Load
+          </button>
+        </div>
       </div>
-    </div>
     
       {/* Footer */}
       <footer className="footer" style={{ textAlign: 'center'}}>

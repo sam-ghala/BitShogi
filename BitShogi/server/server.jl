@@ -13,6 +13,10 @@ using JSON3
 include("../src/BitShogi.jl")
 using .BitShogi
 
+# Anthropic API key from environment
+
+const ANTHROPIC_API_KEY = get(ENV, "ANTHROPIC_API_KEY", "")
+
 # ---------------------------------------------------------------------------
 # CORS Middleware
 # ---------------------------------------------------------------------------
@@ -26,6 +30,15 @@ function cors_headers()
     ]
 end
 
+function sse_headers()
+    return [
+        "Access-Control-Allow-Origin" => "*",
+        "Content-Type" => "text/event-stream",
+        "Cache-Control" => "no-cache",
+        "Connection" => "keep-alive"
+    ]
+end
+
 function handle_cors(handler)
     return function(req::HTTP.Request)
         # Handle preflight OPTIONS request
@@ -35,6 +48,12 @@ function handle_cors(handler)
         
         # Call actual handler and add CORS headers
         response = handler(req)
+        
+        # Don't modify streaming responses
+        if HTTP.header(response, "Content-Type") == "text/event-stream"
+            return response
+        end
+        
         for (key, value) in cors_headers()
             HTTP.setheader(response, key => value)
         end
@@ -54,6 +73,7 @@ function handle_root(req::HTTP.Request)
             "GET /api/game/new",
             "POST /api/game/move",
             "POST /api/game/bot-move",
+            "POST /api/game/claude-move",
             "GET /api/game/legal-moves",
             "GET /api/game/daily",
             "GET /api/game/daily?date=YYYY-MM-DD"
@@ -157,6 +177,126 @@ function handle_load_position(req::HTTP.Request)
 end
 
 # ---------------------------------------------------------------------------
+# Claude Streaming Handler
+# ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Claude Handler (non-streaming for HTTP.jl compatibility)
+# ---------------------------------------------------------------------------
+
+function handle_claude_move(req::HTTP.Request)
+    if isempty(ANTHROPIC_API_KEY)
+        return HTTP.Response(500, JSON3.write(Dict(
+            "error" => "Anthropic API key not configured",
+            "success" => false
+        )))
+    end
+    
+    try
+        body = JSON3.read(String(req.body))
+        sfen = string(body[:sfen])
+        
+        # Parse game state
+        game = BitShogi.parse_sfen(sfen)
+        if game === nothing
+            return HTTP.Response(400, JSON3.write(Dict(
+                "error" => "Invalid SFEN",
+                "success" => false
+            )))
+        end
+        
+        legal_moves = BitShogi.get_legal_move_strings(game.board, game.side_to_move)
+        if isempty(legal_moves)
+            return HTTP.Response(400, JSON3.write(Dict(
+                "error" => "No legal moves",
+                "success" => false
+            )))
+        end
+        
+        # Build prompt for Claude
+        # Build prompt for Claude
+        prompt = """You are playing minishogi (5x5 Japanese chess) as White against a human player.
+
+            Current position (SFEN notation): $sfen
+
+            Your legal moves: $(join(legal_moves, ", "))
+
+            Move notation guide:
+            - Board moves: "1a2a" means move piece from square 1a to 2a
+            - Promotions: "1a2a+" means move and promote the piece
+            - Drops: "P*3c" means drop a Pawn from hand onto square 3c
+
+            First, repeat the SFEN position you were given to confirm you understand the board state.
+
+            Then think through this position naturally as a shogi player would. Consider:
+            - What are the immediate threats to both sides?
+            - What tactical opportunities exist?
+            - What is your strategic plan?
+
+            Explain your thinking conversationally (2-3 short paragraphs), then choose your move. End your response with exactly:
+            MOVE: <your chosen move>
+
+            The move must be exactly one from the legal moves list above."""
+
+        # Call Anthropic API (non-streaming)
+        response = HTTP.request(
+            "POST",
+            "https://api.anthropic.com/v1/messages",
+            [
+                "Content-Type" => "application/json",
+                "x-api-key" => ANTHROPIC_API_KEY,
+                "anthropic-version" => "2023-06-01"
+            ],
+            JSON3.write(Dict(
+                "model" => "claude-haiku-4-5",
+                "max_tokens" => 1024,
+                "messages" => [
+                    Dict("role" => "user", "content" => prompt)
+                ]
+            ))
+        )
+        
+        result = JSON3.read(String(response.body))
+        
+        # Extract text from response
+        reasoning = ""
+        if haskey(result, :content) && length(result.content) > 0
+            reasoning = string(result.content[1].text)
+        end
+        
+        # Extract move from response
+        move_match = match(r"MOVE:\s*([A-Za-z0-9\+\*]+)"i, reasoning)
+        
+        chosen_move = if move_match !== nothing
+            strip(move_match.captures[1])
+        else
+            legal_moves[1]  # fallback
+        end
+        
+        # Validate move is legal (case-insensitive match)
+        if !(chosen_move in legal_moves)
+            matched_idx = findfirst(m -> lowercase(m) == lowercase(chosen_move), legal_moves)
+            if matched_idx !== nothing
+                chosen_move = legal_moves[matched_idx]
+            else
+                chosen_move = legal_moves[1]  # fallback to first legal move
+            end
+        end
+        
+        return HTTP.Response(200, JSON3.write(Dict(
+            "success" => true,
+            "move" => chosen_move,
+            "reasoning" => reasoning
+        )))
+        
+    catch e
+        return HTTP.Response(400, JSON3.write(Dict(
+            "error" => string(e),
+            "success" => false
+        )))
+    end
+end
+
+# ---------------------------------------------------------------------------
 # Router
 # ---------------------------------------------------------------------------
 
@@ -177,6 +317,8 @@ function router(req::HTTP.Request)
         return handle_make_move(req)
     elseif path == "/api/game/bot-move" && method == "POST"
         return handle_bot_move(req)
+    elseif path == "/api/game/claude-move" && method == "POST"
+        return handle_claude_move(req)
     elseif startswith(path, "/api/game/legal-moves") && method == "GET"
         return handle_legal_moves(req)
     elseif startswith(path, "/api/game/daily") && method == "GET"
@@ -196,6 +338,13 @@ function start_server(; host="0.0.0.0", port=8000)
     BitShogi.init_all_magics!()
     BitShogi.init_zobrist!()
     println("Engine ready!")
+    
+    # Check for API key
+    if isempty(ANTHROPIC_API_KEY)
+        println("⚠️  Warning: ANTHROPIC_API_KEY not set - Claude bot will not work")
+    else
+        println("✓ Anthropic API key configured")
+    end
     
     println("\n" * "="^50)
     println("BitShogi Server")

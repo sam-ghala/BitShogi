@@ -1,7 +1,8 @@
 # simple bots for play testing
 # random bot - picks random legal move
 # greedy bot - captures when possible, then random
-# minimax - 
+# minimax - minimax with ab pruning and ordered moves
+# claude api - haiku model to see reasoning 
 
 abstract type Bot end
 
@@ -197,13 +198,6 @@ struct GreedyBot <: Bot
 end
 
 GreedyBot() = GreedyBot(Random.default_rng())
-
-const PIECE_VALUES_BOT = Dict(
-    PAWN => 100, LANCE => 300, KNIGHT => 300, SILVER => 400,
-    GOLD => 500, BISHOP => 600, ROOK => 700, KING => 10000,
-    PROMOTED_PAWN => 400, PROMOTED_LANCE => 400, PROMOTED_KNIGHT => 400,
-    PROMOTED_SILVER => 500, PROMOTED_BISHOP => 800, PROMOTED_ROOK => 900
-)
 
 function select_move(bot::GreedyBot, game::GameState)::Union{Move, String}
     moves = get_legal_moves(game)

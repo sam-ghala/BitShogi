@@ -966,3 +966,253 @@ button:disabled {
     width: 150px;
   }
 }
+
+/* Claude Reasoning Display */
+.claude-reasoning {
+  margin-top: 1.5rem;
+  background: rgba(255, 255, 255, 0.7);
+    border: 3px solid var(--board-bg);
+  border-radius: 6px;
+  padding: 12px 16px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.reasoning-title {
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 0.65rem;
+  text-decoration: underline;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--board-bg);
+  margin-bottom: 8px;
+}
+
+.reasoning-text {
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--board-bg);
+  opacity: 1.0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.6;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+  padding-right: 8px;
+}
+
+.reasoning-text::-webkit-scrollbar {
+  width: 4px;
+}
+
+.reasoning-text::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.reasoning-text::-webkit-scrollbar-thumb {
+  background: var(--dot-filled);
+  border-radius: 2px;
+  opacity: 0.5;
+}
+
+.cursor {
+  animation: blink 1s step-end infinite;
+  opacity: 0.7;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0; }
+}
+
+/* Mobile adjustments for reasoning */
+@media (max-width: 768px) {
+  .claude-reasoning {
+    max-width: 100%;
+    margin-top: 1rem;
+    padding: 10px 12px;
+  }
+  
+  .reasoning-text {
+    font-size: 0.55rem;
+    max-height: 150px;
+  }
+}
+
+
+/* --- Retro/Bit Theme Global Settings --- */
+:root {
+  /* Palette */
+  --retro-gray-highlight: #d0d0d0;
+  --retro-gray-light: #c0c0c0;
+  --retro-gray-mid: #a0a0a0;
+  --retro-gray-dark: #8a8a8a;
+  --retro-gray-shadow: #707070;
+  --retro-outline: #2d2d3a;
+  --retro-paper: #f5f0dc;
+  --retro-paper-shadow: #e0d8c0;
+  --retro-paper-lines: #888877;
+  --retro-black: #1a1a24;
+  --retro-red-on: #ff3333;
+  --retro-red-off: #550000;
+}
+
+.printer-animation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 40px 0;
+  /* CRITICAL for bit look: hard edges */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: pixelated;
+}
+
+.printer-container {
+  position: relative;
+  width: 110px; 
+  height: 110px; 
+  margin-left: -15px;
+  /* Scale 0.8 as requested previously */
+  transform: scale(0.8);
+  transform-origin: center center;
+}
+
+/* --- Cube Faces with "Bit" Gradients --- */
+
+.printer-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 30px;
+  /* Gradient: Highlight top-left, shading bottom-right */
+  background: linear-gradient(135deg, var(--retro-gray-highlight) 20%, var(--retro-gray-light) 80%, var(--retro-gray-mid) 100%);
+  border: 2px solid var(--retro-outline);
+  border-bottom: none;
+  box-sizing: border-box;
+  transform: skewX(-45deg);
+  transform-origin: bottom left;
+  z-index: 5;
+}
+
+.printer-front {
+  position: absolute;
+  top: 30px; 
+  left: 0;
+  width: 80px;
+  height: 80px;
+  /* Gradient: Radial center highlight, darker towards edges */
+  background: radial-gradient(circle at 50% 40%, var(--retro-gray-light) 10%, var(--retro-gray-mid) 60%, var(--retro-gray-dark) 100%);
+  border: 2px solid var(--retro-outline);
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.printer-side {
+  position: absolute;
+  top: 30px; 
+  left: 80px; 
+  width: 30px; 
+  height: 80px;
+  /* Gradient: Darker towards the back edge */
+  background: linear-gradient(to right, var(--retro-gray-dark) 10%, var(--retro-gray-shadow) 100%);
+  border: 2px solid var(--retro-outline);
+  border-left: none;
+  box-sizing: border-box;
+  transform: skewY(-45deg);
+  transform-origin: top left;
+  z-index: 5;
+}
+
+/* --- Retro Details --- */
+
+.slit-cover {
+  position: absolute;
+  top: 25px;
+  left: 10px;
+  width: 60px;
+  height: 10px;
+  background: linear-gradient(to bottom, var(--retro-gray-light), var(--retro-gray-mid));
+  z-index: 20; 
+  border-bottom: 2px solid var(--retro-outline);
+}
+
+.slit-hole {
+  position: absolute;
+  top: 35px;
+  left: 10px;
+  width: 60px;
+  height: 6px;
+  background: var(--retro-black);
+  z-index: 1;
+  border-bottom: 2px solid #000000;
+}
+
+/* The Paper */
+.paper {
+  position: absolute;
+  top: 35px;
+  left: 15px;
+  width: 50px;
+  height: 0;
+  background: linear-gradient(to bottom, var(--retro-paper) 70%, var(--retro-paper-shadow) 100%);
+  border: 2px solid var(--retro-outline);
+  border-top: none;
+  z-index: 15;
+  overflow: hidden;
+  box-shadow: 0 4px 0 0 rgba(0,0,0,0.3); 
+  animation: print-paper 4s ease-in-out infinite;
+  animation-timing-function: steps(40);
+}
+
+.paper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 4px;
+  right: 4px;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--retro-paper-lines) 0px,
+    var(--retro-paper-lines) 2px,
+    transparent 2px,
+    transparent 8px
+  );
+}
+
+/* Status Light - MOVED TO UPPER RIGHT */
+.printer-light {
+  position: absolute;
+  top: 12px;   /* Changed from bottom to top */
+  right: 12px;
+  width: 6px;
+  height: 6px;
+  background: var(--retro-red-on);
+  border: 2px solid var(--retro-red-off);
+  box-shadow: 0 0 0 2px var(--retro-outline); 
+  animation: blink-red 1s steps(1, start) infinite;
+}
+
+@keyframes blink-red {
+  0%, 50% { background: var(--retro-red-on); border-color: var(--retro-red-off); }
+  51%, 100% { background: var(--retro-red-off); border-color: var(--retro-outline); }
+}
+
+@keyframes print-paper {
+  0% { height: 0; }
+  20% { height: 0; }
+  60% { height: 50px; }
+  80% { height: 50px; opacity: 1; }
+  100% { height: 50px; opacity: 0; }
+}
+
+@media (max-width: 768px) {
+  .printer-container {
+    transform: scale(0.6); 
+    margin-left: 0;
+  }
+}
