@@ -213,12 +213,13 @@ function handle_claude_move(req::HTTP.Request)
         end
         
         # Build prompt for Claude
-        prompt = """You are playing minishogi (5x5 Japanese chess) as White (Gote).
+        prompt = """You are playing minishogi (5x5 Japanese chess).
 
         CRITICAL - PIECE IDENTIFICATION:
         - YOUR pieces are LOWERCASE: k, g, s, r, b, p
         - OPPONENT pieces are UPPERCASE: K, G, S, R, B, P
         - If you see an UPPERCASE letter, that is the ENEMY piece, not yours!
+        - UPPERCASE pieces are ENEMY pieces you can capture!
         - If you see a lowercase letter, that is YOUR piece.
 
         Current position (SFEN): $sfen
