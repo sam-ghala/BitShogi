@@ -443,7 +443,16 @@ function App() {
     setClaudeReasoning('');
     
     try {
-      const gameState = await api.loadPosition(customSfen.trim());
+      // Swap turn indicator: user sees w = "I go first" (white pieces)
+      // but engine expects b = player goes first
+      let sfen = customSfen.trim();
+      const parts = sfen.split(' ');
+      if (parts.length >= 2) {
+        parts[1] = parts[1] === 'w' ? 'b' : 'w';
+        sfen = parts.join(' ');
+      }
+      
+      const gameState = await api.loadPosition(sfen);
       if (gameState.success) {
         setBitboardInt(0);
         setGame(gameState);
@@ -1012,7 +1021,7 @@ function App() {
             autoComplete="off"
             value={customSfen}
             onChange={(e) => setCustomSfen(e.target.value)}
-            placeholder="e.g. rbsgk/4p/5/P4/KGSBR b - 1"
+            placeholder="e.g. rbsgk/4p/5/P4/KGSBR w - 1"
             disabled={loading}
           />
           <button onClick={loadCustomPosition} disabled={loading || !customSfen.trim()}>
