@@ -216,8 +216,8 @@ function handle_claude_move(req::HTTP.Request)
         prompt = """You are playing minishogi (5x5 Japanese chess) as White (Gote).
 
         CRITICAL - PIECE IDENTIFICATION:
-        - YOUR pieces (White) are LOWERCASE: k, g, s, r, b, p
-        - OPPONENT pieces (Black) are UPPERCASE: K, G, S, R, B, P
+        - YOUR pieces are LOWERCASE: k, g, s, r, b, p
+        - OPPONENT pieces are UPPERCASE: K, G, S, R, B, P
         - If you see an UPPERCASE letter, that is the ENEMY piece, not yours!
         - If you see a lowercase letter, that is YOUR piece.
 
@@ -233,7 +233,7 @@ function handle_claude_move(req::HTTP.Request)
         SFEN board explanation:
         - Format: <board>/<board>/... <turn> <hands> <move#>
         - Ranks go a (top) to e (bottom), files go 1 (left) to 5 (right)
-        - "w" = your turn (White), "b" = opponent's turn (Black)
+        - "w" = your turn, "b" = opponent's turn
         - In the hand section: lowercase = YOUR hand, UPPERCASE = opponent's hand
 
         First, identify where YOUR pieces (lowercase) are located.
