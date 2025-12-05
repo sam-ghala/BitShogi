@@ -27,7 +27,8 @@ function api_load_position(sfen::String)::Dict{String, Any}
         "legal_moves" => get_legal_move_strings(game.board, game.side_to_move),
         "is_check" => is_in_check(game),
         "result" => string(game.result),
-        "hand" => get_hand_info(game.board)
+        "hand" => get_hand_info(game.board),
+        "bitboard" => sfen_to_bitboard(to_sfen(game))
     )
 end
 

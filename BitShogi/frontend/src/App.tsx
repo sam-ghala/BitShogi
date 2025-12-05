@@ -454,7 +454,7 @@ function App() {
       
       const gameState = await api.loadPosition(sfen);
       if (gameState.success) {
-        setBitboardInt(0);
+        setBitboardInt(gameState.bitboard ?? 0);
         setGame(gameState);
         setRandomPuzzle(gameState);
         
