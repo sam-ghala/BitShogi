@@ -229,7 +229,7 @@ function handle_claude_move(req::HTTP.Request)
             - The SFEN has parts separated by spaces: <board> <turn> <pieces_in_hand> <move_number>
             - Board: ranks are separated by "/", read from White's perspective (rank 5 to rank 1)
             - Turn: "b" means Black to move
-            - Pieces in hand: uppercase letters = White's pieces in hand, lowercase = Black's pieces in hand
+            - Pieces in hand: uppercase letters = pieces in White's hand (playable only from White), lowercase = pieces in Black's hand (only playable from Black)
             - A number after a letter means multiples (e.g., "P2g" = White has 2 Pawns, Black has 1 Gold)
             - "-" means no pieces in hand
 
