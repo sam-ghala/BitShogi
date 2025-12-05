@@ -225,6 +225,14 @@ function handle_claude_move(req::HTTP.Request)
             - Promotions: "1a2a+" means move and promote the piece
             - Drops: "P*3c" means drop a Pawn from hand onto square 3c
 
+            SFEN format explanation:
+            - The SFEN has parts separated by spaces: <board> <turn> <pieces_in_hand> <move_number>
+            - Board: ranks are separated by "/", read from White's perspective (rank 5 to rank 1)
+            - Turn: "b" means Black to move
+            - Pieces in hand: uppercase letters = White's captured pieces, lowercase = Black's captured pieces
+            - A number after a letter means multiples (e.g., "P2g" = White has 2 Pawns, Black has 1 Gold)
+            - "-" means no pieces in hand
+
             First, repeat the SFEN position you were given to confirm you understand the board state.
 
             Then think through this position naturally as a shogi player would. Consider:
