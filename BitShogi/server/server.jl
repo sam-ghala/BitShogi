@@ -214,7 +214,7 @@ function handle_claude_move(req::HTTP.Request)
         
         # Build prompt for Claude
         # Build prompt for Claude
-        prompt = """You are playing minishogi (5x5 Japanese chess) as White against a human player.
+        prompt = """You are playing minishogi (5x5 Japanese chess) as Black against a human player.
 
             Current position (SFEN notation): $sfen
 
