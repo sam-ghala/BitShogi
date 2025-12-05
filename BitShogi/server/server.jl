@@ -213,10 +213,10 @@ function handle_claude_move(req::HTTP.Request)
         end
         
         # Build prompt for Claude
-        # Build prompt for Claude
+        const adjustedSfen = sfen.replace('w', 'b');
         prompt = """You are playing minishogi (5x5 Japanese chess) as Black against a human player.
 
-            Current position (SFEN notation): $sfen
+            Current position (SFEN notation): $adjustedSfen
 
             Your legal moves: $(join(legal_moves, ", "))
 
