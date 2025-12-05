@@ -502,6 +502,10 @@ function App() {
             await new Promise(resolve => setTimeout(resolve, 500));
             
             const botMoveResult = await api.getBotMove(gameState.sfen, selectedBot);
+
+            console.log('=== BOT MOVE ===');
+            console.log('Bot type:', selectedBot);
+            console.log('Bot move result:', botMoveResult);
             
             if (botMoveResult.success && botMoveResult.move) {
               const botFrom = botMoveResult.move.includes('*') 
