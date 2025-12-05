@@ -1,0 +1,367 @@
+/* Bots Page Styles */
+.bots-page {
+  min-height: 100vh;
+  background: var(--bg-light-blue);
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  color: var(--text-dark);
+  padding: 2rem;
+}
+
+.bots-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.bots-header h1 {
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin-bottom: 0.25rem;
+}
+
+.bots-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+.bots-page .back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.bots-page .back-link:hover {
+  color: var(--text-dark);
+}
+
+.bots-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.bots-section {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.bots-section h2 {
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 1.4rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--accent-gold);
+}
+
+.bots-section p {
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+}
+
+.bots-section ul {
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  margin-left: 1.5rem;
+}
+
+.bots-section li {
+  margin-bottom: 0.5rem;
+}
+
+/* Bot Cards Grid */
+.bot-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.bot-card {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.bot-card:hover {
+  border-color: var(--board-bg);
+}
+
+.bot-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(61, 58, 79, 0.08);
+}
+
+.bot-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: var(--board-bg);
+}
+
+.bot-icon.random {
+  background: linear-gradient(135deg, #8e8e9e 0%, #6b6b7b 100%);
+}
+
+.bot-icon.greedy {
+  background: linear-gradient(135deg, #d4af37 0%, #b8942d 100%);
+}
+
+.bot-icon.minimax {
+  background: linear-gradient(135deg, #5a9 0%, #3d7a6a 100%);
+}
+
+.bot-icon.claude {
+  background: linear-gradient(135deg, #d4a574 0%, #c49464 100%);
+}
+
+.bot-title-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.bot-title-area h3 {
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+.bot-difficulty {
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.bot-difficulty.easy {
+  background: rgba(74, 153, 153, 0.2);
+  color: #3d7a6a;
+}
+
+.bot-difficulty.medium {
+  background: rgba(212, 175, 55, 0.2);
+  color: #9a8020;
+}
+
+.bot-difficulty.hard {
+  background: rgba(192, 57, 43, 0.2);
+  color: #a33;
+}
+
+.bot-difficulty.experimental {
+  background: rgba(138, 100, 80, 0.2);
+  color: #8a6450;
+}
+
+.bot-card-content {
+  padding: 1.25rem;
+}
+
+.bot-description {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.bot-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: rgba(61, 58, 79, 0.05);
+  border-radius: 6px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+
+.bot-details {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+}
+
+.bot-details h4 {
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+  color: var(--board-bg);
+}
+
+.bot-details h4:first-child {
+  margin-top: 0;
+}
+
+.bot-details p {
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Claude card special styling */
+.claude-card {
+  border: 2px solid rgba(212, 165, 116, 0.3);
+}
+
+.claude-card .bot-card-header {
+  background: rgba(212, 165, 116, 0.1);
+}
+
+/* Piece Values Table */
+.piece-values-table {
+  width: 100%;
+  max-width: 200px;
+  border-collapse: collapse;
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 0.8rem;
+  margin: 0.5rem 0;
+}
+
+.piece-values-table th,
+.piece-values-table td {
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.piece-values-table th {
+  background: rgba(0, 0, 0, 0.05);
+  font-weight: 400;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.piece-values-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Comparison Table */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 0.85rem;
+  margin: 1rem 0;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.comparison-table th {
+  background: rgba(0, 0, 0, 0.05);
+  font-weight: 400;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.comparison-table tr:last-child td {
+  border-bottom: none;
+}
+
+.comparison-table tr:hover td {
+  background: rgba(61, 58, 79, 0.03);
+}
+
+/* Footer */
+.bots-footer {
+  text-align: center;
+  padding: 2rem;
+}
+
+.bots-footer a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.bots-footer a:hover {
+  color: var(--text-dark);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .bots-page {
+    padding: 1rem;
+  }
+  
+  .bots-section {
+    padding: 1rem 1.25rem;
+  }
+  
+  .bots-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .bot-card-header {
+    padding: 0.75rem 1rem;
+  }
+  
+  .bot-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+  
+  .bot-title-area h3 {
+    font-size: 1rem;
+  }
+  
+  .bot-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .comparison-table {
+    font-size: 0.75rem;
+  }
+  
+  .comparison-table th,
+  .comparison-table td {
+    padding: 0.5rem;
+  }
+}
