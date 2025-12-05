@@ -124,11 +124,17 @@ function apply_move!(state::BoardState, move::Move, color::Color)
 end
 
 # is square in promotion zone
-@inline function in_promotion_zone(sq::Int, color::Color)::Bool
+@inline function in_promotion_zone(sq::Int, color::Color, pt::PieceType=PAWN)::Bool
     rank = rank_of(sq)
     if color == BLACK
+        if pt == KNIGHT
+            return rank <= 2
+        end
         return rank in BLACK_PROMOTION_RANKS
     else
+        if pt == KNIGHT
+            return rank >= BOARD_SIZE - 1
+        end
         return rank in WHITE_PROMOTION_RANKS
     end 
 end
