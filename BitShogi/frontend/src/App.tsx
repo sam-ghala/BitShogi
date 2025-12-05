@@ -929,25 +929,7 @@ function App() {
         </div>
       </div>
 
-      {/* Bot Selector Tiles - Below board */}
-      <div className="bot-selector-tiles">
-        <p className="bot-selector-label">Choose Opponent</p>
-        <div className="bot-tiles">
-          {BOT_OPTIONS.map(bot => (
-            <button
-              key={bot.value}
-              className={`bot-tile bot-tile-${bot.value} ${selectedBot === bot.value ? 'selected' : ''}`}
-              onClick={() => handleBotChange(bot.value)}
-              disabled={loading}
-            >
-              <img src={getBotIcon(bot.value)} alt={bot.label} className="bot-tile-icon" />
-              <span className="bot-tile-label">{bot.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Claude reasoning display */}
+    {/* Claude reasoning display */}
       {selectedBot === 'claude' && (claudeReasoning || claudeThinking) && (
         <div className="claude-reasoning">
           <p className="reasoning-title">
@@ -979,6 +961,25 @@ function App() {
           )}
         </div>
       )}
+
+      {/* Bot Selector Tiles - Below board */}
+      <div className="bot-selector-tiles">
+        <p className="bot-selector-label">Choose Opponent</p>
+        <div className="bot-tiles">
+          {BOT_OPTIONS.map(bot => (
+            <button
+              key={bot.value}
+              className={`bot-tile bot-tile-${bot.value} ${selectedBot === bot.value ? 'selected' : ''}`}
+              onClick={() => handleBotChange(bot.value)}
+              disabled={loading}
+            >
+              <img src={getBotIcon(bot.value)} alt={bot.label} className="bot-tile-icon" />
+              <span className="bot-tile-label">{bot.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
 
       {/* Promotion dialog */}
       {promotionChoice && (
