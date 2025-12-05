@@ -505,6 +505,7 @@ function App() {
 
             console.log('=== BOT MOVE ===');
             console.log('Bot type:', selectedBot);
+            console.log('SFEN sent to bot:', newState.sfen);
             console.log('Bot move result:', botMoveResult);
             
             if (botMoveResult.success && botMoveResult.move) {
@@ -701,6 +702,11 @@ function App() {
           await new Promise(resolve => setTimeout(resolve, 1000));
           
           const botMoveResult = await api.getBotMove(newState.sfen, selectedBot);
+
+          console.log('=== BOT MOVE ===');
+          console.log('Bot type:', selectedBot);
+          console.log('SFEN sent to bot:', newState.sfen);
+          console.log('Bot move result:', botMoveResult);
           
           if (botMoveResult.success && botMoveResult.move) {
             const botFrom = botMoveResult.move.includes('*') 
