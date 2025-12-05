@@ -252,11 +252,12 @@ h1 {
   font-weight: 400;
   text-transform: uppercase;
   text-decoration: underline;
+  font-size: 1.0rem;
 }
 
 .status.game-over.win {
-  color: var(--board-bg);
-  font-size: 0.7rem;
+  color: var(--accent-gold);
+  font-size: 1.0rem;
 }
 
 /* Controls - bit themed */
