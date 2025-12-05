@@ -270,7 +270,7 @@ function validate_board_move(state::BoardState, move::Move, color::Color)::Tuple
         if is_promoted(pt)
             return (false, "This piece is already promoted")
         end
-        if !in_promotion_zone(from_sq, color) && !in_promotion_zone(to_sq, color)
+        if !in_promotion_zone(from_sq, color, pt) && !in_promotion_zone(to_sq, color, pt)
             return (false, "Not in promotion zone")
         end
     else
