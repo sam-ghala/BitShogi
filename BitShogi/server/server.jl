@@ -213,36 +213,35 @@ function handle_claude_move(req::HTTP.Request)
         end
         
         # Build prompt for Claude
-        prompt = """You are playing minishogi (5x5 Japanese chess) as White (Gote) against a human player.
+        prompt = """You are playing minishogi (5x5 Japanese chess) as White (Gote).
 
-        Current position (SFEN notation): $sfen
+        CRITICAL - PIECE IDENTIFICATION:
+        - YOUR pieces (White) are LOWERCASE: k, g, s, r, b, p
+        - OPPONENT pieces (Black) are UPPERCASE: K, G, S, R, B, P
+        - If you see an UPPERCASE letter, that is the ENEMY piece, not yours!
+        - If you see a lowercase letter, that is YOUR piece.
+
+        Current position (SFEN): $sfen
 
         Your legal moves: $(join(legal_moves, ", "))
 
-        Move notation guide:
-        - Board moves: "1a2a" means move piece from square 1a to 2a
-        - Promotions: "1a2a+" means move and promote the piece
-        - Drops: "P*3c" means drop a Pawn from hand onto square 3c
+        Move notation:
+        - Board moves: "1a2b" = move piece FROM 1a TO 2b
+        - Promotions: "1a2b+" = move and promote
+        - Drops: "p*3c" = drop a pawn from your hand onto 3c
 
-        SFEN format explanation:
-        - The SFEN has parts separated by spaces: <board> <turn> <pieces_in_hand> <move_number>
-        - Board: ranks are separated by "/", read from rank a to rank e (top to bottom)
-        - Turn: "w" means White (you) to move, "b" means Black (opponent) to move
-        - YOUR pieces are LOWERCASE: k (king), g (gold), s (silver), r (rook), b (bishop), p (pawn)
-        - OPPONENT pieces are UPPERCASE: K, G, S, R, B, P
-        - Pieces in hand: uppercase = Black's hand, lowercase = your hand (White)
+        SFEN board explanation:
+        - Format: <board>/<board>/... <turn> <hands> <move#>
+        - Ranks go a (top) to e (bottom), files go 1 (left) to 5 (right)
+        - "w" = your turn (White), "b" = opponent's turn (Black)
+        - In the hand section: lowercase = YOUR hand, UPPERCASE = opponent's hand
 
-        First, repeat the SFEN position you were given to confirm you understand the board state.
+        First, identify where YOUR pieces (lowercase) are located.
+        Then identify where OPPONENT pieces (UPPERCASE) are located.
+        Look for captures, checks, and threats.
 
-        Then think through this position naturally as a shogi player would. Consider:
-        - What are the immediate threats to both sides?
-        - What tactical opportunities exist?
-        - What is your strategic plan?
-
-        Explain your thinking conversationally (2-3 short paragraphs), then choose your move. End your response with exactly:
-        MOVE: <your chosen move>
-
-        The move must be exactly one from the legal moves list above."""
+        Explain your thinking briefly (2-3 paragraphs), then choose your move.
+        End with exactly: MOVE: <your chosen move>"""
 
         # Call Anthropic API (non-streaming)
         response = HTTP.request(
