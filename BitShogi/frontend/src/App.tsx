@@ -456,6 +456,77 @@ function App() {
       if (gameState.success) {
         setBitboardInt(0);
         setGame(gameState);
+        setRandomPuzzle(gameState);
+        
+        // If it's the bot's turn (WHITE), trigger bot move
+        if (gameState.side_to_move === 'WHITE' && gameState.result === 'ONGOING') {
+          if (selectedBot === 'claude') {
+            setClaudeThinking(true);
+            setClaudeReasoning('');
+            
+            const claudeResult = await api.getClaudeMove(gameState.sfen);
+            
+            setClaudeThinking(false);
+            
+            if (claudeResult.success && claudeResult.move) {
+              const displayText = (claudeResult.reasoning || '')
+                .replace(/MOVE:\s*[A-Za-z0-9\+\*]+\s*$/i, '')
+                .trim();
+              setClaudeReasoning(displayText);
+              
+              const botFrom = claudeResult.move.includes('*') 
+                ? undefined 
+                : claudeResult.move.substring(0, 2);
+              const botTo = claudeResult.move.includes('*')
+                ? claudeResult.move.substring(2, 4)
+                : claudeResult.move.substring(2, 4);
+              
+              const afterBotMove = await api.makeMove(gameState.sfen, claudeResult.move);
+              
+              if (afterBotMove.success) {
+                setLastMove({ from: botFrom, to: botTo });
+                setGame({
+                  sfen: afterBotMove.sfen!,
+                  side_to_move: afterBotMove.side_to_move!,
+                  legal_moves: afterBotMove.legal_moves!,
+                  is_check: afterBotMove.is_check!,
+                  result: afterBotMove.result!,
+                  hand: afterBotMove.hand!,
+                });
+              }
+            } else {
+              setError(claudeResult.error || 'Claude failed to respond');
+            }
+          } else {
+            // Regular bot
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const botMoveResult = await api.getBotMove(gameState.sfen, selectedBot);
+            
+            if (botMoveResult.success && botMoveResult.move) {
+              const botFrom = botMoveResult.move.includes('*') 
+                ? undefined 
+                : botMoveResult.move.substring(0, 2);
+              const botTo = botMoveResult.move.includes('*')
+                ? botMoveResult.move.substring(2, 4)
+                : botMoveResult.move.substring(2, 4);
+              
+              const afterBotMove = await api.makeMove(gameState.sfen, botMoveResult.move);
+              
+              if (afterBotMove.success) {
+                setLastMove({ from: botFrom, to: botTo });
+                setGame({
+                  sfen: afterBotMove.sfen!,
+                  side_to_move: afterBotMove.side_to_move!,
+                  legal_moves: afterBotMove.legal_moves!,
+                  is_check: afterBotMove.is_check!,
+                  result: afterBotMove.result!,
+                  hand: afterBotMove.hand!,
+                });
+              }
+            }
+          }
+        }
       } else {
         setError('Invalid SFEN format');
       }
@@ -463,7 +534,7 @@ function App() {
       setError(e.message || 'Failed to load position');
     }
     setLoading(false);
-  }, [customSfen]);
+  }, [customSfen, selectedBot]);
 
   const resetGame = useCallback(() => {
     setSelection(null);
