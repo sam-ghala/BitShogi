@@ -63,8 +63,8 @@ function api_get_bot_move(sfen::String, bot_type::String = "minimax")::Dict{Stri
         RandomBot()
     elseif bot_type == "greedy"
         GreedyBot()
-    elseif bot_type == "simple"
-        SimpleBot()
+    elseif bot_type == "easy_minimax"
+        MinimaxBot(3)
     elseif bot_type == "minimax"
         MinimaxBot(5)  # depth 5
     else
