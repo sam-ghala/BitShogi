@@ -216,8 +216,8 @@ function handle_claude_move(req::HTTP.Request)
         prompt = """You are playing minishogi (5x5 Japanese chess).
 
         CRITICAL - PIECE IDENTIFICATION:
-        - YOUR pieces are LOWERCASE: k, g, s, r, b, p
-        - OPPONENT pieces are UPPERCASE: K, G, S, R, B, P
+        - YOUR pieces are LOWERCASE: k, g, s, r, b, p, l, n
+        - OPPONENT pieces are UPPERCASE: K, G, S, R, B, P, L, N
         - If you see an UPPERCASE letter, that is the ENEMY piece, not yours!
         - UPPERCASE pieces are ENEMY pieces you can capture!
         - If you see a lowercase letter, that is YOUR piece.
