@@ -213,37 +213,36 @@ function handle_claude_move(req::HTTP.Request)
         end
         
         # Build prompt for Claude
-        adjustedSfen = replace(sfen, "w" => "b")
-        prompt = """You are playing minishogi (5x5 Japanese chess) as Black against a human player.
+        prompt = """You are playing minishogi (5x5 Japanese chess) as White (Gote) against a human player.
 
-            Current position (SFEN notation): $adjustedSfen
+        Current position (SFEN notation): $sfen
 
-            Your legal moves: $(join(legal_moves, ", "))
+        Your legal moves: $(join(legal_moves, ", "))
 
-            Move notation guide:
-            - Board moves: "1a2a" means move piece from square 1a to 2a
-            - Promotions: "1a2a+" means move and promote the piece
-            - Drops: "P*3c" means drop a Pawn from hand onto square 3c
+        Move notation guide:
+        - Board moves: "1a2a" means move piece from square 1a to 2a
+        - Promotions: "1a2a+" means move and promote the piece
+        - Drops: "P*3c" means drop a Pawn from hand onto square 3c
 
-            SFEN format explanation:
-            - The SFEN has parts separated by spaces: <board> <turn> <pieces_in_hand> <move_number>
-            - Board: ranks are separated by "/", read from White's perspective (rank 5 to rank 1)
-            - Turn: "b" means Black to move
-            - Pieces in hand: uppercase letters = pieces in White's hand (playable only from White), lowercase = pieces in Black's hand (only playable from Black)
-            - A number after a letter means multiples (e.g., "P2g" = White has 2 Pawns, Black has 1 Gold)
-            - "-" means no pieces in hand
+        SFEN format explanation:
+        - The SFEN has parts separated by spaces: <board> <turn> <pieces_in_hand> <move_number>
+        - Board: ranks are separated by "/", read from rank a to rank e (top to bottom)
+        - Turn: "w" means White (you) to move, "b" means Black (opponent) to move
+        - YOUR pieces are LOWERCASE: k (king), g (gold), s (silver), r (rook), b (bishop), p (pawn)
+        - OPPONENT pieces are UPPERCASE: K, G, S, R, B, P
+        - Pieces in hand: uppercase = Black's hand, lowercase = your hand (White)
 
-            First, repeat the SFEN position you were given to confirm you understand the board state.
+        First, repeat the SFEN position you were given to confirm you understand the board state.
 
-            Then think through this position naturally as a shogi player would. Consider:
-            - What are the immediate threats to both sides?
-            - What tactical opportunities exist?
-            - What is your strategic plan?
+        Then think through this position naturally as a shogi player would. Consider:
+        - What are the immediate threats to both sides?
+        - What tactical opportunities exist?
+        - What is your strategic plan?
 
-            Explain your thinking conversationally (2-3 short paragraphs), then choose your move. End your response with exactly:
-            MOVE: <your chosen move>
+        Explain your thinking conversationally (2-3 short paragraphs), then choose your move. End your response with exactly:
+        MOVE: <your chosen move>
 
-            The move must be exactly one from the legal moves list above."""
+        The move must be exactly one from the legal moves list above."""
 
         # Call Anthropic API (non-streaming)
         response = HTTP.request(
