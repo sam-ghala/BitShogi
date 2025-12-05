@@ -15,6 +15,7 @@ Hi, I'm working on a chess-like game engine implemented in Julia. Credit for get
 * **Protocols:** [USI (Universal Shogi Interface) Protocol](https://www.chessprogramming.org/USI)
 * **Engine Dev:** [Computer Shogi Association](http://www2.computer-shogi.org/protocol/)
 * **ML Chess:** [Mastering Chess with a Transformer Model](https://arxiv.org/abs/2409.12272)
+* **Shogi SFEN Notation:** [Shogi_Evaluation_Function_Using_Genetic_Algorithms](https://www.researchgate.net/publication/384972282_Learning_a_Shogi_Evaluation_Function_Using_Genetic_Algorithms#pf2)
 
 ### Project Structure
 * **`BitShogi/src`**: Core game logic (Julia). Implements bitboards, move generation, and validation.
