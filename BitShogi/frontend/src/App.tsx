@@ -168,7 +168,7 @@ type PieceType = 'PAWN' | 'LANCE' | 'KNIGHT' | 'SILVER' | 'GOLD' | 'BISHOP' | 'R
                  'PROMOTED_PAWN' | 'PROMOTED_LANCE' | 'PROMOTED_KNIGHT' | 'PROMOTED_SILVER' |
                  'PROMOTED_BISHOP' | 'PROMOTED_ROOK';
 type Color = 'BLACK' | 'WHITE';
-type BotType = 'random' | 'greedy' | 'easy_minimax' | 'claude' | 'minimax';
+type BotType = 'random' | 'greedy' | 'easy_minimax' | 'minimax' | 'claude';
 
 interface Piece {
   type: PieceType;
@@ -225,11 +225,44 @@ function BoardLines() {
   );
 }
 
-// Available bots with display names
+// Animation frames for each bot - UPDATE THESE PATHS to match your actual SVG filenames
+const BOT_FRAMES: Record<BotType, string[]> = {
+  random: [
+    '/bots/dice-5.svg',
+    '/bots/dice-3.svg',
+    '/bots/dice-2.svg',
+    '/bots/dice-6.svg',
+    '/bots/dice-4.svg',  
+    '/bots/dice-1.svg',
+  ],
+  greedy: [
+    '/bots/coin-one.svg',
+    '/bots/coin-two.svg',
+    '/bots/coin-three.svg',
+  ],
+  easy_minimax: [
+    '/bots/easy_minimax-one.svg',
+    '/bots/easy_minimax-two.svg',
+    '/bots/easy_minimax-three.svg',
+  ],
+  minimax: [
+    '/bots/minimax-one.svg',
+    '/bots/minimax-two.svg',
+    '/bots/minimax-three.svg',
+  ],
+  claude: [
+    '/bots/claude-arms-down.svg',
+    '/bots/claude-arms-up.svg',
+    '/bots/claude-head-off.svg',
+    '/bots/claude-arms-up.svg',
+  ],
+};
+
+// Available bots with display names (icon comes from first frame)
 const BOT_OPTIONS: { value: BotType; label: string }[] = [
   { value: 'random', label: 'Random' },
   { value: 'greedy', label: 'Greedy' },
-  { value: 'easy_minimax', label: 'Easy Minimax' },
+  { value: 'easy_minimax', label: 'Easy minimax' },
   { value: 'claude', label: 'Claude' },
   { value: 'minimax', label: 'Minimax' },
 ];
@@ -258,6 +291,8 @@ function App() {
   
   // Bot selection state
   const [selectedBot, setSelectedBot] = useState<BotType>('minimax');
+  const [animatingBot, setAnimatingBot] = useState<BotType | null>(null);
+  const [animationFrame, setAnimationFrame] = useState(0);
   
   // Claude reasoning state
   const [claudeReasoning, setClaudeReasoning] = useState<string>('');
@@ -443,6 +478,27 @@ function App() {
   }, [mode, dailyPuzzle, classicStartPosition, randomPuzzle, loadDailyPuzzle, loadClassicGame, loadRandomPuzzle]);
 
   const handleBotChange = useCallback((newBot: BotType) => {
+    // Trigger animation for the clicked bot
+    const frames = BOT_FRAMES[newBot];
+    if (frames && frames.length > 1) {
+      setAnimatingBot(newBot);
+      setAnimationFrame(0);
+      
+      let frame = 0;
+      const totalFrames = frames.length * 3; // Loop through twice
+      
+      const interval = setInterval(() => {
+        frame++;
+        if (frame >= totalFrames) {
+          clearInterval(interval);
+          setAnimatingBot(null);
+          setAnimationFrame(0);
+        } else {
+          setAnimationFrame(frame % frames.length);
+        }
+      }, 250); // 120ms per frame
+    }
+    
     setSelectedBot(newBot);
     setSelection(null);
     setLastMove(null);
@@ -726,6 +782,16 @@ function App() {
     return squares;
   };
 
+  // Helper function to get the current icon for any bot
+  const getBotIcon = (botType: BotType): string => {
+    const frames = BOT_FRAMES[botType];
+    if (animatingBot === botType && frames) {
+      return frames[animationFrame];
+    }
+    // Default: return first frame
+    return frames ? frames[0] : '';
+  };
+
   if (!game) {
     return (
       <div className="loading">
@@ -816,7 +882,7 @@ function App() {
                 <span>
                   {game.side_to_move === 'BLACK' 
                     ? 'Your turn' 
-                    : (claudeThinking ? 'Claude thinking...' : 'Thinking...')}
+                    : (claudeThinking ? 'Claude is thinking...' : 'Thinking...')}
                 </span>
               </div>
             )}
@@ -855,28 +921,29 @@ function App() {
                 Daily
               </button>
             </div>
-            
-            {/* Bot selector */}
-            <div className="bot-selector">
-              <label htmlFor="bot-select">Bot:</label>
-              <select 
-                id="bot-select"
-                value={selectedBot}
-                onChange={(e) => handleBotChange(e.target.value as BotType)}
-                disabled={loading}
-              >
-                {BOT_OPTIONS.map(bot => (
-                  <option key={bot.value} value={bot.value}>
-                    {bot.label}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
 
           <p className="help-text">
             Click a piece to select, then click a destination. Green dots show legal moves.
           </p>
+        </div>
+      </div>
+
+      {/* Bot Selector Tiles - Below board */}
+      <div className="bot-selector-tiles">
+        <p className="bot-selector-label">Choose Opponent</p>
+        <div className="bot-tiles">
+          {BOT_OPTIONS.map(bot => (
+            <button
+              key={bot.value}
+              className={`bot-tile bot-tile-${bot.value} ${selectedBot === bot.value ? 'selected' : ''}`}
+              onClick={() => handleBotChange(bot.value)}
+              disabled={loading}
+            >
+              <img src={getBotIcon(bot.value)} alt={bot.label} className="bot-tile-icon" />
+              <span className="bot-tile-label">{bot.label}</span>
+            </button>
+          ))}
         </div>
       </div>
 

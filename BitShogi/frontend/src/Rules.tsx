@@ -175,7 +175,7 @@ function Rules() {
       <header className="rules-header">
         <Link to="/" className="back-link">← Back to Game</Link>
         <h1>BitShogi Rules</h1>
-        <p className="rules-subtitle">Minishogi on a 5×5 board</p>
+        <p className="rules-subtitle">Shogi on a 5×5 board</p>
       </header>
 
       <main className="rules-content">

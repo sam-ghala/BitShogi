@@ -1,0 +1,11 @@
+<svg width="256" height="256" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+  <path fill="#eeeeee" d="M5 4h2v2H5z M4 6h2v2H4z M3 8h2v4H3z M4 12h2v2H4z M5 14h2v2H5z M11 4h2v2h-2z M12 6h2v2h-2z M13 8h2v4h-2z M12 12h2v2h-2z M11 14h2v2h-2z"/>
+
+  <rect x="7" y="1" width="4" height="16" fill="#7c521d"/>
+  
+  <rect x="8" y="2" width="2" height="14" fill="#ffd700"/>
+  
+  <rect x="8" y="4" width="2" height="2" fill="#e2a829"/>
+  <rect x="8" y="8" width="2" height="2" fill="#e2a829"/>
+  <rect x="8" y="12" width="2" height="2" fill="#e2a829"/>
+</svg>
