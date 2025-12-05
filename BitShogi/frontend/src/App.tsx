@@ -505,7 +505,7 @@ function App() {
 
             console.log('=== BOT MOVE ===');
             console.log('Bot type:', selectedBot);
-            console.log('SFEN sent to bot:', newState.sfen);
+            console.log('SFEN sent to bot:', gameState.sfen);
             console.log('Bot move result:', botMoveResult);
             
             if (botMoveResult.success && botMoveResult.move) {
