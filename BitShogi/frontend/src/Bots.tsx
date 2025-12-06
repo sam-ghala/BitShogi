@@ -437,7 +437,7 @@ return non_captures[rand(bot.rng, 1:length(non_captures))]`}
                   </div>
                   <div className="stat">
                     <span className="stat-label">Response Time</span>
-                    <span className="stat-value">3-5s</span>
+                    <span className="stat-value">5-7s</span>
                   </div>
                 </div>
                 <div className="bot-details">
@@ -596,7 +596,7 @@ return non_captures[rand(bot.rng, 1:length(non_captures))]`}
               <tr>
                 <td>Claude</td>
                 <td>~1100-1300 Elo</td>
-                <td>3-5s</td>
+                <td>5-7s</td>
                 <td>LLM Reasoning</td>
                 <td>Seeing how LLMs reason for games</td>
               </tr>
