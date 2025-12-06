@@ -901,3 +901,31 @@ img[src$=".svg"] { border-radius: 8px; }
     right: 6px;
   }
 }
+
+/* Mobile floating tooltip */
+@media (max-width: 768px) {
+  .footer-tip.floating {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 0;
+    z-index: 100;
+  }
+
+  .footer-tip.floating .footer-tip-arrow {
+    display: none;
+  }
+
+  .footer-tip.attached {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+  }
+
+  .footer-tip.attached .footer-tip-arrow {
+    display: block;
+  }
+}

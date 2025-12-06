@@ -1,12 +1,17 @@
-/* Bots Page Styles */
+/* ==================== BOTS PAGE STYLES ==================== */
+
+/* Base Page */
 .bots-page {
   min-height: 100vh;
   background: var(--bg-light-blue);
   font-family: 'Departure Mono', 'Space Mono', monospace;
   color: var(--text-dark);
   padding: 2rem;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
+/* Header */
 .bots-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -38,11 +43,14 @@
   color: var(--text-dark);
 }
 
+/* Content */
 .bots-content {
   max-width: 900px;
   margin: 0 auto;
+  overflow-x: hidden;
 }
 
+/* Sections */
 .bots-section {
   background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
@@ -78,7 +86,8 @@
   margin-bottom: 0.5rem;
 }
 
-/* Bot Cards Grid */
+/* ==================== BOT CARDS ==================== */
+
 .bot-cards {
   display: flex;
   flex-direction: column;
@@ -88,9 +97,9 @@
 .bot-card {
   background: rgba(255, 255, 255, 0.5);
   border-radius: 8px;
-  overflow: hidden;
   border: 2px solid transparent;
   transition: border-color 0.2s;
+  overflow: visible;
 }
 
 .bot-card:hover {
@@ -151,6 +160,11 @@
   margin: 0;
 }
 
+.bot-difficulty-tags {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .bot-difficulty {
   font-family: 'Departure Mono', 'Space Mono', monospace;
   font-size: 0.65rem;
@@ -183,6 +197,7 @@
 
 .bot-card-content {
   padding: 1.25rem;
+  overflow: visible;
 }
 
 .bot-description {
@@ -219,10 +234,12 @@
   color: var(--text-dark);
 }
 
+/* Bot Details */
 .bot-details {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   padding-top: 1rem;
   margin-top: 0.5rem;
+  overflow: visible;
 }
 
 .bot-details h4 {
@@ -232,6 +249,8 @@
   margin-bottom: 0.5rem;
   margin-top: 1rem;
   color: var(--board-bg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .bot-details h4:first-child {
@@ -243,7 +262,41 @@
   margin-bottom: 0.5rem;
 }
 
-/* Claude card special styling */
+.bot-details p code {
+  background: rgba(0, 0, 0, 0.08);
+  padding: 0.15rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+}
+
+.bot-details ul {
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.bot-details li {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 0.35rem;
+}
+
+.bot-details ol {
+  list-style-position: inside;
+}
+
+/* Code blocks */
+.bot-details pre {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+}
+
+.bot-details > div {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+}
+
+/* Special Card Styling */
 .claude-card {
   border: 2px solid rgba(212, 165, 116, 0.3);
 }
@@ -256,7 +309,8 @@
   background: rgba(255, 0, 0, 0.1);
 }
 
-/* Piece Values Table */
+/* ==================== TABLES ==================== */
+
 .piece-values-table {
   width: 100%;
   max-width: 200px;
@@ -285,7 +339,6 @@
   border-bottom: none;
 }
 
-/* Comparison Table */
 .comparison-table {
   width: 100%;
   border-collapse: collapse;
@@ -317,90 +370,13 @@
   background: rgba(61, 58, 79, 0.03);
 }
 
-/* Footer */
-.bots-footer {
-  text-align: center;
-  padding: 2rem;
-}
-
-.bots-footer a {
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-.bots-footer a:hover {
-  color: var(--text-dark);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .bots-page {
-    padding: 1rem;
-  }
-  
-  .bots-section {
-    padding: 1rem 1.25rem;
-  }
-  
-  .bots-header h1 {
-    font-size: 1.8rem;
-  }
-  
-  .bot-card-header {
-    padding: 0.75rem 1rem;
-  }
-  
-  .bot-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 1.25rem;
-  }
-  
-  .bot-title-area h3 {
-    font-size: 1rem;
-  }
-  
-  .bot-stats {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .comparison-table {
-    font-size: 0.75rem;
-  }
-  
-  .comparison-table th,
-  .comparison-table td {
-    padding: 0.5rem;
-  }
-}
-
-.bot-details p code {
-  background: rgba(0, 0, 0, 0.08);
-  padding: 0.15rem 0.35rem;
-  border-radius: 3px;
-  font-size: 0.8rem;
-}
-
-.bot-details ul {
-  margin-left: 1.5rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.bot-details li {
-  font-size: 0.85rem;
-  line-height: 1.6;
-  margin-bottom: 0.35rem;
-}
-
-/* ==================== RESOURCE TREE STYLES ==================== */
+/* ==================== RESOURCE TREE ==================== */
 
 .resource-tree {
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px dashed rgba(0, 0, 0, 0.15);
+  overflow: visible;
 }
 
 .resource-tree h4 {
@@ -409,6 +385,7 @@
   font-size: 0.9rem !important;
   color: var(--text-dark) !important;
   letter-spacing: 0.05em;
+  text-decoration: none !important;
 }
 
 .tree-container {
@@ -416,6 +393,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0;
+  overflow: visible;
 }
 
 .tree-level {
@@ -427,13 +405,27 @@
   margin-bottom: 0;
 }
 
-/* Tree node buttons */
-.tree-node-wrapper {
+/* Tree Subtree (for recursive rendering) */
+.tree-subtree {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* Tree Node Wrapper */
+.tree-node-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.tree-node-wrapper:has(.expanded) {
+  z-index: 50;
+}
+
+/* Tree Node Button */
 .tree-node {
   display: flex;
   flex-direction: column;
@@ -469,6 +461,11 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
+.tree-node.expanded {
+  border-color: var(--accent-gold);
+  background: linear-gradient(145deg, #4a4760 0%, #3d3a4f 100%);
+}
+
 .tree-node-label {
   font-size: 0.7rem;
   font-weight: 400;
@@ -484,8 +481,7 @@
   letter-spacing: 0.05em;
 }
 
-/* Tree branches */
-/* Tree branches */
+/* Tree Branches */
 .tree-branches {
   display: flex;
   justify-content: center;
@@ -494,7 +490,6 @@
   width: 300px;
 }
 
-/* Vertical line from parent */
 .tree-branches::before {
   content: '';
   position: absolute;
@@ -506,7 +501,6 @@
   background: #4a4760;
 }
 
-/* Horizontal connector */
 .tree-branches::after {
   content: '';
   position: absolute;
@@ -534,12 +528,11 @@
   right: calc(50% - 90px);
 }
 
-/* Remove the old dot */
 .tree-branch::before {
   display: none;
 }
 
-/* Tree children level */
+/* Tree Children */
 .tree-children {
   display: flex;
   justify-content: center;
@@ -553,45 +546,7 @@
   min-width: 120px;
 }
 
-/* Responsive tree */
-@media (max-width: 500px) {
-  .tree-node {
-    width: 100px;
-    height: 60px;
-  }
-  
-  .tree-node-label {
-    font-size: 0.6rem;
-  }
-  
-  .tree-node-link-count {
-    font-size: 0.5rem;
-  }
-  
-  .tree-branches {
-    width: 200px;
-  }
-  
-  .tree-children {
-    gap: 30px;
-  }
-}
-
-/* Tree node wrapper - needs relative positioning for popout */
-.tree-node-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-}
-
-/* Expanded state */
-.tree-node.expanded {
-  border-color: var(--accent-gold);
-  background: linear-gradient(145deg, #4a4760 0%, #3d3a4f 100%);
-}
-
-/* Links popout */
+/* Tree Node Links Popout */
 .tree-node-links {
   position: absolute;
   left: calc(100% + 12px);
@@ -609,7 +564,6 @@
   z-index: 100;
 }
 
-/* Arrow pointing to node */
 .tree-node-links::before {
   content: '';
   position: absolute;
@@ -648,76 +602,270 @@
   color: #fff;
 }
 
-/* Responsive - show below on mobile */
-@media (max-width: 600px) {
+/* ==================== FOOTER ==================== */
+
+.bots-footer {
+  text-align: center;
+  padding: 2rem;
+}
+
+.bots-footer a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.bots-footer a:hover {
+  color: var(--text-dark);
+}
+
+/* ==================== MOBILE RESPONSIVE ==================== */
+
+@media (max-width: 768px) {
+  /* Page Layout */
+  .bots-page {
+    padding: 1rem;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .bots-content {
+    max-width: 100%;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .bots-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .bots-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .back-link {
+    font-size: 0.65rem;
+  }
+
+  /* Sections */
+  .bots-section {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    overflow-x: hidden;
+  }
+
+  .bots-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .bots-section p {
+    font-size: 0.7rem;
+  }
+
+  .bots-section ul {
+    font-size: 0.7rem;
+    margin-left: 1rem;
+  }
+
+  /* Bot Cards */
+  .bot-card {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .bot-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .bot-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .bot-title-area h3 {
+    font-size: 1rem;
+  }
+
+  .bot-card-content {
+    padding: 0.75rem;
+    overflow-x: hidden;
+  }
+
+  .bot-description {
+    font-size: 0.7rem;
+  }
+
+  .bot-stats {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .stat {
+    min-width: 70px;
+  }
+
+  .stat-label {
+    font-size: 0.55rem;
+  }
+
+  .stat-value {
+    font-size: 0.7rem;
+  }
+
+  /* Bot Details */
+  .bot-details {
+    overflow-x: hidden;
+  }
+
+  .bot-details h4 {
+    font-size: 0.75rem;
+  }
+
+  .bot-details p,
+  .bot-details li {
+    font-size: 0.65rem;
+  }
+
+  .bot-details ul {
+    margin-left: 1rem;
+  }
+
+  /* Code Blocks - Force wrapping */
+  .bot-details pre,
+  .bot-details code {
+    font-size: 0.5rem !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+  }
+
+  .bot-details > div {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  .bot-details [class*="language-"],
+  .bot-details [style*="color"] {
+    max-width: calc(100vw - 3rem) !important;
+    overflow-x: auto !important;
+  }
+
+  /* Tables */
+  .piece-values-table,
+  .comparison-table {
+    font-size: 0.55rem;
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .piece-values-table th,
+  .piece-values-table td,
+  .comparison-table th,
+  .comparison-table td {
+    padding: 0.35rem 0.4rem;
+    white-space: nowrap;
+  }
+
+  /* Resource Tree */
+  .resource-tree {
+    overflow-x: auto;
+    padding-bottom: 1rem;
+  }
+
+  .tree-container {
+    min-width: 280px;
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+
+  .tree-node {
+    width: 90px;
+    height: 55px;
+  }
+
+  .tree-node-label {
+    font-size: 0.55rem;
+  }
+
+  .tree-node-link-count {
+    font-size: 0.45rem;
+  }
+
+  .tree-branches {
+    width: 220px;
+    height: 30px;
+  }
+
+  .tree-branches::after {
+    width: 140px;
+  }
+
+  .tree-branch.left {
+    left: calc(50% - 70px);
+  }
+
+  .tree-branch.right {
+    right: calc(50% - 70px);
+  }
+
+  .tree-children {
+    gap: 40px;
+  }
+
+  /* Tree Links Popout - Center on mobile */
   .tree-node-links {
+    position: fixed;
     left: 50%;
-    top: calc(100% + 12px);
-    transform: translateX(-50%);
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 85vw;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 1000;
   }
-  
-  .tree-node-links::before {
-    right: auto;
-    top: auto;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 8px solid transparent;
-    border-bottom-color: #4a4760;
-  }
-  
+
+  .tree-node-links::before,
   .tree-node-links::after {
-    right: auto;
-    top: auto;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-bottom-color: #3d3a4f;
-    margin-right: 0;
-    margin-bottom: -2px;
+    display: none;
+  }
+
+  .tree-link {
+    font-size: 0.6rem;
+    padding: 8px 12px;
   }
 }
 
-/* Add these rules */
-.bot-card {
-  overflow: visible;
-}
+@media (max-width: 400px) {
+  .bots-page {
+    padding: 0.5rem;
+  }
 
-.bot-card-content {
-  overflow: visible;
-}
+  .bots-header h1 {
+    font-size: 1.4rem;
+  }
 
-.bot-details {
-  overflow: visible;
-}
+  .bot-icon {
+    width: 40px;
+    height: 40px;
+  }
 
-.resource-tree {
-  overflow: visible;
-}
+  .bot-details pre,
+  .bot-details code {
+    font-size: 0.45rem !important;
+  }
 
-.tree-container {
-  overflow: visible;
-}
-
-.tree-node-wrapper {
-  position: relative;
-  z-index: 1;
-}
-.tree-node-wrapper:has(.expanded) {
-  z-index: 50;
-}
-
-.bot-difficulty-tags {
-  display: flex;
-  gap: 0.5rem;
+  .tree-container {
+    transform: scale(0.75);
+  }
 }
 
 .bot-details h4 {
   text-decoration: underline;
   text-underline-offset: 3px; /* optional - adds some space between text and underline */
-}
-
-ol {
-  list-style-position: inside;
 }
