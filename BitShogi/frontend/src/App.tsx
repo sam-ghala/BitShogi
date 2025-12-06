@@ -3,165 +3,7 @@ import { Link } from 'react-router-dom';
 import { Analytics } from "@vercel/analytics/react"
 import './index.css';
 import * as api from './api/client';
-
-// SVG piece paths - custom pieces in public/pieces/
-const PIECE_IMAGES: Record<string, string> = {
-  PAWN: '/pieces/pawn.svg',
-  SILVER: '/pieces/silver.svg',
-  GOLD: '/pieces/gold.svg',
-  BISHOP: '/pieces/bishop.svg',
-  ROOK: '/pieces/rook.svg',
-  KING: '/pieces/king.svg',
-  PROMOTED_PAWN: '/pieces/pawn-p.svg',
-  PROMOTED_SILVER: '/pieces/silver-p.svg',
-  PROMOTED_BISHOP: '/pieces/bishop-p.svg',
-  PROMOTED_ROOK: '/pieces/rook-p.svg',
-  LANCE: '/pieces/lance.svg',
-  KNIGHT: '/pieces/knight.svg',
-  PROMOTED_LANCE: '/pieces/lance-p.svg',
-  PROMOTED_KNIGHT: '/pieces/knight-p.svg',
-};
-
-// Fallback kanji symbols
-const PIECE_SYMBOLS: Record<string, string> = {
-  PAWN: '歩', LANCE: '香', KNIGHT: '桂', SILVER: '銀',
-  GOLD: '金', BISHOP: '角', ROOK: '飛', KING: '王',
-  PROMOTED_PAWN: 'と', PROMOTED_LANCE: '杏', PROMOTED_KNIGHT: '圭',
-  PROMOTED_SILVER: '全', PROMOTED_BISHOP: '馬', PROMOTED_ROOK: '龍',
-};
-
-// Piece component
-function PieceImage({ type, className }: { type: string; className?: string }) {
-  const imgSrc = PIECE_IMAGES[type];
-  const fallback = PIECE_SYMBOLS[type] || '?';
-  
-  return (
-    <img 
-      src={imgSrc} 
-      alt={type}
-      className={`piece-img ${className || ''}`}
-      onError={(e) => {
-        const target = e.target as HTMLImageElement;
-        target.style.display = 'none';
-        const span = document.createElement('span');
-        span.textContent = fallback;
-        span.className = 'piece-fallback';
-        target.parentNode?.appendChild(span);
-      }}
-    />
-  );
-}
-
-// Parse SFEN to get board pieces
-function parseSfenBoard(sfen: string): Map<string, Piece> {
-  const pieces = new Map<string, Piece>();
-  const boardPart = sfen.split(' ')[0];
-  const ranks = boardPart.split('/');
-  
-  const pieceMap: Record<string, { type: PieceType; color: Color }> = {
-    'P': { type: 'PAWN', color: 'BLACK' },
-    'L': { type: 'LANCE', color: 'BLACK' },
-    'N': { type: 'KNIGHT', color: 'BLACK' },
-    'S': { type: 'SILVER', color: 'BLACK' },
-    'G': { type: 'GOLD', color: 'BLACK' },
-    'B': { type: 'BISHOP', color: 'BLACK' },
-    'R': { type: 'ROOK', color: 'BLACK' },
-    'K': { type: 'KING', color: 'BLACK' },
-    'p': { type: 'PAWN', color: 'WHITE' },
-    'l': { type: 'LANCE', color: 'WHITE' },
-    'n': { type: 'KNIGHT', color: 'WHITE' },
-    's': { type: 'SILVER', color: 'WHITE' },
-    'g': { type: 'GOLD', color: 'WHITE' },
-    'b': { type: 'BISHOP', color: 'WHITE' },
-    'r': { type: 'ROOK', color: 'WHITE' },
-    'k': { type: 'KING', color: 'WHITE' },
-  };
-  
-  const promotedMap: Record<string, PieceType> = {
-    'P': 'PROMOTED_PAWN', 'L': 'PROMOTED_LANCE', 'N': 'PROMOTED_KNIGHT',
-    'S': 'PROMOTED_SILVER', 'B': 'PROMOTED_BISHOP', 'R': 'PROMOTED_ROOK',
-    'p': 'PROMOTED_PAWN', 'l': 'PROMOTED_LANCE', 'n': 'PROMOTED_KNIGHT',
-    's': 'PROMOTED_SILVER', 'b': 'PROMOTED_BISHOP', 'r': 'PROMOTED_ROOK',
-  };
-  
-  ranks.forEach((rankStr, rankIdx) => {
-    const rank = rankIdx + 1;
-    let file = 1;
-    let nextIsPromoted = false;
-    
-    for (const char of rankStr) {
-      if (char === '+') {
-        nextIsPromoted = true;
-        continue;
-      }
-      
-      if (/\d/.test(char)) {
-        file += parseInt(char);
-        nextIsPromoted = false;
-        continue;
-      }
-      
-      const pieceInfo = pieceMap[char];
-      if (pieceInfo) {
-        const notation = `${file}${String.fromCharCode(96 + rank)}`;
-        const type = nextIsPromoted ? promotedMap[char] : pieceInfo.type;
-        pieces.set(notation, { type, color: pieceInfo.color });
-        file++;
-        nextIsPromoted = false;
-      }
-    }
-  });
-  
-  return pieces;
-}
-
-function getPieceChar(type: PieceType): string {
-  const map: Record<string, string> = {
-    PAWN: 'P', LANCE: 'L', KNIGHT: 'N', SILVER: 'S',
-    GOLD: 'G', BISHOP: 'B', ROOK: 'R',
-  };
-  return map[type] || '?';
-}
-
-function isPromoted(type: PieceType): boolean {
-  return type.startsWith('PROMOTED_');
-}
-
-function getResultDisplay(result: string, sideToMove: string): { text: string; isWin: boolean } {
-  const resultUpper = result.toUpperCase().trim();
-  
-  if (resultUpper.includes('BLACK_WIN') || resultUpper.includes('BLACKWIN')) {
-    return { text: 'You Win!', isWin: true };
-  }
-  
-  if (resultUpper.includes('WHITE_WIN') || resultUpper.includes('WHITEWIN')) {
-    return { text: 'Bot Wins', isWin: false };
-  }
-  
-  if (resultUpper.includes('CHECKMATE') || resultUpper.includes('MATE')) {
-    if (resultUpper.includes('WHITE') || resultUpper.includes('W_')) {
-      return { text: 'You Win!', isWin: true };
-    }
-    if (resultUpper.includes('BLACK') || resultUpper.includes('B_')) {
-      return { text: 'Bot Wins', isWin: false };
-    }
-    if (sideToMove === 'WHITE') {
-      return { text: 'You Win!', isWin: true };
-    } else {
-      return { text: 'Bot Wins', isWin: false };
-    }
-  }
-  
-  if (resultUpper.includes('STALEMATE')) {
-    return { text: 'Draw (Stalemate)', isWin: false };
-  }
-  
-  if (resultUpper.includes('DRAW')) {
-    return { text: 'Draw', isWin: false };
-  }
-  
-  return { text: `Game Over: ${result}`, isWin: false };
-}
+import type { MoveResponse } from './api/client';
 
 // Types
 type PieceType = 'PAWN' | 'LANCE' | 'KNIGHT' | 'SILVER' | 'GOLD' | 'BISHOP' | 'ROOK' | 'KING' |
@@ -193,6 +35,170 @@ interface GameState {
   };
 }
 
+// Piece assets
+const PIECE_IMAGES: Record<string, string> = {
+  PAWN: '/pieces/pawn.svg',
+  SILVER: '/pieces/silver.svg',
+  GOLD: '/pieces/gold.svg',
+  BISHOP: '/pieces/bishop.svg',
+  ROOK: '/pieces/rook.svg',
+  KING: '/pieces/king.svg',
+  PROMOTED_PAWN: '/pieces/pawn-p.svg',
+  PROMOTED_SILVER: '/pieces/silver-p.svg',
+  PROMOTED_BISHOP: '/pieces/bishop-p.svg',
+  PROMOTED_ROOK: '/pieces/rook-p.svg',
+  LANCE: '/pieces/lance.svg',
+  KNIGHT: '/pieces/knight.svg',
+  PROMOTED_LANCE: '/pieces/lance-p.svg',
+  PROMOTED_KNIGHT: '/pieces/knight-p.svg',
+};
+
+const PIECE_SYMBOLS: Record<string, string> = {
+  PAWN: '歩', LANCE: '香', KNIGHT: '桂', SILVER: '銀',
+  GOLD: '金', BISHOP: '角', ROOK: '飛', KING: '王',
+  PROMOTED_PAWN: 'と', PROMOTED_LANCE: '杏', PROMOTED_KNIGHT: '圭',
+  PROMOTED_SILVER: '全', PROMOTED_BISHOP: '馬', PROMOTED_ROOK: '龍',
+};
+
+const BOT_FRAMES: Record<BotType, string[]> = {
+  random: ['/bots/dice-5.svg', '/bots/dice-3.svg', '/bots/dice-2.svg', '/bots/dice-6.svg', '/bots/dice-4.svg', '/bots/dice-1.svg'],
+  greedy: ['/bots/coin-one.svg', '/bots/coin-two.svg', '/bots/coin-three.svg'],
+  easy_minimax: ['/bots/easy_minimax-one.svg', '/bots/easy_minimax-two.svg', '/bots/easy_minimax-three.svg'],
+  minimax: ['/bots/minimax-one.svg', '/bots/minimax-two.svg', '/bots/minimax-three.svg'],
+  claude: ['/bots/claude-arms-down.svg', '/bots/claude-arms-up.svg', '/bots/claude-head-off.svg', '/bots/claude-arms-up.svg'],
+};
+
+const BOT_OPTIONS: { value: BotType; label: string }[] = [
+  { value: 'random', label: 'Random' },
+  { value: 'greedy', label: 'Greedy' },
+  { value: 'easy_minimax', label: 'Easy minimax' },
+  { value: 'claude', label: 'Claude' },
+  { value: 'minimax', label: 'Minimax' },
+];
+
+// Helper: Convert API response to GameState
+function apiToGameState(response: MoveResponse): GameState {
+  return {
+    sfen: response.sfen!,
+    side_to_move: response.side_to_move!,
+    legal_moves: response.legal_moves!,
+    is_check: response.is_check!,
+    result: response.result!,
+    hand: response.hand!,
+  };
+}
+
+// Helper: Extract from/to squares from move string
+function parseMoveSquares(move: string): { from?: string; to: string } {
+  const isDrop = move.includes('*');
+  return {
+    from: isDrop ? undefined : move.substring(0, 2),
+    to: move.substring(isDrop ? 2 : 2, isDrop ? 4 : 4),
+  };
+}
+
+function PieceImage({ type, className }: { type: string; className?: string }) {
+  const imgSrc = PIECE_IMAGES[type];
+  const fallback = PIECE_SYMBOLS[type] || '?';
+  
+  return (
+    <img 
+      src={imgSrc} 
+      alt={type}
+      className={`piece-img ${className || ''}`}
+      onError={(e) => {
+        const target = e.target as HTMLImageElement;
+        target.style.display = 'none';
+        const span = document.createElement('span');
+        span.textContent = fallback;
+        span.className = 'piece-fallback';
+        target.parentNode?.appendChild(span);
+      }}
+    />
+  );
+}
+
+function parseSfenBoard(sfen: string): Map<string, Piece> {
+  const pieces = new Map<string, Piece>();
+  const boardPart = sfen.split(' ')[0];
+  const ranks = boardPart.split('/');
+  
+  const pieceMap: Record<string, { type: PieceType; color: Color }> = {
+    'P': { type: 'PAWN', color: 'BLACK' }, 'L': { type: 'LANCE', color: 'BLACK' },
+    'N': { type: 'KNIGHT', color: 'BLACK' }, 'S': { type: 'SILVER', color: 'BLACK' },
+    'G': { type: 'GOLD', color: 'BLACK' }, 'B': { type: 'BISHOP', color: 'BLACK' },
+    'R': { type: 'ROOK', color: 'BLACK' }, 'K': { type: 'KING', color: 'BLACK' },
+    'p': { type: 'PAWN', color: 'WHITE' }, 'l': { type: 'LANCE', color: 'WHITE' },
+    'n': { type: 'KNIGHT', color: 'WHITE' }, 's': { type: 'SILVER', color: 'WHITE' },
+    'g': { type: 'GOLD', color: 'WHITE' }, 'b': { type: 'BISHOP', color: 'WHITE' },
+    'r': { type: 'ROOK', color: 'WHITE' }, 'k': { type: 'KING', color: 'WHITE' },
+  };
+  
+  const promotedMap: Record<string, PieceType> = {
+    'P': 'PROMOTED_PAWN', 'L': 'PROMOTED_LANCE', 'N': 'PROMOTED_KNIGHT',
+    'S': 'PROMOTED_SILVER', 'B': 'PROMOTED_BISHOP', 'R': 'PROMOTED_ROOK',
+    'p': 'PROMOTED_PAWN', 'l': 'PROMOTED_LANCE', 'n': 'PROMOTED_KNIGHT',
+    's': 'PROMOTED_SILVER', 'b': 'PROMOTED_BISHOP', 'r': 'PROMOTED_ROOK',
+  };
+  
+  ranks.forEach((rankStr, rankIdx) => {
+    const rank = rankIdx + 1;
+    let file = 1;
+    let nextIsPromoted = false;
+    
+    for (const char of rankStr) {
+      if (char === '+') {
+        nextIsPromoted = true;
+        continue;
+      }
+      if (/\d/.test(char)) {
+        file += parseInt(char);
+        nextIsPromoted = false;
+        continue;
+      }
+      const pieceInfo = pieceMap[char];
+      if (pieceInfo) {
+        const notation = `${file}${String.fromCharCode(96 + rank)}`;
+        const type = nextIsPromoted ? promotedMap[char] : pieceInfo.type;
+        pieces.set(notation, { type, color: pieceInfo.color });
+        file++;
+        nextIsPromoted = false;
+      }
+    }
+  });
+  
+  return pieces;
+}
+
+function getPieceChar(type: PieceType): string {
+  const map: Record<string, string> = {
+    PAWN: 'P', LANCE: 'L', KNIGHT: 'N', SILVER: 'S', GOLD: 'G', BISHOP: 'B', ROOK: 'R',
+  };
+  return map[type] || '?';
+}
+
+function isPromoted(type: PieceType): boolean {
+  return type.startsWith('PROMOTED_');
+}
+
+function getResultDisplay(result: string, sideToMove: string): { text: string; isWin: boolean } {
+  const r = result.toUpperCase().trim();
+  
+  if (r.includes('BLACK_WIN') || r.includes('BLACKWIN')) return { text: 'You Win!', isWin: true };
+  if (r.includes('WHITE_WIN') || r.includes('WHITEWIN')) return { text: 'Bot Wins', isWin: false };
+  
+  if (r.includes('CHECKMATE') || r.includes('MATE')) {
+    if (r.includes('WHITE') || r.includes('W_')) return { text: 'You Win!', isWin: true };
+    if (r.includes('BLACK') || r.includes('B_')) return { text: 'Bot Wins', isWin: false };
+    return sideToMove === 'WHITE' ? { text: 'You Win!', isWin: true } : { text: 'Bot Wins', isWin: false };
+  }
+  
+  if (r.includes('STALEMATE')) return { text: 'Draw (Stalemate)', isWin: false };
+  if (r.includes('DRAW')) return { text: 'Draw', isWin: false };
+  
+  return { text: `Game Over: ${result}`, isWin: false };
+}
+
 function BoardLines() {
   const size = 64;
   const totalSize = 5 * size;
@@ -203,18 +209,10 @@ function BoardLines() {
       const cx = col * size + size / 2;
       const cy = row * size + size / 2;
       
-      if (col < 4) {
-        lines.push(<line key={`h-${row}-${col}`} x1={cx} y1={cy} x2={cx + size} y2={cy} />);
-      }
-      if (row < 4) {
-        lines.push(<line key={`v-${row}-${col}`} x1={cx} y1={cy} x2={cx} y2={cy + size} />);
-      }
-      if (col < 4 && row < 4) {
-        lines.push(<line key={`dr-${row}-${col}`} x1={cx} y1={cy} x2={cx + size} y2={cy + size} />);
-      }
-      if (col > 0 && row < 4) {
-        lines.push(<line key={`dl-${row}-${col}`} x1={cx} y1={cy} x2={cx - size} y2={cy + size} />);
-      }
+      if (col < 4) lines.push(<line key={`h-${row}-${col}`} x1={cx} y1={cy} x2={cx + size} y2={cy} />);
+      if (row < 4) lines.push(<line key={`v-${row}-${col}`} x1={cx} y1={cy} x2={cx} y2={cy + size} />);
+      if (col < 4 && row < 4) lines.push(<line key={`dr-${row}-${col}`} x1={cx} y1={cy} x2={cx + size} y2={cy + size} />);
+      if (col > 0 && row < 4) lines.push(<line key={`dl-${row}-${col}`} x1={cx} y1={cy} x2={cx - size} y2={cy + size} />);
     }
   }
   
@@ -225,63 +223,16 @@ function BoardLines() {
   );
 }
 
-// Animation frames for each bot - UPDATE THESE PATHS to match your actual SVG filenames
-const BOT_FRAMES: Record<BotType, string[]> = {
-  random: [
-    '/bots/dice-5.svg',
-    '/bots/dice-3.svg',
-    '/bots/dice-2.svg',
-    '/bots/dice-6.svg',
-    '/bots/dice-4.svg',  
-    '/bots/dice-1.svg',
-  ],
-  greedy: [
-    '/bots/coin-one.svg',
-    '/bots/coin-two.svg',
-    '/bots/coin-three.svg',
-  ],
-  easy_minimax: [
-    '/bots/easy_minimax-one.svg',
-    '/bots/easy_minimax-two.svg',
-    '/bots/easy_minimax-three.svg',
-  ],
-  minimax: [
-    '/bots/minimax-one.svg',
-    '/bots/minimax-two.svg',
-    '/bots/minimax-three.svg',
-  ],
-  claude: [
-    '/bots/claude-arms-down.svg',
-    '/bots/claude-arms-up.svg',
-    '/bots/claude-head-off.svg',
-    '/bots/claude-arms-up.svg',
-  ],
-};
-
-// Available bots with display names (icon comes from first frame)
-const BOT_OPTIONS: { value: BotType; label: string }[] = [
-  { value: 'random', label: 'Random' },
-  { value: 'greedy', label: 'Greedy' },
-  { value: 'easy_minimax', label: 'Easy minimax' },
-  { value: 'claude', label: 'Claude' },
-  { value: 'minimax', label: 'Minimax' },
-];
-
 function App() {
   const [game, setGame] = useState<GameState | null>(null);
   const [selection, setSelection] = useState<Selection | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [customSfen, setCustomSfen] = useState<string>('');
+  const [customSfen, setCustomSfen] = useState('');
   const [lastMove, setLastMove] = useState<{ from?: string; to?: string } | null>(null);
-  const [promotionChoice, setPromotionChoice] = useState<{
-    from: string;
-    to: string;
-    pieceType: PieceType;
-  } | null>(null);
+  const [promotionChoice, setPromotionChoice] = useState<{ from: string; to: string; pieceType: PieceType } | null>(null);
   
-  // Daily puzzle state
-  const [bitboardInt, setBitboardInt] = useState<number>(32539167);
+  const [bitboardInt, setBitboardInt] = useState(32539167);
   const [dailyPuzzle, setDailyPuzzle] = useState<GameState | null>(null);
   const [randomPuzzle, setRandomPuzzle] = useState<GameState | null>(null);
   const [classicStartPosition, setClassicStartPosition] = useState<GameState | null>(null);
@@ -289,17 +240,14 @@ function App() {
   const [puzzles, setPuzzles] = useState<api.PuzzleData[] | null>(null);
   const [initialized, setInitialized] = useState(false);
   
-  // Bot selection state
   const [selectedBot, setSelectedBot] = useState<BotType>('minimax');
   const [animatingBot, setAnimatingBot] = useState<BotType | null>(null);
   const [animationFrame, setAnimationFrame] = useState(0);
   
-  // Claude reasoning state
-  const [claudeReasoning, setClaudeReasoning] = useState<string>('');
+  const [claudeReasoning, setClaudeReasoning] = useState('');
   const [claudeThinking, setClaudeThinking] = useState(false);
   const reasoningRef = useRef<HTMLPreElement>(null);
 
-  // Auto-scroll reasoning box
   useEffect(() => {
     if (reasoningRef.current) {
       reasoningRef.current.scrollTop = reasoningRef.current.scrollHeight;
@@ -310,9 +258,7 @@ function App() {
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 0);
     const diff = now.getTime() - start.getTime();
-    const oneDay = 1000 * 60 * 60 * 24;
-    const dayOfYear = Math.floor(diff / oneDay);
-    return dayOfYear;
+    return Math.floor(diff / (1000 * 60 * 60 * 24));
   }, []);
 
   useEffect(() => {
@@ -320,6 +266,45 @@ function App() {
       .then(data => setPuzzles(data))
       .catch(err => console.warn('Failed to load puzzles.json:', err));
   }, []);
+
+  // Bot move handler - used by executeMove and loadCustomPosition
+  const makeBotMove = useCallback(async (currentSfen: string, delayMs: number = 1000) => {
+    if (selectedBot === 'claude') {
+      setClaudeThinking(true);
+      setClaudeReasoning('');
+      
+      const claudeResult = await api.getClaudeMove(currentSfen);
+      setClaudeThinking(false);
+      
+      if (claudeResult.success && claudeResult.move) {
+        const displayText = (claudeResult.reasoning || '').replace(/MOVE:\s*[A-Za-z0-9\+\*]+\s*$/i, '').trim();
+        setClaudeReasoning(displayText);
+        
+        const { from, to } = parseMoveSquares(claudeResult.move);
+        const afterBotMove = await api.makeMove(currentSfen, claudeResult.move);
+        
+        if (afterBotMove.success) {
+          setLastMove({ from, to });
+          setGame(apiToGameState(afterBotMove));
+        }
+      } else {
+        setError(claudeResult.error || 'Claude failed to respond');
+      }
+    } else {
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+      const botMoveResult = await api.getBotMove(currentSfen, selectedBot);
+      
+      if (botMoveResult.success && botMoveResult.move) {
+        const { from, to } = parseMoveSquares(botMoveResult.move);
+        const afterBotMove = await api.makeMove(currentSfen, botMoveResult.move);
+        
+        if (afterBotMove.success) {
+          setLastMove({ from, to });
+          setGame(apiToGameState(afterBotMove));
+        }
+      }
+    }
+  }, [selectedBot]);
 
   const loadDailyPuzzle = useCallback(async () => {
     setLoading(true);
@@ -336,8 +321,8 @@ function App() {
         const todayPuzzle = puzzles[puzzleIndex];
         
         setBitboardInt(todayPuzzle.bitboard);
-        
         const gameState = await api.loadPosition(todayPuzzle.sfen);
+        
         if (gameState.success) {
           setDailyPuzzle(gameState);
           setGame(gameState);
@@ -346,14 +331,13 @@ function App() {
         }
       }
       
-      console.warn('Puzzles not loaded, falling back to classic game');
+      // Fallback to classic game
       const newGame = await api.newGame();
       setBitboardInt(32539167);
       setGame(newGame);
       setClassicStartPosition(newGame);
       setMode('classic');
     } catch (e: any) {
-      console.warn('Daily puzzle failed:', e);
       try {
         const newGame = await api.newGame();
         setBitboardInt(32539167);
@@ -375,6 +359,7 @@ function App() {
     setMode('classic');
     setBitboardInt(32539167);
     setClaudeReasoning('');
+    
     try {
       const newGame = await api.newGame();
       setClassicStartPosition(newGame);
@@ -399,8 +384,8 @@ function App() {
         const puzzle = puzzles[randomIndex];
         
         setBitboardInt(puzzle.bitboard);
-        
         const gameState = await api.loadPosition(puzzle.sfen);
+        
         if (gameState.success) {
           setRandomPuzzle(gameState);
           setGame(gameState);
@@ -409,14 +394,13 @@ function App() {
         }
       }
       
-      console.warn('Puzzles not loaded, falling back to classic game');
+      // Fallback to classic game
       const newGame = await api.newGame();
       setBitboardInt(32539167);
       setGame(newGame);
       setClassicStartPosition(newGame);
       setMode('classic');
     } catch (e: any) {
-      console.warn('Random puzzle failed:', e);
       try {
         const newGame = await api.newGame();
         setBitboardInt(32539167);
@@ -443,8 +427,7 @@ function App() {
     setClaudeReasoning('');
     
     try {
-      // Swap turn indicator: user sees w = "I go first" (white pieces)
-      // but engine expects b = player goes first
+      // Swap turn indicator: user sees w = "I go first", engine expects b = player goes first
       let sfen = customSfen.trim();
       const parts = sfen.split(' ');
       if (parts.length >= 2) {
@@ -453,84 +436,15 @@ function App() {
       }
       
       const gameState = await api.loadPosition(sfen);
+      
       if (gameState.success) {
         setBitboardInt(gameState.bitboard ?? 0);
         setGame(gameState);
         setRandomPuzzle(gameState);
         
-        // If it's the bot's turn (WHITE), trigger bot move
+        // If bot's turn, trigger bot move
         if (gameState.side_to_move === 'WHITE' && gameState.result === 'ONGOING') {
-          if (selectedBot === 'claude') {
-            setClaudeThinking(true);
-            setClaudeReasoning('');
-            
-            const claudeResult = await api.getClaudeMove(gameState.sfen);
-            
-            setClaudeThinking(false);
-            
-            if (claudeResult.success && claudeResult.move) {
-              const displayText = (claudeResult.reasoning || '')
-                .replace(/MOVE:\s*[A-Za-z0-9\+\*]+\s*$/i, '')
-                .trim();
-              setClaudeReasoning(displayText);
-              
-              const botFrom = claudeResult.move.includes('*') 
-                ? undefined 
-                : claudeResult.move.substring(0, 2);
-              const botTo = claudeResult.move.includes('*')
-                ? claudeResult.move.substring(2, 4)
-                : claudeResult.move.substring(2, 4);
-              
-              const afterBotMove = await api.makeMove(gameState.sfen, claudeResult.move);
-              
-              if (afterBotMove.success) {
-                setLastMove({ from: botFrom, to: botTo });
-                setGame({
-                  sfen: afterBotMove.sfen!,
-                  side_to_move: afterBotMove.side_to_move!,
-                  legal_moves: afterBotMove.legal_moves!,
-                  is_check: afterBotMove.is_check!,
-                  result: afterBotMove.result!,
-                  hand: afterBotMove.hand!,
-                });
-              }
-            } else {
-              setError(claudeResult.error || 'Claude failed to respond');
-            }
-          } else {
-            // Regular bot
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            const botMoveResult = await api.getBotMove(gameState.sfen, selectedBot);
-
-            console.log('=== BOT MOVE ===');
-            console.log('Bot type:', selectedBot);
-            console.log('SFEN sent to bot:', gameState.sfen);
-            console.log('Bot move result:', botMoveResult);
-            
-            if (botMoveResult.success && botMoveResult.move) {
-              const botFrom = botMoveResult.move.includes('*') 
-                ? undefined 
-                : botMoveResult.move.substring(0, 2);
-              const botTo = botMoveResult.move.includes('*')
-                ? botMoveResult.move.substring(2, 4)
-                : botMoveResult.move.substring(2, 4);
-              
-              const afterBotMove = await api.makeMove(gameState.sfen, botMoveResult.move);
-              
-              if (afterBotMove.success) {
-                setLastMove({ from: botFrom, to: botTo });
-                setGame({
-                  sfen: afterBotMove.sfen!,
-                  side_to_move: afterBotMove.side_to_move!,
-                  legal_moves: afterBotMove.legal_moves!,
-                  is_check: afterBotMove.is_check!,
-                  result: afterBotMove.result!,
-                  hand: afterBotMove.hand!,
-                });
-              }
-            }
-          }
+          await makeBotMove(gameState.sfen, 500);
         }
       } else {
         setError('Invalid SFEN format');
@@ -539,38 +453,16 @@ function App() {
       setError(e.message || 'Failed to load position');
     }
     setLoading(false);
-  }, [customSfen, selectedBot]);
-
-  const resetGame = useCallback(() => {
-    setSelection(null);
-    setLastMove(null);
-    setError(null);
-    setClaudeReasoning('');
-    
-    if (mode === 'daily' && dailyPuzzle) {
-      setGame(dailyPuzzle);
-    } else if (mode === 'classic' && classicStartPosition) {
-      setGame(classicStartPosition);
-    } else if (mode === 'random' && randomPuzzle) {
-      setGame(randomPuzzle);
-    } else if (mode === 'daily') {
-      loadDailyPuzzle();
-    } else if (mode === 'random') {
-      loadRandomPuzzle();
-    } else {
-      loadClassicGame();
-    }
-  }, [mode, dailyPuzzle, classicStartPosition, randomPuzzle, loadDailyPuzzle, loadClassicGame, loadRandomPuzzle]);
+  }, [customSfen, makeBotMove]);
 
   const handleBotChange = useCallback((newBot: BotType) => {
-    // Trigger animation for the clicked bot
     const frames = BOT_FRAMES[newBot];
     if (frames && frames.length > 1) {
       setAnimatingBot(newBot);
       setAnimationFrame(0);
       
       let frame = 0;
-      const totalFrames = frames.length * 3; // Loop through twice
+      const totalFrames = frames.length * 3;
       
       const interval = setInterval(() => {
         frame++;
@@ -581,7 +473,7 @@ function App() {
         } else {
           setAnimationFrame(frame % frames.length);
         }
-      }, 250); // 120ms per frame
+      }, 260);
     }
     
     setSelectedBot(newBot);
@@ -590,6 +482,7 @@ function App() {
     setError(null);
     setClaudeReasoning('');
     
+    // Reset to start position for current mode
     if (mode === 'daily' && dailyPuzzle) {
       setGame(dailyPuzzle);
     } else if (mode === 'classic' && classicStartPosition) {
@@ -625,7 +518,6 @@ function App() {
     }
   }, [puzzles, initialized, loadDailyPuzzle, loadClassicGame]);
 
-  // Execute a move
   const executeMove = useCallback(async (moveStr: string, fromSquare?: string, toSquare?: string) => {
     if (!game) return;
     
@@ -642,108 +534,23 @@ function App() {
       }
       
       setLastMove({ from: fromSquare, to: toSquare });
-      
-      const newState: GameState = {
-        sfen: afterPlayerMove.sfen!,
-        side_to_move: afterPlayerMove.side_to_move!,
-        legal_moves: afterPlayerMove.legal_moves!,
-        is_check: afterPlayerMove.is_check!,
-        result: afterPlayerMove.result!,
-        hand: afterPlayerMove.hand!,
-      };
+      const newState = apiToGameState(afterPlayerMove);
       setGame(newState);
       
       // Bot's turn
       if (newState.result === 'ONGOING' && newState.side_to_move === 'WHITE') {
-        
-        if (selectedBot === 'claude') {
-          // Use Claude bot
-          setClaudeThinking(true);
-          setClaudeReasoning('');
-          
-          const claudeResult = await api.getClaudeMove(newState.sfen);
-          
-          setClaudeThinking(false);
-          
-          if (claudeResult.success && claudeResult.move) {
-            // Show reasoning (remove the MOVE: line for display)
-            const displayText = (claudeResult.reasoning || '')
-              .replace(/MOVE:\s*[A-Za-z0-9\+\*]+\s*$/i, '')
-              .trim();
-            setClaudeReasoning(displayText);
-            
-            const botFrom = claudeResult.move.includes('*') 
-              ? undefined 
-              : claudeResult.move.substring(0, 2);
-            const botTo = claudeResult.move.includes('*')
-              ? claudeResult.move.substring(2, 4)
-              : claudeResult.move.substring(2, 4);
-            
-            const afterBotMove = await api.makeMove(newState.sfen, claudeResult.move);
-            
-            if (afterBotMove.success) {
-              setLastMove({ from: botFrom, to: botTo });
-              setGame({
-                sfen: afterBotMove.sfen!,
-                side_to_move: afterBotMove.side_to_move!,
-                legal_moves: afterBotMove.legal_moves!,
-                is_check: afterBotMove.is_check!,
-                result: afterBotMove.result!,
-                hand: afterBotMove.hand!,
-              });
-            }
-          } else {
-            setError(claudeResult.error || 'Claude failed to respond');
-            setClaudeReasoning('');
-          }
-          setLoading(false);
-        } else {
-          // Use regular bot
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
-          const botMoveResult = await api.getBotMove(newState.sfen, selectedBot);
-
-          console.log('=== BOT MOVE ===');
-          console.log('Bot type:', selectedBot);
-          console.log('SFEN sent to bot:', newState.sfen);
-          console.log('Bot move result:', botMoveResult);
-          
-          if (botMoveResult.success && botMoveResult.move) {
-            const botFrom = botMoveResult.move.includes('*') 
-              ? undefined 
-              : botMoveResult.move.substring(0, 2);
-            const botTo = botMoveResult.move.includes('*')
-              ? botMoveResult.move.substring(2, 4)
-              : botMoveResult.move.substring(2, 4);
-            
-            const afterBotMove = await api.makeMove(newState.sfen, botMoveResult.move);
-            
-            if (afterBotMove.success) {
-              setLastMove({ from: botFrom, to: botTo });
-              setGame({
-                sfen: afterBotMove.sfen!,
-                side_to_move: afterBotMove.side_to_move!,
-                legal_moves: afterBotMove.legal_moves!,
-                is_check: afterBotMove.is_check!,
-                result: afterBotMove.result!,
-                hand: afterBotMove.hand!,
-              });
-            }
-          }
-          setLoading(false);
-        }
-      } else {
-        setLoading(false);
+        await makeBotMove(newState.sfen, 1000);
       }
+      
+      setLoading(false);
     } catch (e: any) {
       setError(e.message || 'Move failed');
       setLoading(false);
     }
-  }, [game, selectedBot]);
+  }, [game, makeBotMove]);
 
   const handleSquareClick = useCallback((notation: string) => {
-    if (!game || game.side_to_move !== 'BLACK' || loading) return;
-    if (game.result !== 'ONGOING') return;
+    if (!game || game.side_to_move !== 'BLACK' || loading || game.result !== 'ONGOING') return;
     
     const pieces = parseSfenBoard(game.sfen);
     const clickedPiece = pieces.get(notation);
@@ -765,35 +572,26 @@ function App() {
         if (canPromote && canNotPromote) {
           const piece = pieces.get(selection.square);
           if (piece) {
-            setPromotionChoice({
-              from: selection.square,
-              to: notation,
-              pieceType: piece.type,
-            });
+            setPromotionChoice({ from: selection.square, to: notation, pieceType: piece.type });
           }
         } else if (canPromote) {
           executeMove(moveBase + '+', selection.square, notation);
         } else if (canNotPromote) {
           executeMove(moveBase, selection.square, notation);
         }
-        
         setSelection(null);
       }
     } else if (selection.type === 'hand' && selection.pieceType) {
       const dropMove = `${getPieceChar(selection.pieceType)}*${notation}`;
-      
       if (game.legal_moves.includes(dropMove)) {
         executeMove(dropMove, undefined, notation);
       }
-      
       setSelection(null);
     }
   }, [game, selection, loading, executeMove]);
 
   const handleHandClick = useCallback((pieceType: PieceType, color: Color) => {
-    if (!game || game.side_to_move !== color || loading) return;
-    if (game.result !== 'ONGOING') return;
-    if (color !== 'BLACK') return;
+    if (!game || game.side_to_move !== color || loading || game.result !== 'ONGOING' || color !== 'BLACK') return;
     
     if (selection?.type === 'hand' && selection.pieceType === pieceType) {
       setSelection(null);
@@ -804,9 +602,7 @@ function App() {
 
   const handlePromotionChoice = useCallback((promote: boolean) => {
     if (!promotionChoice) return;
-    
-    const moveStr = `${promotionChoice.from}${promotionChoice.to}${promote ? '+' : ''}`;
-    executeMove(moveStr, promotionChoice.from, promotionChoice.to);
+    executeMove(`${promotionChoice.from}${promotionChoice.to}${promote ? '+' : ''}`, promotionChoice.from, promotionChoice.to);
     setPromotionChoice(null);
   }, [promotionChoice, executeMove]);
 
@@ -818,16 +614,14 @@ function App() {
     if (selection.type === 'board' && selection.square) {
       game.legal_moves.forEach(move => {
         if (move.startsWith(selection.square!)) {
-          const to = move.substring(2, 4);
-          targets.add(to);
+          targets.add(move.substring(2, 4));
         }
       });
     } else if (selection.type === 'hand' && selection.pieceType) {
       const pieceChar = getPieceChar(selection.pieceType);
       game.legal_moves.forEach(move => {
         if (move.startsWith(`${pieceChar}*`)) {
-          const to = move.substring(2, 4);
-          targets.add(to);
+          targets.add(move.substring(2, 4));
         }
       });
     }
@@ -840,6 +634,12 @@ function App() {
   const isGameOver = game !== null && game.result !== 'ONGOING';
   const resultDisplay = isGameOver ? getResultDisplay(game.result, game.side_to_move) : null;
 
+  const getBotIcon = (botType: BotType): string => {
+    const frames = BOT_FRAMES[botType];
+    if (animatingBot === botType && frames) return frames[animationFrame];
+    return frames ? frames[0] : '';
+  };
+
   const renderBoard = () => {
     const squares = [];
     
@@ -850,7 +650,7 @@ function App() {
         const isSelected = selection?.type === 'board' && selection.square === notation;
         const isLegalTarget = legalTargets.has(notation);
         const isLastMoveSquare = lastMove && (lastMove.from === notation || lastMove.to === notation);
-        const isMiddleRank = rank === 3 || rank === 2 || rank === 4;
+        const isMiddleRank = rank === 2 || rank === 3 || rank === 4;
         
         squares.push(
           <div
@@ -872,16 +672,6 @@ function App() {
     return squares;
   };
 
-  // Helper function to get the current icon for any bot
-  const getBotIcon = (botType: BotType): string => {
-    const frames = BOT_FRAMES[botType];
-    if (animatingBot === botType && frames) {
-      return frames[animationFrame];
-    }
-    // Default: return first frame
-    return frames ? frames[0] : '';
-  };
-
   if (!game) {
     return (
       <div className="loading">
@@ -897,7 +687,6 @@ function App() {
       <p className="subtitle">{bitboardInt}</p>
       
       <div className="game-container">
-        {/* Left sidebar - Opponent's hand */}
         <div className="sidebar sidebar-left">
           <div className="hand">
             <p className="hand-title">Bot's Hand</p>
@@ -916,33 +705,25 @@ function App() {
           </div>
         </div>
 
-        {/* Board */}
         <div className="board-wrapper">
           <div className="board-with-coords">
             <div className="file-coords">
-              {[1, 2, 3, 4, 5].map(f => (
-                <span key={f}>{f}</span>
-              ))}
+              {[1, 2, 3, 4, 5].map(f => <span key={f}>{f}</span>)}
             </div>
             
             <div className="board-row-wrapper">
               <div className="rank-coords">
-                {['a', 'b', 'c', 'd', 'e'].map(r => (
-                  <span key={r} className="rank-coord">{r}</span>
-                ))}
+                {['a', 'b', 'c', 'd', 'e'].map(r => <span key={r} className="rank-coord">{r}</span>)}
               </div>
               
               <div className="board-container">
                 <BoardLines />
-                <div className="board">
-                  {renderBoard()}
-                </div>
+                <div className="board">{renderBoard()}</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right sidebar - Player's hand and controls */}
         <div className="sidebar sidebar-right">
           <div className="hand">
             <p className="hand-title">Your Hand</p>
@@ -964,7 +745,6 @@ function App() {
             </div>
           </div>
 
-          {/* Game Info */}
           <div className="game-info">
             {!isGameOver && (
               <div className={`turn-indicator ${game.side_to_move === 'WHITE' ? 'thinking' : ''}`}>
@@ -977,49 +757,32 @@ function App() {
               </div>
             )}
             
-            {game.is_check && !isGameOver && (
-              <p className="status check">Check!</p>
-            )}
+            {game.is_check && !isGameOver && <p className="status check">Check!</p>}
             
             {isGameOver && resultDisplay && (
-              <p className={`status game-over ${resultDisplay.isWin ? 'win' : ''}`}>
-                {resultDisplay.text}
-              </p>
+              <p className={`status game-over ${resultDisplay.isWin ? 'win' : ''}`}>{resultDisplay.text}</p>
             )}
             
             {error && <p className="error">{error}</p>}
             
             {loading && !claudeThinking && (
-              <div className="loading">
-                <div className="spinner"></div>
-              </div>
+              <div className="loading"><div className="spinner"></div></div>
             )}
             
             <div className="controls">
-              <button 
-                onClick={loadClassicGame} 
-                disabled={loading}
-                className={mode === 'classic' ? 'active' : ''}
-              >
+              <button onClick={loadClassicGame} disabled={loading} className={mode === 'classic' ? 'active' : ''}>
                 Classic
               </button>
-              <button 
-                onClick={loadDailyPuzzle} 
-                disabled={loading}
-                className={`daily-btn ${mode === 'daily' ? 'active' : ''}`}
-              >
+              <button onClick={loadDailyPuzzle} disabled={loading} className={`daily-btn ${mode === 'daily' ? 'active' : ''}`}>
                 Daily
               </button>
             </div>
           </div>
 
-          <p className="help-text">
-            Click a piece to select, then click a destination. Green dots show legal moves.
-          </p>
+          <p className="help-text">Click a piece to select, then click a destination. Green dots show legal moves.</p>
         </div>
       </div>
 
-    {/* Claude reasoning display */}
       {selectedBot === 'claude' && (claudeReasoning || claudeThinking) && (
         <div className="claude-reasoning">
           <p className="reasoning-title">
@@ -1029,13 +792,8 @@ function App() {
           {claudeThinking ? (
             <div className="printer-animation">
               <div className="printer-container">
-                {/* 1. Top Face (Lid) */}
                 <div className="printer-top"></div>
-                
-                {/* 2. Right Face (Side Panel) */}
                 <div className="printer-side"></div>
-                
-                {/* 3. Front Face (Contains mechanism) */}
                 <div className="printer-front">
                   <div className="slit-cover"></div>
                   <div className="slit-hole"></div>
@@ -1045,14 +803,11 @@ function App() {
               </div>
             </div>
           ) : (
-            <pre ref={reasoningRef} className="reasoning-text">
-              {claudeReasoning}
-            </pre>
+            <pre ref={reasoningRef} className="reasoning-text">{claudeReasoning}</pre>
           )}
         </div>
       )}
 
-      {/* Bot Selector Tiles - Below board */}
       <div className="bot-selector-tiles">
         <p className="bot-selector-label">Choose Opponent</p>
         <div className="bot-tiles">
@@ -1070,8 +825,6 @@ function App() {
         </div>
       </div>
 
-
-      {/* Promotion dialog */}
       {promotionChoice && (
         <div className="promotion-overlay">
           <div className="promotion-dialog">
@@ -1092,7 +845,6 @@ function App() {
         </div>
       )}
 
-      {/* Custom SFEN input */}
       <div className="custom-sfen">
         <p className="custom-sfen-label">SFEN board setup</p>
         <div className="custom-sfen-input">
@@ -1105,17 +857,13 @@ function App() {
             placeholder="e.g. rbsgk/4p/5/P4/KGSBR w - 1"
             disabled={loading}
           />
-          <button onClick={loadCustomPosition} disabled={loading || !customSfen.trim()}>
-            Load
-          </button>
+          <button onClick={loadCustomPosition} disabled={loading || !customSfen.trim()}>Load</button>
         </div>
       </div>
     
-      {/* Footer */}
       <footer className="footer" style={{ textAlign: 'center'}}>
         <p>Author: Sam Ghalayini</p>
         <p><a href="https://github.com/sam-ghala/BitShogi" target="_blank" rel="noopener noreferrer">Code</a> - <Link to="/rules">Rules</Link></p>
-        {/* - <Link to="/bots">Bots</Link></p> */}
         <p>playing a little bit every day using bitboards</p>
       </footer>
       <Analytics />
