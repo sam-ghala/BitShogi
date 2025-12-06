@@ -76,7 +76,6 @@ const BOT_OPTIONS: { value: BotType; label: string }[] = [
   { value: 'minimax', label: 'Minimax' },
 ];
 
-// Helper: Convert API response to GameState
 function apiToGameState(response: MoveResponse): GameState {
   return {
     sfen: response.sfen!,
@@ -88,7 +87,6 @@ function apiToGameState(response: MoveResponse): GameState {
   };
 }
 
-// Helper: Extract from/to squares from move string
 function parseMoveSquares(move: string): { from?: string; to: string } {
   const isDrop = move.includes('*');
   return {
@@ -246,6 +244,7 @@ function App() {
   
   const [claudeReasoning, setClaudeReasoning] = useState('');
   const [claudeThinking, setClaudeThinking] = useState(false);
+  const [claudeThinkingFrame, setClaudeThinkingFrame] = useState(0);
   const reasoningRef = useRef<HTMLPreElement>(null);
 
   useEffect(() => {
@@ -253,6 +252,21 @@ function App() {
       reasoningRef.current.scrollTop = reasoningRef.current.scrollHeight;
     }
   }, [claudeReasoning]);
+
+  // Animate Claude bot while thinking
+  useEffect(() => {
+    if (!claudeThinking) {
+      setClaudeThinkingFrame(0);
+      return;
+    }
+    
+    const frames = BOT_FRAMES.claude;
+    const interval = setInterval(() => {
+      setClaudeThinkingFrame(prev => (prev + 1) % frames.length);
+    }, 300);
+    
+    return () => clearInterval(interval);
+  }, [claudeThinking]);
 
   const getTodayPuzzleIndex = useCallback(() => {
     const now = new Date();
@@ -267,7 +281,6 @@ function App() {
       .catch(err => console.warn('Failed to load puzzles.json:', err));
   }, []);
 
-  // Bot move handler - used by executeMove and loadCustomPosition
   const makeBotMove = useCallback(async (currentSfen: string, delayMs: number = 1000) => {
     if (selectedBot === 'claude') {
       setClaudeThinking(true);
@@ -331,7 +344,6 @@ function App() {
         }
       }
       
-      // Fallback to classic game
       const newGame = await api.newGame();
       setBitboardInt(32539167);
       setGame(newGame);
@@ -394,7 +406,6 @@ function App() {
         }
       }
       
-      // Fallback to classic game
       const newGame = await api.newGame();
       setBitboardInt(32539167);
       setGame(newGame);
@@ -427,7 +438,6 @@ function App() {
     setClaudeReasoning('');
     
     try {
-      // Swap turn indicator: user sees w = "I go first", engine expects b = player goes first
       let sfen = customSfen.trim();
       const parts = sfen.split(' ');
       if (parts.length >= 2) {
@@ -442,7 +452,6 @@ function App() {
         setGame(gameState);
         setRandomPuzzle(gameState);
         
-        // If bot's turn, trigger bot move
         if (gameState.side_to_move === 'WHITE' && gameState.result === 'ONGOING') {
           await makeBotMove(gameState.sfen, 500);
         }
@@ -482,7 +491,6 @@ function App() {
     setError(null);
     setClaudeReasoning('');
     
-    // Reset to start position for current mode
     if (mode === 'daily' && dailyPuzzle) {
       setGame(dailyPuzzle);
     } else if (mode === 'classic' && classicStartPosition) {
@@ -537,7 +545,6 @@ function App() {
       const newState = apiToGameState(afterPlayerMove);
       setGame(newState);
       
-      // Bot's turn
       if (newState.result === 'ONGOING' && newState.side_to_move === 'WHITE') {
         await makeBotMove(newState.sfen, 1000);
       }
@@ -790,17 +797,12 @@ function App() {
           </p>
           
           {claudeThinking ? (
-            <div className="printer-animation">
-              <div className="printer-container">
-                <div className="printer-top"></div>
-                <div className="printer-side"></div>
-                <div className="printer-front">
-                  <div className="slit-cover"></div>
-                  <div className="slit-hole"></div>
-                  <div className="paper"></div>
-                  <div className="printer-light"></div>
-                </div>
-              </div>
+            <div className="claude-thinking-animation">
+              <img 
+                src={BOT_FRAMES.claude[claudeThinkingFrame]} 
+                alt="Claude thinking" 
+                className="claude-thinking-icon" 
+              />
             </div>
           ) : (
             <pre ref={reasoningRef} className="reasoning-text">{claudeReasoning}</pre>

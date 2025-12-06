@@ -12,40 +12,24 @@
 }
 
 :root {
-  /* Typography */
   --font-mono: 'Departure Mono', 'Space Mono', monospace;
   
-  /* Board colors */
   --board-bg: #3d3a4f;
   --dot-filled: #c4b4c4;
   --dot-hollow: #c4b4c4;
   --line-color: rgba(255, 255, 255, 0.3);
   --bg-light-blue: #b8d4e8;
   
-  /* Accent colors */
   --accent-gold: #d4af37;
   --accent-pink: #ff6b9d;
   --accent-green: #4a9;
   --text-dark: #2c3e50;
   --text-muted: #5a6a7a;
   
-  /* Board dimensions */
   --square-size: 64px;
   --board-padding: 12px;
   
-  /* Retro palette */
-  --retro-gray-highlight: #d0d0d0;
-  --retro-gray-light: #c0c0c0;
-  --retro-gray-mid: #a0a0a0;
-  --retro-gray-dark: #8a8a8a;
-  --retro-gray-shadow: #707070;
-  --retro-outline: #2d2d3a;
-  --retro-paper: #f5f0dc;
-  --retro-paper-shadow: #e0d8c0;
-  --retro-paper-lines: #888877;
   --retro-black: #1a1a24;
-  --retro-red-on: #ff3333;
-  --retro-red-off: #550000;
 }
 
 body {
@@ -63,7 +47,6 @@ body {
   padding: 1.5rem;
 }
 
-/* Header */
 h1 {
   font-family: var(--font-mono);
   font-size: 2.2rem;
@@ -81,7 +64,6 @@ h1 {
   margin-bottom: 1.5rem;
 }
 
-/* Layout */
 .game-container {
   display: flex;
   gap: 2rem;
@@ -98,7 +80,6 @@ h1 {
 .sidebar-left { align-items: flex-end; }
 .sidebar-right { align-items: flex-start; }
 
-/* Hand pieces */
 .hand {
   background: rgba(255, 255, 255, 0.7);
   padding: 8px;
@@ -171,7 +152,6 @@ h1 {
   opacity: 0.6;
 }
 
-/* Game Info */
 .game-info {
   background: rgba(255, 255, 255, 0.7);
   border-radius: 6px;
@@ -237,7 +217,6 @@ h1 {
 
 .status.game-over.win { color: var(--accent-gold); }
 
-/* Controls */
 .controls {
   margin-top: 0.75rem;
   display: flex;
@@ -270,7 +249,6 @@ button.active {
 button.daily-btn.active { background: var(--accent-green); }
 button:disabled { opacity: 0.3; cursor: not-allowed; }
 
-/* Help text */
 .help-text {
   font-family: var(--font-mono);
   font-size: 0.6rem;
@@ -282,7 +260,6 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   margin-top: 0.75rem;
 }
 
-/* Board */
 .board-wrapper { position: relative; }
 
 .board-with-coords {
@@ -357,7 +334,6 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   z-index: 2;
 }
 
-/* Squares */
 .square {
   width: var(--square-size);
   height: var(--square-size);
@@ -416,7 +392,6 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   border-radius: 2px;
 }
 
-/* Pieces */
 .piece {
   display: flex;
   align-items: center;
@@ -452,7 +427,6 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   color: #1a1a1a;
 }
 
-/* Loading & Error */
 .loading {
   display: flex;
   align-items: center;
@@ -484,7 +458,6 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   margin-top: 0.5rem;
 }
 
-/* Promotion Dialog */
 .promotion-overlay {
   position: fixed;
   inset: 0;
@@ -538,7 +511,6 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   height: 48px;
 }
 
-/* Custom SFEN */
 .custom-sfen {
   margin-top: 1.5rem;
   text-align: center;
@@ -593,7 +565,6 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 .custom-sfen-input button:hover:not(:disabled) { background: #fff; }
 .custom-sfen-input button:disabled { opacity: 0.4; }
 
-/* Footer */
 .footer {
   margin-top: 2rem;
   padding: 1rem;
@@ -653,132 +624,18 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 .reasoning-text::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); border-radius: 2px; }
 .reasoning-text::-webkit-scrollbar-thumb { background: var(--dot-filled); border-radius: 2px; opacity: 0.5; }
 
-/* Printer Animation */
-.printer-animation {
+/* Claude Thinking Animation */
+.claude-thinking-animation {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  margin: 40px 0;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.claude-thinking-icon {
+  width: 64px;
+  height: 64px;
   image-rendering: pixelated;
-}
-
-.printer-container {
-  position: relative;
-  width: 110px;
-  height: 110px;
-  margin-left: -15px;
-  transform: scale(0.8);
-  transform-origin: center;
-}
-
-.printer-top {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 80px;
-  height: 30px;
-  background: linear-gradient(135deg, var(--retro-gray-highlight) 20%, var(--retro-gray-light) 80%, var(--retro-gray-mid) 100%);
-  border: 2px solid var(--retro-outline);
-  border-bottom: none;
-  transform: skewX(-45deg);
-  transform-origin: bottom left;
-  z-index: 5;
-}
-
-.printer-front {
-  position: absolute;
-  top: 30px;
-  left: 0;
-  width: 80px;
-  height: 80px;
-  background: radial-gradient(circle at 50% 40%, var(--retro-gray-light) 10%, var(--retro-gray-mid) 60%, var(--retro-gray-dark) 100%);
-  border: 2px solid var(--retro-outline);
-  z-index: 10;
-}
-
-.printer-side {
-  position: absolute;
-  top: 30px;
-  left: 80px;
-  width: 30px;
-  height: 80px;
-  background: linear-gradient(to right, var(--retro-gray-dark) 10%, var(--retro-gray-shadow) 100%);
-  border: 2px solid var(--retro-outline);
-  border-left: none;
-  transform: skewY(-45deg);
-  transform-origin: top left;
-  z-index: 5;
-}
-
-.slit-cover {
-  position: absolute;
-  top: 25px;
-  left: 10px;
-  width: 60px;
-  height: 10px;
-  background: linear-gradient(to bottom, var(--retro-gray-light), var(--retro-gray-mid));
-  z-index: 20;
-  border-bottom: 2px solid var(--retro-outline);
-}
-
-.slit-hole {
-  position: absolute;
-  top: 35px;
-  left: 10px;
-  width: 60px;
-  height: 6px;
-  background: var(--retro-black);
-  z-index: 1;
-  border-bottom: 2px solid #000;
-}
-
-.paper {
-  position: absolute;
-  top: 35px;
-  left: 15px;
-  width: 50px;
-  height: 0;
-  background: linear-gradient(to bottom, var(--retro-paper) 70%, var(--retro-paper-shadow) 100%);
-  border: 2px solid var(--retro-outline);
-  border-top: none;
-  z-index: 15;
-  overflow: hidden;
-  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.3);
-  animation: print-paper 4s ease-in-out infinite steps(40);
-}
-
-.paper::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 4px;
-  right: 4px;
-  height: 100%;
-  background-image: repeating-linear-gradient(to bottom, var(--retro-paper-lines) 0px, var(--retro-paper-lines) 2px, transparent 2px, transparent 8px);
-}
-
-.printer-light {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 6px;
-  height: 6px;
-  background: var(--retro-red-on);
-  border: 2px solid var(--retro-red-off);
-  box-shadow: 0 0 0 2px var(--retro-outline);
-  animation: blink-red 1s steps(1, start) infinite;
-}
-
-@keyframes blink-red {
-  0%, 50% { background: var(--retro-red-on); border-color: var(--retro-red-off); }
-  51%, 100% { background: var(--retro-red-off); border-color: var(--retro-outline); }
-}
-
-@keyframes print-paper {
-  0%, 20% { height: 0; }
-  60%, 80% { height: 50px; opacity: 1; }
-  100% { height: 50px; opacity: 0; }
 }
 
 /* Bot Selector Tiles */
@@ -849,7 +706,6 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   color: var(--retro-black);
 }
 
-/* Bot tile colors */
 .bot-tile-random { background: rgba(74, 153, 153, 0.15); }
 .bot-tile-random.selected { background: rgba(74, 153, 153, 0.3); border-color: var(--accent-green); }
 
@@ -919,7 +775,7 @@ img[src$=".svg"] { border-radius: 8px; }
   .claude-reasoning { max-width: 100%; margin-top: 1rem; padding: 10px 12px; }
   .reasoning-text { font-size: 0.55rem; max-height: 150px; }
   
-  .printer-container { transform: scale(0.6); margin-left: 0; }
+  .claude-thinking-icon { width: 48px; height: 48px; }
   
   .bot-selector-tiles { margin-top: 1rem; }
   .bot-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-width: 280px; margin: 0 auto; }
