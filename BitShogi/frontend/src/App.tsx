@@ -247,6 +247,25 @@ function App() {
   const [claudeThinkingFrame, setClaudeThinkingFrame] = useState(0);
   const reasoningRef = useRef<HTMLPreElement>(null);
 
+  const [showFooterTip, setShowFooterTip] = useState(false);
+
+  // Show footer tip after 6 seconds
+  useEffect(() => {
+    const tipDismissed = sessionStorage.getItem('footerTipDismissed');
+    if (tipDismissed) return;
+
+    const timer = setTimeout(() => {
+      setShowFooterTip(true);
+    }, 6000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const dismissFooterTip = useCallback(() => {
+    setShowFooterTip(false);
+    sessionStorage.setItem('footerTipDismissed', 'true');
+  }, []);
+
   useEffect(() => {
     if (reasoningRef.current) {
       reasoningRef.current.scrollTop = reasoningRef.current.scrollHeight;
@@ -863,11 +882,20 @@ function App() {
         </div>
       </div>
     
-      <footer className="footer" style={{ textAlign: 'center'}}>
-        <p>Author: Sam Ghalayini</p>
-        <p><a href="https://github.com/sam-ghala/BitShogi" target="_blank" rel="noopener noreferrer">Code</a> - <Link to="/rules">Rules</Link></p>
-        <p>playing a little bit every day using bitboards</p>
-      </footer>
+        <footer className="footer" style={{ textAlign: 'center'}}>
+          <p>Author: Sam Ghalayini</p>
+          <div className="footer-links-wrapper">
+            {showFooterTip && (
+              <div className="footer-tip">
+                <span>Learn more about the <strong>RULES</strong> and <strong>BOTS</strong>!</span>
+                <button className="footer-tip-close" onClick={dismissFooterTip}>×</button>
+                <div className="footer-tip-arrow"></div>
+              </div>
+            )}
+            <p><a href="https://github.com/sam-ghala/BitShogi" target="_blank" rel="noopener noreferrer">Code</a> - <Link to="/rules">Rules</Link> - <Link to="/bots">Bots Docs</Link></p>
+          </div>
+          <p>playing a little bit every day using bitboards</p>
+        </footer>
       <Analytics />
     </>
   );

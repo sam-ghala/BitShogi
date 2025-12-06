@@ -116,8 +116,14 @@
   background: var(--board-bg);
 }
 
+.bot-icon img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
 .bot-icon.random {
-  background: linear-gradient(135deg, #8e8e9e 0%, #6b6b7b 100%);
+  background: rgb(73, 95, 37);
 }
 
 .bot-icon.greedy {
@@ -125,11 +131,11 @@
 }
 
 .bot-icon.minimax {
-  background: linear-gradient(135deg, #5a9 0%, #3d7a6a 100%);
+  background: linear-gradient(135deg, rgb(170, 101, 85) 0%, #222eb6 100%);
 }
 
 .bot-icon.claude {
-  background: linear-gradient(135deg, #d4a574 0%, #c49464 100%);
+  background: linear-gradient(135deg, #f7efe6 0%, #a15305 100%);
 }
 
 .bot-title-area {
@@ -244,6 +250,10 @@
 
 .claude-card .bot-card-header {
   background: rgba(212, 165, 116, 0.1);
+}
+
+.minimax-card .bot-card-header {
+  background: rgba(255, 0, 0, 0.1);
 }
 
 /* Piece Values Table */
@@ -364,4 +374,350 @@
   .comparison-table td {
     padding: 0.5rem;
   }
+}
+
+.bot-details p code {
+  background: rgba(0, 0, 0, 0.08);
+  padding: 0.15rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+}
+
+.bot-details ul {
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.bot-details li {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 0.35rem;
+}
+
+/* ==================== RESOURCE TREE STYLES ==================== */
+
+.resource-tree {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed rgba(0, 0, 0, 0.15);
+}
+
+.resource-tree h4 {
+  text-align: center;
+  margin-bottom: 1.5rem !important;
+  font-size: 0.9rem !important;
+  color: var(--text-dark) !important;
+  letter-spacing: 0.05em;
+}
+
+.tree-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.tree-level {
+  display: flex;
+  justify-content: center;
+}
+
+.tree-root {
+  margin-bottom: 0;
+}
+
+/* Tree node buttons */
+.tree-node-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tree-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 70px;
+  background: linear-gradient(145deg, #3d3a4f 0%, #2a2838 100%);
+  border: 2px solid #4a4760;
+  border-radius: 6px;
+  color: #e8e6f0;
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.tree-node:hover {
+  background: linear-gradient(145deg, #4a4760 0%, #3d3a4f 100%);
+  border-color: var(--accent-gold);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.tree-node:active {
+  transform: translateY(0);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.tree-node-label {
+  font-size: 0.7rem;
+  font-weight: 400;
+  text-align: center;
+  line-height: 1.2;
+  padding: 0 0.25rem;
+}
+
+.tree-node-link-count {
+  font-size: 0.55rem;
+  color: #9a98a8;
+  margin-top: 0.25rem;
+  letter-spacing: 0.05em;
+}
+
+/* Tree branches */
+/* Tree branches */
+.tree-branches {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  height: 40px;
+  width: 300px;
+}
+
+/* Vertical line from parent */
+.tree-branches::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 20px;
+  background: #4a4760;
+}
+
+/* Horizontal connector */
+.tree-branches::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  height: 2px;
+  background: #4a4760;
+}
+
+.tree-branch {
+  position: absolute;
+  top: 20px;
+  width: 2px;
+  height: 20px;
+  background: #4a4760;
+}
+
+.tree-branch.left {
+  left: calc(50% - 90px);
+}
+
+.tree-branch.right {
+  right: calc(50% - 90px);
+}
+
+/* Remove the old dot */
+.tree-branch::before {
+  display: none;
+}
+
+/* Tree children level */
+.tree-children {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  width: 100%;
+}
+
+.tree-child {
+  display: flex;
+  justify-content: center;
+  min-width: 120px;
+}
+
+/* Responsive tree */
+@media (max-width: 500px) {
+  .tree-node {
+    width: 100px;
+    height: 60px;
+  }
+  
+  .tree-node-label {
+    font-size: 0.6rem;
+  }
+  
+  .tree-node-link-count {
+    font-size: 0.5rem;
+  }
+  
+  .tree-branches {
+    width: 200px;
+  }
+  
+  .tree-children {
+    gap: 30px;
+  }
+}
+
+/* Tree node wrapper - needs relative positioning for popout */
+.tree-node-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Expanded state */
+.tree-node.expanded {
+  border-color: var(--accent-gold);
+  background: linear-gradient(145deg, #4a4760 0%, #3d3a4f 100%);
+}
+
+/* Links popout */
+.tree-node-links {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: linear-gradient(145deg, #3d3a4f 0%, #2a2838 100%);
+  border: 2px solid #4a4760;
+  border-radius: 6px;
+  padding: 8px;
+  min-width: 150px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+}
+
+/* Arrow pointing to node */
+.tree-node-links::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 8px solid transparent;
+  border-right-color: #4a4760;
+}
+
+.tree-node-links::after {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-right-color: #3d3a4f;
+  margin-right: -2px;
+}
+
+.tree-link {
+  color: #c8c6d8;
+  text-decoration: none;
+  font-family: 'Departure Mono', 'Space Mono', monospace;
+  font-size: 0.65rem;
+  padding: 6px 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.tree-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* Responsive - show below on mobile */
+@media (max-width: 600px) {
+  .tree-node-links {
+    left: 50%;
+    top: calc(100% + 12px);
+    transform: translateX(-50%);
+  }
+  
+  .tree-node-links::before {
+    right: auto;
+    top: auto;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-bottom-color: #4a4760;
+  }
+  
+  .tree-node-links::after {
+    right: auto;
+    top: auto;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: #3d3a4f;
+    margin-right: 0;
+    margin-bottom: -2px;
+  }
+}
+
+/* Add these rules */
+.bot-card {
+  overflow: visible;
+}
+
+.bot-card-content {
+  overflow: visible;
+}
+
+.bot-details {
+  overflow: visible;
+}
+
+.resource-tree {
+  overflow: visible;
+}
+
+.tree-container {
+  overflow: visible;
+}
+
+.tree-node-wrapper {
+  position: relative;
+  z-index: 1;
+}
+.tree-node-wrapper:has(.expanded) {
+  z-index: 50;
+}
+
+.bot-difficulty-tags {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.bot-details h4 {
+  text-decoration: underline;
+  text-underline-offset: 3px; /* optional - adds some space between text and underline */
+}
+
+ol {
+  list-style-position: inside;
 }
